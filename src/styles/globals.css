@@ -482,3 +482,132 @@
   animation: soundWave 1.2s ease-in-out infinite;
   transform-origin: bottom;
 }
+
+/* ============================================
+   MOBILE RESPONSIVE - Media Queries
+   ============================================ */
+
+/* Extra Small Devices (Phones, less than 576px) */
+@media (max-width: 575.98px) {
+  /* Arabic text sizing */
+  .arabic-text {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+  
+  /* Quran verse text sizing */
+  .quran-verse {
+    font-size: 1.35rem;
+    line-height: 2.2;
+  }
+  
+  /* Surah cards - smaller padding */
+  .surah-card {
+    @apply p-3;
+  }
+  
+  /* Play buttons - smaller size */
+  .play-button {
+    @apply w-10 h-10;
+  }
+  
+  .play-button-sm {
+    @apply w-8 h-8;
+  }
+  
+  /* Reduce hover lift effect on mobile */
+  .hover-lift:hover {
+    transform: translateY(-3px) scale(1);
+  }
+  
+  /* Buttons - full width on mobile */
+  .btn {
+    @apply px-3 py-2 text-sm;
+  }
+  
+  /* Sidebar items - smaller padding */
+  .sidebar-item {
+    @apply px-3 py-2 text-sm gap-2;
+  }
+}
+
+/* Small Devices (Phones landscape, tablets portrait, 576px and up) */
+@media (max-width: 767.98px) {
+  /* Hide sidebar on mobile by default */
+  .sidebar-mobile-hidden {
+    display: none;
+  }
+  
+  /* Make content full width */
+  .content-mobile-full {
+    width: 100% !important;
+    margin-left: 0 !important;
+  }
+  
+  /* Player bar adjustments */
+  .player-bar-mobile {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  /* Reduce animation intensity */
+  .surah-card:hover {
+    transform: translateY(-2px) scale(1);
+  }
+}
+
+/* Medium Devices (Tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .arabic-text {
+    font-size: 1rem;
+  }
+  
+  .quran-verse {
+    font-size: 1.5rem;
+  }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+  /* Remove hover effects on touch devices */
+  .surah-card:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  
+  .hover-lift:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  
+  .play-button:hover,
+  .play-button-sm:hover {
+    transform: none;
+  }
+  
+  /* Increase tap target size */
+  .sidebar-item,
+  .btn,
+  button {
+    min-height: 44px; /* Apple's recommended tap target size */
+  }
+}
+
+/* Dark Mode Support (for system preference) */
+@media (prefers-color-scheme: dark) {
+  /* Already dark by default, but ensure consistency */
+  body {
+    @apply bg-black text-white;
+  }
+}
+
+/* Reduce Motion for Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

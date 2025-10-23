@@ -318,16 +318,16 @@ export default function PlayerBar() {
         </div>
 
         {/* Main Controls */}
-        <div className="px-6 pb-5 grid grid-cols-[2fr_auto_2fr] items-center gap-8">
+        <div className="px-3 md:px-6 pb-3 md:pb-5 grid grid-cols-1 md:grid-cols-[2fr_auto_2fr] items-center gap-3 md:gap-8">
           {/* Right: Enhanced Surah Info */}
-          <div className="flex items-center gap-4 justify-end">
+          <div className="flex items-center gap-2 md:gap-4 justify-end order-1 md:order-1">
             {/* Thumbnail with Playing Animation */}
             <div className="relative flex-shrink-0 group">
-              <div className="w-16 h-16 bg-gradient-to-br from-spotify-green/30 via-green-600/20 to-green-900/30 rounded-xl flex flex-col items-center justify-center border border-spotify-green/30 transition-all duration-300 group-hover:scale-110 group-hover:border-spotify-green/50 group-hover:shadow-lg group-hover:shadow-spotify-green/20 backdrop-blur-sm p-1">
-                <span className="text-sm font-arabic text-spotify-green font-bold drop-shadow-lg text-center leading-tight">
+              <div className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-spotify-green/30 via-green-600/20 to-green-900/30 rounded-xl flex flex-col items-center justify-center border border-spotify-green/30 transition-all duration-300 group-hover:scale-110 group-hover:border-spotify-green/50 group-hover:shadow-lg group-hover:shadow-spotify-green/20 backdrop-blur-sm p-1">
+                <span className="text-xs md:text-sm font-arabic text-spotify-green font-bold drop-shadow-lg text-center leading-tight">
                   {currentSurah.name}
                 </span>
-                <span className="text-[10px] text-gray-400 mt-0.5">
+                <span className="text-[8px] md:text-[10px] text-gray-400 mt-0.5 hidden md:block">
                   {currentSurah.nameEn}
                 </span>
               </div>
@@ -346,7 +346,7 @@ export default function PlayerBar() {
             <button 
               data-surah-name-button
               onClick={() => setIsExpanded(true)}
-              className="min-w-0 flex-1 text-right group/expand"
+              className="min-w-0 flex-1 text-right group/expand hidden md:block"
             >
               <div className="flex items-center gap-2 mb-0.5">
                 <p className="text-white font-bold arabic-text text-lg truncate transition-all duration-200 group-hover/expand:text-spotify-green cursor-pointer">
