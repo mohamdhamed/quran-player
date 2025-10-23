@@ -36,7 +36,7 @@ function App() {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-black text-white" dir="rtl">
+    <div id="root" className="h-screen flex flex-col bg-transparent text-white relative" dir="rtl">
       <div className="flex flex-1 overflow-hidden">
         {/* Mobile Menu Button */}
         <button

@@ -8,6 +8,76 @@
   body {
     @apply bg-black text-white font-sans antialiased;
     direction: rtl;
+    /* Animated Gradient Background */
+    background: linear-gradient(135deg, #000000 0%, #0a0a0a 25%, #141414 50%, #0a0a0a 75%, #000000 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 20s ease infinite;
+    position: relative;
+  }
+  
+  /* Pattern Overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 0;
+    background-image: 
+      repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(29, 185, 84, 0.03) 2px, rgba(29, 185, 84, 0.03) 4px),
+      repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(29, 185, 84, 0.03) 2px, rgba(29, 185, 84, 0.03) 4px);
+  }
+  
+  /* Islamic Pattern Overlay */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.015;
+    pointer-events: none;
+    z-index: 0;
+    background-image: 
+      radial-gradient(circle at 25% 25%, rgba(29, 185, 84, 0.1) 2%, transparent 2%),
+      radial-gradient(circle at 75% 75%, rgba(29, 185, 84, 0.1) 2%, transparent 2%),
+      radial-gradient(circle at 25% 75%, rgba(29, 185, 84, 0.05) 1%, transparent 1%),
+      radial-gradient(circle at 75% 25%, rgba(29, 185, 84, 0.05) 1%, transparent 1%);
+    background-size: 80px 80px;
+    animation: patternMove 30s linear infinite;
+  }
+  
+  /* Gradient Animation */
+  @keyframes gradientShift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+  
+  /* Pattern Movement */
+  @keyframes patternMove {
+    0% {
+      transform: translate(0, 0);
+    }
+    100% {
+      transform: translate(80px, 80px);
+    }
+  }
+  
+  /* Ensure content is above background */
+  #root {
+    position: relative;
+    z-index: 1;
   }
   
   /* Arabic text styling */
@@ -78,12 +148,32 @@
   .surah-card {
     @apply bg-spotify-lightGray rounded-lg p-4 cursor-pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* Card Glow Effect */
+  .surah-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(29, 185, 84, 0.1) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
   }
   
   .surah-card:hover {
     @apply bg-gray-700;
     transform: translateY(-4px) scale(1.01);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(29, 185, 84, 0.1);
+  }
+  
+  .surah-card:hover::before {
+    opacity: 1;
   }
   
   /* Play button */
@@ -151,6 +241,46 @@
 /* ============================================
    ANIMATIONS - Smooth & Professional
    ============================================ */
+
+/* Subtle Particles Animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+    opacity: 0.3;
+  }
+  25% {
+    transform: translateY(-20px) translateX(10px);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateY(-10px) translateX(-10px);
+    opacity: 0.3;
+  }
+  75% {
+    transform: translateY(-30px) translateX(5px);
+    opacity: 0.4;
+  }
+}
+
+/* Particles Container (optional - can be added via JS) */
+.particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: rgba(29, 185, 84, 0.3);
+  border-radius: 50%;
+  animation: float 8s ease-in-out infinite;
+}
 
 /* Fade In Animation */
 @keyframes fadeIn {
