@@ -1,0 +1,51 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" fill="#1DB954" rx="80"/>
+  
+  <!-- Gradient overlay -->
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1DB954;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1aa34a;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <rect width="512" height="512" fill="url(#grad1)" rx="80"/>
+  
+  <!-- Quran Book Icon -->
+  <g filter="url(#shadow)">
+    <!-- Book base -->
+    <rect x="140" y="120" width="232" height="280" fill="#fff" rx="8"/>
+    <rect x="140" y="120" width="32" height="280" fill="#f0f0f0" rx="8"/>
+    
+    <!-- Book spine details -->
+    <line x1="150" y1="150" x2="150" y2="370" stroke="#d0d0d0" stroke-width="2"/>
+    <line x1="162" y1="150" x2="162" y2="370" stroke="#d0d0d0" stroke-width="2"/>
+    
+    <!-- Arabic calligraphy style decoration -->
+    <g transform="translate(256, 200)">
+      <!-- Stylized القرآن text representation -->
+      <circle cx="0" cy="0" r="60" fill="none" stroke="#1DB954" stroke-width="3"/>
+      <path d="M -20,-10 Q 0,-30 20,-10 T 20,10 Q 0,30 -20,10 Z" fill="#1DB954"/>
+      <circle cx="0" cy="0" r="8" fill="#1DB954"/>
+      
+      <!-- Decorative dots -->
+      <circle cx="-35" cy="0" r="4" fill="#1DB954"/>
+      <circle cx="35" cy="0" r="4" fill="#1DB954"/>
+      <circle cx="0" cy="-35" r="4" fill="#1DB954"/>
+      <circle cx="0" cy="35" r="4" fill="#1DB954"/>
+    </g>
+    
+    <!-- Bottom text area -->
+    <text x="256" y="350" text-anchor="middle" font-family="Arial" font-size="32" font-weight="bold" fill="#1DB954">القرآن</text>
+  </g>
+  
+  <!-- Corner decoration -->
+  <g opacity="0.1">
+    <circle cx="80" cy="80" r="40" fill="#000"/>
+    <circle cx="432" cy="432" r="40" fill="#000"/>
+  </g>
+</svg>

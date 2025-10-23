@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    
+    <!-- Security Headers (Note: X-Frame-Options works as HTTP header from server, not meta tag) -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://r2cdn.perplexity.ai data:; img-src 'self' data: https:; media-src https://server8.mp3quran.net https://server7.mp3quran.net https://server10.mp3quran.net https://server11.mp3quran.net https://server12.mp3quran.net https://server13.mp3quran.net https://server6.mp3quran.net https://cdn.islamic.network; connect-src 'self' https://api.alquran.cloud https://api.qurani.ai https://mp3quran.net https://www.mp3quran.net https://server8.mp3quran.net https://server7.mp3quran.net https://server10.mp3quran.net https://server11.mp3quran.net https://server12.mp3quran.net https://server13.mp3quran.net https://server6.mp3quran.net https://cdn.islamic.network;">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    
+    <!-- Meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="مشغل القرآن الكريم - استمع للقرآن بواجهة عصرية مستوحاة من Spotify. قوائم تشغيل، مفضلات، وأكثر من 5 قراء مميزين." />
+    <meta name="keywords" content="القرآن الكريم, مشغل قرآن, استماع قرآن, قراء القرآن, تلاوة القرآن" />
+    <meta name="author" content="Quran Player" />
+    <meta name="theme-color" content="#1DB954" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="مشغل القرآن الكريم" />
+    <meta property="og:description" content="استمع للقرآن الكريم بواجهة عصرية وجميلة" />
+    <meta property="og:image" content="/icon-512.png" />
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="مشغل القرآن الكريم" />
+    <meta name="twitter:description" content="استمع للقرآن الكريم بواجهة عصرية وجميلة" />
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <title>مشغل القرآن الكريم</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

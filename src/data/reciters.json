@@ -1,0 +1,72 @@
+﻿[
+  {
+    "id": "mishary",
+    "name": "مشاري راشد العفاسي",
+    "nameEn": "Mishary Rashid Alafasy",
+    "country": "الكويت",
+    "baseUrl": "https://server8.mp3quran.net/afs"
+  },
+  {
+    "id": "abdulbasit",
+    "name": "عبد الباسط عبد الصمد",
+    "nameEn": "Abdul Basit Abdul Samad",
+    "country": "مصر",
+    "baseUrl": "https://server7.mp3quran.net/basit"
+  },
+  {
+    "id": "husary",
+    "name": "محمود خليل الحصري",
+    "nameEn": "Mahmoud Khalil Al-Husary",
+    "country": "مصر",
+    "baseUrl": "https://server13.mp3quran.net/husr"
+  },
+  {
+    "id": "minshawi",
+    "name": "محمد صديق المنشاوي",
+    "nameEn": "Mohamed Siddiq Al-Minshawi",
+    "country": "مصر",
+    "baseUrl": "https://server10.mp3quran.net/minsh"
+  },
+  {
+    "id": "sudais",
+    "name": "عبد الرحمن السديس",
+    "nameEn": "Abdur-Rahman As-Sudais",
+    "country": "السعودية",
+    "baseUrl": "https://server11.mp3quran.net/sds"
+  },
+  {
+    "id": "shuraim",
+    "name": "سعود الشريم",
+    "nameEn": "Saud Al-Shuraim",
+    "country": "السعودية",
+    "baseUrl": "https://server7.mp3quran.net/shur"
+  },
+  {
+    "id": "ghamadi",
+    "name": "سعد الغامدي",
+    "nameEn": "Saad Al-Ghamadi",
+    "country": "السعودية",
+    "baseUrl": "https://server7.mp3quran.net/s_gmd"
+  },
+  {
+    "id": "ajmi",
+    "name": "أحمد بن علي العجمي",
+    "nameEn": "Ahmed Al-Ajmi",
+    "country": "السعودية",
+    "baseUrl": "https://server10.mp3quran.net/ajm"
+  },
+  {
+    "id": "shatri",
+    "name": "أبو بكر الشاطري",
+    "nameEn": "Abu Bakr Al-Shatri",
+    "country": "اليمن",
+    "baseUrl": "https://server11.mp3quran.net/shatri"
+  },
+  {
+    "id": "dosari",
+    "name": "ياسر الدوسري",
+    "nameEn": "Yasser Al-Dosari",
+    "country": "السعودية",
+    "baseUrl": "https://server11.mp3quran.net/yasser"
+  }
+]

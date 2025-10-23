@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>توليد الأيقونات</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #121212;
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        button {
+            background: #1DB954;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.2s;
+        }
+        button:hover {
+            background: #1aa34a;
+            transform: scale(1.05);
+        }
+        .preview {
+            margin: 30px 0;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .icon-preview {
+            background: #282828;
+            padding: 20px;
+            border-radius: 12px;
+            display: inline-block;
+        }
+        canvas {
+            border: 2px solid #1DB954;
+            border-radius: 8px;
+        }
+        .success {
+            color: #1DB954;
+            font-size: 20px;
+            margin: 20px 0;
+            display: none;
+        }
+        .instructions {
+            background: #282828;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            text-align: right;
+        }
+        .instructions h3 {
+            color: #1DB954;
+            margin-bottom: 15px;
+        }
+        .instructions ol {
+            margin-right: 20px;
+        }
+        .instructions li {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 مولد أيقونات مشغل القرآن</h1>
+        
+        <div class="instructions">
+            <h3>التعليمات:</h3>
+            <ol>
+                <li>اضغط على "توليد جميع الأيقونات" بالأسفل</li>
+                <li>سيتم تحميل 4 ملفات تلقائياً (192px، 512px، favicon، apple-touch)</li>
+                <li>انقل الملفات المحملة إلى مجلد <code>public/</code> في المشروع</li>
+                <li>جاهز للنشر! 🚀</li>
+            </ol>
+        </div>
+
+        <div class="preview">
+            <div class="icon-preview">
+                <p>192×192</p>
+                <canvas id="canvas192" width="192" height="192"></canvas>
+            </div>
+            <div class="icon-preview">
+                <p>512×512</p>
+                <canvas id="canvas512" width="512" height="512"></canvas>
+            </div>
+            <div class="icon-preview">
+                <p>Favicon 32×32</p>
+                <canvas id="canvasFavicon" width="32" height="32"></canvas>
+            </div>
+        </div>
+
+        <button onclick="generateAllIcons()">✨ توليد جميع الأيقونات</button>
+        <div class="success" id="success">✅ تم تحميل جميع الأيقونات بنجاح!</div>
+    </div>
+
+    <script>
+        // SVG للأيقونة
+        const svgString = `
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1DB954;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1aa34a;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <rect width="512" height="512" fill="url(#grad1)" rx="80"/>
+  
+  <g filter="url(#shadow)">
+    <rect x="140" y="120" width="232" height="280" fill="#fff" rx="8"/>
+    <rect x="140" y="120" width="32" height="280" fill="#f0f0f0" rx="8"/>
+    
+    <line x1="150" y1="150" x2="150" y2="370" stroke="#d0d0d0" stroke-width="2"/>
+    <line x1="162" y1="150" x2="162" y2="370" stroke="#d0d0d0" stroke-width="2"/>
+    
+    <g transform="translate(256, 200)">
+      <circle cx="0" cy="0" r="60" fill="none" stroke="#1DB954" stroke-width="3"/>
+      <path d="M -20,-10 Q 0,-30 20,-10 T 20,10 Q 0,30 -20,10 Z" fill="#1DB954"/>
+      <circle cx="0" cy="0" r="8" fill="#1DB954"/>
+      
+      <circle cx="-35" cy="0" r="4" fill="#1DB954"/>
+      <circle cx="35" cy="0" r="4" fill="#1DB954"/>
+      <circle cx="0" cy="-35" r="4" fill="#1DB954"/>
+      <circle cx="0" cy="35" r="4" fill="#1DB954"/>
+    </g>
+    
+    <text x="256" y="350" text-anchor="middle" font-family="Arial" font-size="32" font-weight="bold" fill="#1DB954">القرآن</text>
+  </g>
+  
+  <g opacity="0.1">
+    <circle cx="80" cy="80" r="40" fill="#000"/>
+    <circle cx="432" cy="432" r="40" fill="#000"/>
+  </g>
+</svg>`;
+
+        function generateIcon(size, canvasId, filename) {
+            return new Promise((resolve) => {
+                const canvas = document.getElementById(canvasId);
+                const ctx = canvas.getContext('2d');
+                
+                const img = new Image();
+                const blob = new Blob([svgString], { type: 'image/svg+xml' });
+                const url = URL.createObjectURL(blob);
+                
+                img.onload = function() {
+                    canvas.width = size;
+                    canvas.height = size;
+                    ctx.drawImage(img, 0, 0, size, size);
+                    
+                    canvas.toBlob((blob) => {
+                        const link = document.createElement('a');
+                        link.download = filename;
+                        link.href = URL.createObjectURL(blob);
+                        link.click();
+                        URL.revokeObjectURL(url);
+                        resolve();
+                    }, 'image/png');
+                };
+                
+                img.src = url;
+            });
+        }
+
+        async function generateAllIcons() {
+            // Generate and download all icons
+            await generateIcon(192, 'canvas192', 'icon-192.png');
+            await generateIcon(512, 'canvas512', 'icon-512.png');
+            await generateIcon(32, 'canvasFavicon', 'favicon-32.png');
+            await generateIcon(180, 'canvas192', 'apple-touch-icon.png');
+            
+            // Show success message
+            document.getElementById('success').style.display = 'block';
+            
+            // Generate favicon.ico (using 32x32 as base)
+            setTimeout(() => {
+                alert('✅ تم تحميل 4 ملفات:\n\n1. icon-192.png\n2. icon-512.png\n3. favicon-32.png\n4. apple-touch-icon.png\n\nانقلهم لمجلد public/');
+            }, 500);
+        }
+
+        // Preview on load
+        window.onload = function() {
+            const img = new Image();
+            const blob = new Blob([svgString], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(blob);
+            
+            img.onload = function() {
+                ['canvas192', 'canvas512', 'canvasFavicon'].forEach(id => {
+                    const canvas = document.getElementById(id);
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                });
+            };
+            
+            img.src = url;
+        };
+    </script>
+</body>
+</html>
