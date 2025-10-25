@@ -9,7 +9,7 @@
   .background-pattern {
     position: fixed;
     inset: 0;
-    z-index: 0;
+    z-index: -10;
     width: 100vw;
     height: 100vh;
     pointer-events: none;
@@ -80,6 +80,15 @@
   #root {
     position: relative;
     z-index: 1;
+  }
+  /* Ensure sidebar/menu always above background */
+  .sidebar,
+  .sidebar-item,
+  .fixed,
+  .z-40,
+  .z-50 {
+    z-index: 40 !important;
+    position: relative;
   }
   
   /* Arabic text styling */
