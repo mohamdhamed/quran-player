@@ -37,6 +37,8 @@ function App() {
 
   return (
     <div id="root" className="h-screen flex flex-col bg-transparent text-white relative" dir="rtl">
+      {/* Background Pattern Layer */}
+      <div className="background-pattern" aria-hidden="true"></div>
       <div className="flex flex-1 overflow-hidden">
         {/* Mobile Menu Button */}
         <button
