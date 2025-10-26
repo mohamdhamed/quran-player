@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Sidebar from './components/Sidebar/Sidebar';
 import PlayerBar from './components/Player/PlayerBar';
+import BottomNav from './components/BottomNav/BottomNav';
 import Home from './pages/Home';
 import Library from './pages/Library';
 import Favorites from './pages/Favorites';
@@ -73,13 +74,16 @@ function App() {
         )}
         
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto bg-gradient-to-b from-spotify-gray to-black pb-24 md:pb-0">
+        <main className="flex-1 overflow-y-auto bg-gradient-to-b from-spotify-gray to-black pb-32 md:pb-0">
           {renderPage()}
         </main>
       </div>
       
       {/* Player Bar */}
       <PlayerBar />
+
+      {/* Bottom Navigation for Mobile */}
+      <BottomNav currentPage={currentPage} setCurrentPage={setCurrentPage} />
     </div>
   );
 }
