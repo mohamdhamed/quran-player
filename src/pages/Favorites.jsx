@@ -1,6 +1,7 @@
 import { Play, Heart } from 'lucide-react';
 import { usePlayerStore } from '../store/playerStore';
 import { EmptyFavorites } from '../components/EmptyStates/EmptyStates';
+import WaveAnimation from '../components/UI/WaveAnimation';
 
 export default function Favorites() {
   // استخدام selectors لتجنب re-render غير ضروري
@@ -69,11 +70,8 @@ export default function Favorites() {
 
                   {/* Wave Animation */}
                   {isPlaying && (
-                    <div className="absolute -bottom-1 -left-1 flex items-end gap-0.5 bg-spotify-green rounded-full px-1.5 py-1 shadow-lg animate-fadeIn" aria-hidden="true">
-                      <div className="w-0.5 bg-white rounded-full animate-wave" style={{ height: '4px', animationDelay: '0ms' }}></div>
-                      <div className="w-0.5 bg-white rounded-full animate-wave" style={{ height: '8px', animationDelay: '150ms' }}></div>
-                      <div className="w-0.5 bg-white rounded-full animate-wave" style={{ height: '6px', animationDelay: '300ms' }}></div>
-                      <div className="w-0.5 bg-white rounded-full animate-wave" style={{ height: '4px', animationDelay: '450ms' }}></div>
+                    <div className="absolute -bottom-1 -left-1 bg-spotify-green rounded-full px-1.5 py-1 shadow-lg animate-fadeIn" aria-hidden="true">
+                      <WaveAnimation size="sm" color="white" />
                     </div>
                   )}
                 </div>

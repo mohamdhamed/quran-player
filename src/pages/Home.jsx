@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { Play } from 'lucide-react';
 import { usePlayerStore } from '../store/playerStore';
+import WaveAnimation from '../components/UI/WaveAnimation';
 import surahsData from '../data/surahs.json';
 
 export default function Home() {
@@ -75,11 +76,8 @@ export default function Home() {
 
             {/* Wave Animation عند التشغيل */}
             {isPlaying && (
-              <div className="absolute -bottom-1 -left-1 flex items-end gap-0.5 bg-spotify-green rounded-full px-1.5 py-1 shadow-lg animate-fadeIn">
-                <div className="w-0.5 bg-white rounded-full animate-wave" style={{ height: '4px', animationDelay: '0ms' }}></div>
-                <div className="w-0.5 bg-white rounded-full animate-wave" style={{ height: '8px', animationDelay: '150ms' }}></div>
-                <div className="w-0.5 bg-white rounded-full animate-wave" style={{ height: '6px', animationDelay: '300ms' }}></div>
-                <div className="w-0.5 bg-white rounded-full animate-wave" style={{ height: '4px', animationDelay: '450ms' }}></div>
+              <div className="absolute -bottom-1 -left-1 bg-spotify-green rounded-full px-1.5 py-1 shadow-lg animate-fadeIn">
+                <WaveAnimation size="sm" color="white" />
               </div>
             )}
           </div>

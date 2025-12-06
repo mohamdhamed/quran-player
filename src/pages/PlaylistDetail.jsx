@@ -1,5 +1,6 @@
 import { Play, Trash2, ArrowLeft, Music } from 'lucide-react';
 import { usePlayerStore } from '../store/playerStore';
+import WaveAnimation from '../components/UI/WaveAnimation';
 
 export default function PlaylistDetail({ playlistId, onBack }) {
   const playlist = usePlayerStore((state) => state.getPlaylist(playlistId));
@@ -104,10 +105,8 @@ export default function PlaylistDetail({ playlistId, onBack }) {
                     <td className="p-4">
                       <div className="flex items-center gap-3">
                         {isPlaying && (
-                          <div className="flex gap-1 items-end h-6">
-                            <div className="w-1 bg-spotify-green rounded-full animate-wave" style={{ height: '6px', animationDelay: '0ms' }}></div>
-                            <div className="w-1 bg-spotify-green rounded-full animate-wave" style={{ height: '12px', animationDelay: '150ms' }}></div>
-                            <div className="w-1 bg-spotify-green rounded-full animate-wave" style={{ height: '10px', animationDelay: '300ms' }}></div>
+                          <div className="h-6 flex items-center">
+                            <WaveAnimation size="md" color="green" bars={3} />
                           </div>
                         )}
                         <div>

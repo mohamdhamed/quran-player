@@ -5,6 +5,7 @@ import audioPlayer from '../../services/audioPlayer';
 import { getAudioUrl } from '../../services/mp3quranAPI';
 import ReciterSelector from './ReciterSelector';
 import QuranTextViewer from './QuranTextViewerUnified';
+import WaveAnimation from '../UI/WaveAnimation';
 
 export default function PlayerBar() {
   const [showVolume, setShowVolume] = useState(false);
@@ -306,11 +307,8 @@ export default function PlayerBar() {
               </div>
               {/* Playing Wave Indicator */}
               {isPlaying && (
-                <div className="absolute -bottom-1 -right-1 flex items-end gap-0.5 bg-spotify-green rounded-full px-1.5 py-1 shadow-lg animate-fadeIn">
-                  <div className="w-0.5 bg-white rounded-full animate-wave" style={{ height: '4px', animationDelay: '0ms' }}></div>
-                  <div className="w-0.5 bg-white rounded-full animate-wave" style={{ height: '8px', animationDelay: '150ms' }}></div>
-                  <div className="w-0.5 bg-white rounded-full animate-wave" style={{ height: '6px', animationDelay: '300ms' }}></div>
-                  <div className="w-0.5 bg-white rounded-full animate-wave" style={{ height: '4px', animationDelay: '450ms' }}></div>
+                <div className="absolute -bottom-1 -right-1 bg-spotify-green rounded-full px-1.5 py-1 shadow-lg animate-fadeIn">
+                  <WaveAnimation size="sm" color="white" />
                 </div>
               )}
             </div>
@@ -533,11 +531,8 @@ export default function PlayerBar() {
                 </div>
                 {/* Playing Wave Indicator */}
                 {isPlaying && (
-                  <div className="absolute -bottom-1.5 -right-1.5 flex items-end gap-0.5 bg-spotify-green rounded-lg px-2 py-1.5 shadow-lg animate-fadeIn">
-                    <div className="w-0.5 bg-white rounded-full animate-wave" style={{ height: '4px', animationDelay: '0ms' }}></div>
-                    <div className="w-0.5 bg-white rounded-full animate-wave" style={{ height: '10px', animationDelay: '150ms' }}></div>
-                    <div className="w-0.5 bg-white rounded-full animate-wave" style={{ height: '7px', animationDelay: '300ms' }}></div>
-                    <div className="w-0.5 bg-white rounded-full animate-wave" style={{ height: '4px', animationDelay: '450ms' }}></div>
+                  <div className="absolute -bottom-1.5 -right-1.5 bg-spotify-green rounded-lg px-2 py-1.5 shadow-lg animate-fadeIn">
+                    <WaveAnimation size="md" color="white" />
                   </div>
                 )}
               </div>
