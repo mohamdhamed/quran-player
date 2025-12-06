@@ -1,3 +1,15 @@
+/**
+ * Quran Player Store
+ * Zustand state management with localStorage persistence
+ * 
+ * Sections:
+ * 1. Player State - حالة التشغيل
+ * 2. Favorites - المفضلة  
+ * 3. Queue - قائمة الانتظار
+ * 4. Playlists - قوائم التشغيل
+ * 5. Settings - الإعدادات
+ */
+
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import surahsData from '../data/surahs.json';
@@ -5,7 +17,9 @@ import surahsData from '../data/surahs.json';
 export const usePlayerStore = create(
   persist(
     (set, get) => ({
-      // State
+      // ==========================================
+      // 1. PLAYER STATE - حالة التشغيل
+      // ==========================================
       currentSurah: null,
       currentReciter: 'mishary',
       isPlaying: false,
@@ -14,14 +28,8 @@ export const usePlayerStore = create(
       duration: 0,
       repeatMode: 'none', // 'none' | 'one' | 'all'
       playbackSpeed: 1, // 0.5 - 2
-      queue: [...surahsData],
-      favorites: [],
-      recentlyPlayed: [],
-      playlists: [], // Array of {id, name, description, surahs[], createdAt}
-      theme: 'dark',
-      language: 'ar',
-      
-      // Actions
+
+      // Player Actions
       setCurrentSurah: (surah) => set({ currentSurah: surah }),
       
       setCurrentReciter: (reciterId) => set({ currentReciter: reciterId }),
@@ -109,6 +117,11 @@ export const usePlayerStore = create(
         const nextIndex = (modes.indexOf(currentMode) + 1) % modes.length;
         set({ repeatMode: modes[nextIndex] });
       },
+
+      // ==========================================
+      // 2. FAVORITES - المفضلة
+      // ==========================================
+      favorites: [],
       
       toggleFavorite: (surah) => {
         const { favorites } = get();
@@ -124,6 +137,12 @@ export const usePlayerStore = create(
       isFavorite: (surah) => {
         return get().favorites.some(s => s.number === surah.number);
       },
+
+      // ==========================================
+      // 3. QUEUE - قائمة الانتظار
+      // ==========================================
+      queue: [...surahsData],
+      recentlyPlayed: [],
       
       setQueue: (queue) => set({ queue }),
       
@@ -148,7 +167,11 @@ export const usePlayerStore = create(
         );
       },
 
-      // Playlist Actions
+      // ==========================================
+      // 4. PLAYLISTS - قوائم التشغيل
+      // ==========================================
+      playlists: [], // Array of {id, name, description, surahs[], createdAt}
+
       createPlaylist: (name, description = '') => {
         const { playlists } = get();
         const newPlaylist = {
@@ -219,7 +242,16 @@ export const usePlayerStore = create(
 
       getPlaylist: (playlistId) => {
         return get().playlists.find(p => p.id === playlistId);
-      }
+      },
+
+      // ==========================================
+      // 5. SETTINGS - الإعدادات
+      // ==========================================
+      theme: 'dark',
+      language: 'ar',
+
+      setTheme: (theme) => set({ theme }),
+      setLanguage: (lang) => set({ language: lang }),
     }),
     {
       name: 'quraan-player-storage',
@@ -237,3 +269,29 @@ export const usePlayerStore = create(
     }
   )
 );
+
+// ============================================
+// SELECTORS - للاستخدام المحسن مع shallow
+// استخدم: usePlayerStore(selectCurrentSurah)
+// ============================================
+
+export const selectCurrentSurah = (state) => state.currentSurah;
+export const selectIsPlaying = (state) => state.isPlaying;
+export const selectCurrentReciter = (state) => state.currentReciter;
+export const selectVolume = (state) => state.volume;
+export const selectCurrentTime = (state) => state.currentTime;
+export const selectDuration = (state) => state.duration;
+export const selectRepeatMode = (state) => state.repeatMode;
+export const selectPlaybackSpeed = (state) => state.playbackSpeed;
+export const selectFavorites = (state) => state.favorites;
+export const selectPlaylists = (state) => state.playlists;
+export const selectRecentlyPlayed = (state) => state.recentlyPlayed;
+export const selectQueue = (state) => state.queue;
+export const selectTheme = (state) => state.theme;
+export const selectLanguage = (state) => state.language;
+
+// Computed selectors
+export const selectCurrentSurahNumber = (state) => state.currentSurah?.number;
+export const selectFavoritesCount = (state) => state.favorites.length;
+export const selectPlaylistsCount = (state) => state.playlists.length;
+export const selectHasCurrentSurah = (state) => state.currentSurah !== null;
