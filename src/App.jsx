@@ -1,3 +1,4 @@
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import Sidebar from './components/Sidebar/Sidebar';
 import PlayerBar from './components/Player/PlayerBar';
@@ -11,29 +12,40 @@ import SemanticSearch from './pages/SemanticSearch';
 import SmartSearch from './pages/SmartSearch';
 import { Menu, X } from 'lucide-react';
 
-function App() {
-  const [currentPage, setCurrentPage] = useState('home');
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+// Map routes to page IDs for navigation state
+const routeToPage = {
+  '/': 'home',
+  '/library': 'library',
+  '/favorites': 'favorites',
+  '/playlists': 'playlists',
+  '/search': 'smartsearch',
+  '/semantic-search': 'semanticsearch',
+  '/settings': 'settings'
+};
 
-  const renderPage = () => {
-    switch (currentPage) {
-      case 'home':
-        return <Home />;
-      case 'library':
-        return <Library />;
-      case 'favorites':
-        return <Favorites />;
-      case 'playlists':
-        return <Playlists />;
-      case 'smartsearch':
-        return <SmartSearch />;
-      case 'semanticsearch':
-        return <SemanticSearch />;
-      case 'settings':
-        return <Settings />;
-      default:
-        return <Home />;
-    }
+const pageToRoute = {
+  'home': '/',
+  'library': '/library',
+  'favorites': '/favorites',
+  'playlists': '/playlists',
+  'smartsearch': '/search',
+  'semanticsearch': '/semantic-search',
+  'settings': '/settings'
+};
+
+function App() {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Get current page from URL
+  const currentPage = routeToPage[location.pathname] || 'home';
+
+  // Navigate to page
+  const setCurrentPage = (page) => {
+    const route = pageToRoute[page] || '/';
+    navigate(route);
+    setIsSidebarOpen(false);
   };
 
   return (
@@ -56,10 +68,7 @@ function App() {
         `}>
           <Sidebar
             currentPage={currentPage}
-            setCurrentPage={(page) => {
-              setCurrentPage(page);
-              setIsSidebarOpen(false); // Close sidebar on mobile after selection
-            }}
+            setCurrentPage={setCurrentPage}
           />
         </div>
 
@@ -87,7 +96,17 @@ function App() {
             minHeight: '100%'
           }}></div>
           <div className="relative z-10">
-            {renderPage()}
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/library" element={<Library />} />
+              <Route path="/favorites" element={<Favorites />} />
+              <Route path="/playlists" element={<Playlists />} />
+              <Route path="/search" element={<SmartSearch />} />
+              <Route path="/semantic-search" element={<SemanticSearch />} />
+              <Route path="/settings" element={<Settings />} />
+              {/* Fallback to Home */}
+              <Route path="*" element={<Home />} />
+            </Routes>
           </div>
         </main>
       </div>
