@@ -11,6 +11,7 @@ import Settings from './pages/Settings';
 import SemanticSearch from './pages/SemanticSearch';
 import SmartSearch from './pages/SmartSearch';
 import { Menu, X } from 'lucide-react';
+import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 
 // Map routes to page IDs for navigation state
 const routeToPage = {
@@ -37,6 +38,9 @@ function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  
+  // Enable keyboard shortcuts
+  useKeyboardShortcuts();
   
   // Get current page from URL
   const currentPage = routeToPage[location.pathname] || 'home';

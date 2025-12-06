@@ -1,7 +1,8 @@
 import { useMemo, memo, useState } from 'react';
-import { Volume2, Gauge, User, Download, Moon, Sun, Globe, Palette, Shield, Info, Trash2, HardDrive, Wifi } from 'lucide-react';
+import { Volume2, Gauge, User, Download, Moon, Sun, Globe, Palette, Shield, Info, Trash2, HardDrive, Wifi, Keyboard } from 'lucide-react';
 import { usePlayerStore } from '../store/playerStore';
 import { getReciters } from '../services/quranAPI';
+import { KEYBOARD_SHORTCUTS } from '../hooks/useKeyboardShortcuts';
 
 const Settings = memo(function Settings() {
   const currentReciter = usePlayerStore((state) => state.currentReciter);
@@ -428,6 +429,37 @@ const Settings = memo(function Settings() {
               </div>
               <p className="text-sm text-gray-400 mr-11">
                 تجربة استماع نقية دون إزعاج
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Keyboard Shortcuts */}
+        <section className="bg-spotify-lightGray rounded-lg p-6 transition-all hover:shadow-xl hover:shadow-spotify-green/10 animate-slideUp">
+          <div className="flex items-center gap-3 mb-4">
+            <Keyboard className="text-spotify-green transition-transform hover:scale-110" size={24} />
+            <h2 className="text-2xl font-bold">اختصارات لوحة المفاتيح</h2>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {KEYBOARD_SHORTCUTS.map((shortcut) => (
+              <div 
+                key={shortcut.key}
+                className="flex items-center justify-between p-3 bg-spotify-gray rounded-lg hover:bg-gray-700 transition-all"
+              >
+                <span className="text-gray-300">{shortcut.action}</span>
+                <kbd className="bg-spotify-black px-3 py-1 rounded-lg text-spotify-green font-mono text-sm border border-gray-600">
+                  {shortcut.key}
+                </kbd>
+              </div>
+            ))}
+          </div>
+          
+          <div className="mt-4 p-4 bg-spotify-gray/50 rounded-lg border border-gray-700">
+            <div className="flex items-start gap-3">
+              <Info className="text-spotify-green mt-0.5" size={20} />
+              <p className="text-sm text-gray-400">
+                💡 استخدم اختصارات لوحة المفاتيح للتحكم السريع بالمشغل دون استخدام الماوس
               </p>
             </div>
           </div>
