@@ -5,27 +5,26 @@
  * Reusable surah card for displaying surahs across the app
  */
 
+import { memo, useCallback } from 'react';
 import { Play, Heart } from 'lucide-react';
 import WaveAnimation from './WaveAnimation';
 
-// ألوان حسب نوع النزول
-const getTypeColors = (revelationType) => {
-  const isMeccan = revelationType === 'Meccan';
-  return isMeccan 
-    ? {
-        bg: 'bg-blue-500/5',
-        bgHover: 'hover:bg-blue-500/10',
-        border: 'border-blue-500/10',
-        text: 'text-blue-400',
-        dot: 'bg-blue-500'
-      }
-    : {
-        bg: 'bg-green-500/5',
-        bgHover: 'hover:bg-green-500/10',
-        border: 'border-green-500/10',
-        text: 'text-green-400',
-        dot: 'bg-green-500'
-      };
+// ألوان حسب نوع النزول (خارج المكون للأداء)
+const TYPE_COLORS = {
+  Meccan: {
+    bg: 'bg-blue-500/5',
+    bgHover: 'hover:bg-blue-500/10',
+    border: 'border-blue-500/10',
+    text: 'text-blue-400',
+    dot: 'bg-blue-500'
+  },
+  Medinan: {
+    bg: 'bg-green-500/5',
+    bgHover: 'hover:bg-green-500/10',
+    border: 'border-green-500/10',
+    text: 'text-green-400',
+    dot: 'bg-green-500'
+  }
 };
 
 /**
@@ -37,7 +36,7 @@ const getTypeColors = (revelationType) => {
  * @param {Function} onToggleFavorite - دالة المفضلة (اختياري)
  * @param {string} variant - نوع العرض: 'default' | 'compact' | 'list'
  */
-export default function SurahCard({ 
+function SurahCard({ 
   surah, 
   isPlaying = false, 
   isFavorite = false,
@@ -45,8 +44,21 @@ export default function SurahCard({
   onToggleFavorite,
   variant = 'default'
 }) {
-  const typeColors = getTypeColors(surah.revelationType);
   const isMeccan = surah.revelationType === 'Meccan';
+  const typeColors = TYPE_COLORS[surah.revelationType] || TYPE_COLORS.Meccan;
+
+  // Memoized handlers
+  const handleKeyDown = useCallback((e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onPlay();
+    }
+  }, [onPlay]);
+
+  const handleFavoriteClick = useCallback((e) => {
+    e.stopPropagation();
+    onToggleFavorite?.();
+  }, [onToggleFavorite]);
 
   // Compact variant (للقوائم الصغيرة)
   if (variant === 'compact') {
@@ -74,12 +86,7 @@ export default function SurahCard({
     <button
       className={`surah-card group relative overflow-hidden ${typeColors.bg} ${typeColors.bgHover} border ${typeColors.border} w-full text-right`}
       onClick={onPlay}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onPlay();
-        }
-      }}
+      onKeyDown={handleKeyDown}
       style={{
         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
       }}
@@ -119,10 +126,7 @@ export default function SurahCard({
         <div className="flex items-center gap-2">
           {onToggleFavorite && (
             <button 
-              onClick={(e) => {
-                e.stopPropagation();
-                onToggleFavorite();
-              }}
+              onClick={handleFavoriteClick}
               className={`p-2 rounded-full transition-all duration-300 hover:scale-110 ${
                 isFavorite 
                   ? 'text-red-500 hover:text-red-400' 
@@ -146,3 +150,5 @@ export default function SurahCard({
     </button>
   );
 }
+
+export default memo(SurahCard);
