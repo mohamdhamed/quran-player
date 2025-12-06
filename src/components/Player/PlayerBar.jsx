@@ -220,7 +220,7 @@ export default function PlayerBar() {
 
   if (!currentSurah) {
     return (
-      <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-black via-spotify-gray to-transparent px-6 py-4 border-t border-gray-800/50">
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-t from-black via-spotify-gray to-transparent px-6 py-4 border-t border-gray-800/50">
         <div className="text-center text-gray-500 text-sm">
           <p>اختر سورة للبدء 🎵</p>
         </div>
@@ -236,7 +236,7 @@ export default function PlayerBar() {
         onClose={() => setShowTextViewer(false)} 
       />
 
-      <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-black via-spotify-lightGray/98 to-spotify-gray/95 backdrop-blur-xl border-t border-gray-700/40 shadow-2xl">
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-t from-black via-spotify-lightGray/98 to-spotify-gray/95 backdrop-blur-xl border-t border-gray-700/40 shadow-2xl">
         {/* Progress Bar - Enhanced */}
         <div className="px-6 pt-3 pb-2">
           <div className="flex items-center gap-4">

@@ -1,18 +1,107 @@
-import { useMemo } from 'react';
+import { useMemo, memo, useCallback } from 'react';
 import { Play } from 'lucide-react';
 import { usePlayerStore } from '../store/playerStore';
 import WaveAnimation from '../components/UI/WaveAnimation';
 import surahsData from '../data/surahs.json';
 
+// مكون الكارد خارج المكون الرئيسي ومحفوظ بـ memo
+const SurahCard = memo(function SurahCard({ surah, isCurrentSurah, onPlay }) {
+  const isMeccan = surah.revelationType === 'Meccan';
+
+  // ألوان حسب نوع السورة
+  const typeColors = isMeccan
+    ? {
+      bg: 'bg-blue-500/10',
+      bgHover: 'group-hover:bg-blue-500/20',
+      border: 'border-blue-500/30',
+      text: 'text-blue-400',
+      glow: 'group-hover:shadow-blue-500/20'
+    }
+    : {
+      bg: 'bg-green-500/10',
+      bgHover: 'group-hover:bg-green-500/20',
+      border: 'border-green-500/30',
+      text: 'text-green-400',
+      glow: 'group-hover:shadow-green-500/20'
+    };
+
+  const handleClick = useCallback(() => {
+    onPlay(surah);
+  }, [onPlay, surah]);
+
+  const handleKeyDown = useCallback((e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onPlay(surah);
+    }
+  }, [onPlay, surah]);
+
+  return (
+    <button
+      className={`surah-card group relative overflow-hidden ${typeColors.bg} ${typeColors.bgHover} border ${typeColors.border} w-full text-right`}
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      style={{
+        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+      }}
+      aria-label={`تشغيل سورة ${surah.name} - ${surah.nameEn} - ${surah.verses} آية - ${surah.revelationType === 'Meccan' ? 'مكية' : 'مدنية'}`}
+      role="button"
+      tabIndex={0}
+    >
+      <div className="flex items-center gap-4 relative z-10">
+        {/* Thumbnail مع Wave Animation */}
+        <div className="relative w-20 h-20 bg-spotify-gray rounded-xl flex flex-col items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-110 p-2">
+          <span className={`text-base font-arabic ${typeColors.text} font-bold transition-all duration-300 group-hover:scale-110 text-center leading-tight`}>
+            {surah.name}
+          </span>
+          <span className="text-xs text-gray-400 mt-0.5 transition-colors duration-300 group-hover:text-white">
+            {surah.nameEn}
+          </span>
+
+          {/* Wave Animation عند التشغيل */}
+          {isCurrentSurah && (
+            <div className="absolute -bottom-1 -left-1 bg-spotify-green rounded-full px-1.5 py-1 shadow-lg">
+              <WaveAnimation size="sm" color="white" />
+            </div>
+          )}
+        </div>
+
+        {/* معلومات السورة */}
+        <div className="flex-1 text-right">
+          <h3 className={`text-lg font-semibold arabic-text mb-1 transition-colors duration-300 group-hover:${typeColors.text}`}>
+            سورة {surah.name}
+          </h3>
+          <p className="text-xs text-gray-500 mt-1 transition-colors duration-300 group-hover:text-gray-300">
+            {surah.verses} آية • {isMeccan ? 'مكية' : 'مدنية'}
+          </p>
+        </div>
+
+        {/* Play Button */}
+        <div className="play-button-sm opacity-0 group-hover:opacity-100 transition-all duration-300 transform group-hover:scale-110 group-hover:rotate-12">
+          <Play size={20} fill="white" />
+        </div>
+      </div>
+
+      {/* Progress Bar عند التشغيل */}
+      {isCurrentSurah && (
+        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-l from-spotify-green to-green-400 shadow-lg shadow-spotify-green/50" aria-hidden="true"></div>
+      )}
+
+      {/* Glow Effect on Hover */}
+      <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${typeColors.glow} blur-xl -z-10`} aria-hidden="true"></div>
+    </button>
+  );
+});
+
 export default function Home() {
-  // استخدام selectors لتجنب re-render عند تغيير أي state آخر (مثل currentReciter)
+  // استخدام selectors لتجنب re-render عند تغيير أي state آخر
   const playSurah = usePlayerStore((state) => state.playSurah);
-  const currentSurah = usePlayerStore((state) => state.currentSurah);
+  // نراقب فقط رقم السورة الحالية وليس الـ object كله
+  const currentSurahNumber = usePlayerStore((state) => state.currentSurah?.number);
   const recentlyPlayed = usePlayerStore((state) => state.recentlyPlayed);
 
   // استقرار recentlyPlayed: نحدث فقط عند تغيير محتوى حقيقي
   const stableRecentlyPlayed = useMemo(() => {
-    // نحفظ الـ6 الأوائل فقط ونرجع array جديد فقط عند تغيير حقيقي
     return recentlyPlayed.slice(0, 6);
   }, [JSON.stringify(recentlyPlayed.slice(0, 6).map(s => s.number))]);
 
@@ -24,90 +113,6 @@ export default function Home() {
     surahsData[67],  // الملك
     surahsData[77],  // النبأ
   ], []);
-
-  // مكون للبطاقات - محسّن مع Wave animation وألوان
-  const SurahCard = ({ surah, index = 0 }) => {
-    const isPlaying = currentSurah?.number === surah.number;
-    const isMeccan = surah.revelationType === 'Meccan';
-
-    // ألوان حسب نوع السورة
-    const typeColors = isMeccan
-      ? {
-        bg: 'bg-blue-500/10',
-        bgHover: 'group-hover:bg-blue-500/20',
-        border: 'border-blue-500/30',
-        text: 'text-blue-400',
-        glow: 'group-hover:shadow-blue-500/20'
-      }
-      : {
-        bg: 'bg-green-500/10',
-        bgHover: 'group-hover:bg-green-500/20',
-        border: 'border-green-500/30',
-        text: 'text-green-400',
-        glow: 'group-hover:shadow-green-500/20'
-      };
-
-    return (
-      <button
-        className={`surah-card group relative overflow-hidden ${typeColors.bg} ${typeColors.bgHover} border ${typeColors.border} w-full text-right`}
-        onClick={() => playSurah(surah)}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            playSurah(surah);
-          }
-        }}
-        style={{
-          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-        }}
-        aria-label={`تشغيل سورة ${surah.name} - ${surah.nameEn} - ${surah.verses} آية - ${surah.revelationType === 'Meccan' ? 'مكية' : 'مدنية'}`}
-        role="button"
-        tabIndex={0}
-      >
-        <div className="flex items-center gap-4 relative z-10">
-          {/* Thumbnail مع Wave Animation */}
-          <div className="relative w-20 h-20 bg-spotify-gray rounded-xl flex flex-col items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-110 p-2">
-            <span className={`text-base font-arabic ${typeColors.text} font-bold transition-all duration-300 group-hover:scale-110 text-center leading-tight`}>
-              {surah.name}
-            </span>
-            <span className="text-xs text-gray-400 mt-0.5 transition-colors duration-300 group-hover:text-white">
-              {surah.nameEn}
-            </span>
-
-            {/* Wave Animation عند التشغيل */}
-            {isPlaying && (
-              <div className="absolute -bottom-1 -left-1 bg-spotify-green rounded-full px-1.5 py-1 shadow-lg animate-fadeIn">
-                <WaveAnimation size="sm" color="white" />
-              </div>
-            )}
-          </div>
-
-          {/* معلومات السورة */}
-          <div className="flex-1 text-right">
-            <h3 className={`text-lg font-semibold arabic-text mb-1 transition-colors duration-300 group-hover:${typeColors.text}`}>
-              سورة {surah.name}
-            </h3>
-            <p className="text-xs text-gray-500 mt-1 transition-colors duration-300 group-hover:text-gray-300">
-              {surah.verses} آية • {isMeccan ? 'مكية' : 'مدنية'}
-            </p>
-          </div>
-
-          {/* Play Button */}
-          <button className="play-button-sm opacity-0 group-hover:opacity-100 transition-all duration-300 transform group-hover:scale-110 group-hover:rotate-12">
-            <Play size={20} fill="white" />
-          </button>
-        </div>
-
-        {/* Progress Bar عند التشغيل */}
-        {isPlaying && (
-          <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-l from-spotify-green to-green-400 shadow-lg shadow-spotify-green/50" aria-hidden="true"></div>
-        )}
-
-        {/* Glow Effect on Hover */}
-        <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${typeColors.glow} blur-xl -z-10`} aria-hidden="true"></div>
-      </button>
-    );
-  };
 
   return (
     <div className="p-8 pb-32 animate-fadeIn">
@@ -122,8 +127,13 @@ export default function Home() {
         <section className="mb-12" key="recently-played-section">
           <h2 className="text-2xl font-bold mb-4 animate-slideUp">المستمع إليها مؤخراً</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {stableRecentlyPlayed.map((surah, index) => (
-              <SurahCard key={surah.number} surah={surah} index={index} />
+            {stableRecentlyPlayed.map((surah) => (
+              <SurahCard 
+                key={surah.number} 
+                surah={surah} 
+                isCurrentSurah={currentSurahNumber === surah.number}
+                onPlay={playSurah}
+              />
             ))}
           </div>
         </section>
@@ -133,8 +143,13 @@ export default function Home() {
       <section>
         <h2 className="text-2xl font-bold mb-4 animate-slideUp delay-100">السور الأكثر استماعاً</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {popularSurahs.map((surah, index) => (
-            <SurahCard key={`popular-${surah.number}`} surah={surah} index={index} />
+          {popularSurahs.map((surah) => (
+            <SurahCard 
+              key={`popular-${surah.number}`} 
+              surah={surah}
+              isCurrentSurah={currentSurahNumber === surah.number}
+              onPlay={playSurah}
+            />
           ))}
         </div>
       </section>
