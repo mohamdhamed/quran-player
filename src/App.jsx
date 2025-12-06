@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Sidebar from './components/Sidebar/Sidebar';
 import PlayerBar from './components/Player/PlayerBar';
+import BottomNav from './components/Navigation/BottomNav';
 import Home from './pages/Home';
 import Library from './pages/Library';
 import Favorites from './pages/Favorites';
@@ -53,12 +54,12 @@ function App() {
           transform transition-transform duration-300 ease-in-out
           ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full md:translate-x-0'}
         `}>
-          <Sidebar 
-            currentPage={currentPage} 
+          <Sidebar
+            currentPage={currentPage}
             setCurrentPage={(page) => {
               setCurrentPage(page);
               setIsSidebarOpen(false); // Close sidebar on mobile after selection
-            }} 
+            }}
           />
         </div>
 
@@ -69,13 +70,31 @@ function App() {
             onClick={() => setIsSidebarOpen(false)}
           />
         )}
-        
+
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto bg-gradient-to-b from-spotify-gray to-black pb-24 md:pb-0">
-          {renderPage()}
+        <main className="flex-1 overflow-y-auto bg-gradient-to-b from-spotify-gray to-black pb-32 md:pb-24 relative">
+          {/* Islamic Pattern Overlay */}
+          <div className="absolute inset-0 pointer-events-none z-0 opacity-60" style={{
+            backgroundImage: `
+              radial-gradient(circle at 25% 25%, rgba(29, 185, 84, 0.2) 1.5px, transparent 1.5px),
+              radial-gradient(circle at 75% 75%, rgba(29, 185, 84, 0.2) 1.5px, transparent 1.5px),
+              radial-gradient(circle at 25% 75%, rgba(29, 185, 84, 0.15) 1px, transparent 1px),
+              radial-gradient(circle at 75% 25%, rgba(29, 185, 84, 0.15) 1px, transparent 1px),
+              radial-gradient(circle at 50% 50%, rgba(29, 185, 84, 0.18) 2px, transparent 2px)
+            `,
+            backgroundSize: '100px 100px',
+            animation: 'patternFloat 60s linear infinite',
+            minHeight: '100%'
+          }}></div>
+          <div className="relative z-10">
+            {renderPage()}
+          </div>
         </main>
       </div>
-      
+
+      {/* Bottom Navigation - Mobile Only */}
+      <BottomNav currentPage={currentPage} setCurrentPage={setCurrentPage} />
+
       {/* Player Bar */}
       <PlayerBar />
     </div>

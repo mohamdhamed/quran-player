@@ -8,6 +8,34 @@
   body {
     @apply bg-black text-white font-sans antialiased;
     direction: rtl;
+    position: relative;
+    overflow-x: hidden;
+  }
+  
+  /* Pattern Float Animation */
+  @keyframes patternFloat {
+    0% {
+      transform: translate(0, 0) rotate(0deg);
+    }
+    33% {
+      transform: translate(30px, -20px) rotate(120deg);
+    }
+    66% {
+      transform: translate(-20px, 30px) rotate(240deg);
+    }
+    100% {
+      transform: translate(0, 0) rotate(360deg);
+    }
+  }
+  
+  /* Mandala Rotate Animation */
+  @keyframes mandalaRotate {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
   
   /* Arabic text styling */

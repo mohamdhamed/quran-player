@@ -24,13 +24,10 @@ export default function QuranTextViewer({ isOpen, onClose }) {
 
   // تحديث الآية الحالية بناءً على الوقت
   useEffect(() => {
-    console.log(`⏰ Time update: ${currentTime.toFixed(2)}s, timings count: ${timings.length}`);
-    
     if (timings.length > 0 && currentTime >= 0) {
       const ayahNumber = findCurrentAyah(currentTime, timings);
       
       if (ayahNumber !== currentAyah) {
-        console.log(`🎯 Current ayah changed: ${currentAyah} → ${ayahNumber} at time ${currentTime.toFixed(2)}s`);
         setCurrentAyah(ayahNumber);
         scrollToAyah(ayahNumber);
       }
@@ -59,18 +56,14 @@ export default function QuranTextViewer({ isOpen, onClose }) {
     setIsLoading(true);
     
     try {
-      console.log(`\n📖 Loading Surah ${currentSurah.number} (${currentSurah.name})`);
-      
       // 1️⃣ جلب معلومات القارئ
       const reciter = await getReciterInfo(currentReciter);
       setReciterInfo(reciter);
-      console.log(`🎙️ Reciter: ${reciter?.name || currentReciter}`);
       
       // 2️⃣ جلب النص القرآني
       const textData = await getSurahText(currentSurah.number);
       if (textData && textData.ayahs) {
         setAyahs(textData.ayahs);
-        console.log(`📝 Loaded ${textData.ayahs.length} ayahs text`);
       }
       
       // 3️⃣ جلب التوقيتات الدقيقة من mp3quran.net
@@ -78,13 +71,9 @@ export default function QuranTextViewer({ isOpen, onClose }) {
       
       if (preciseTimings && preciseTimings.length > 0) {
         setTimings(preciseTimings);
-        console.log(`\n✅ SUCCESS: Loaded ${preciseTimings.length} PRECISE timings from mp3quran.net`);
-        console.log(`⚡ Total duration: ${preciseTimings[preciseTimings.length - 1]?.endTime.toFixed(2)}s`);
-      } else {
-        console.warn('⚠️  No timings available for this reciter');
       }
     } catch (error) {
-      console.error('❌ Error loading surah data:', error);
+      console.error('Error loading surah data:', error);
     } finally {
       setIsLoading(false);
     }

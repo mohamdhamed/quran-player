@@ -115,20 +115,16 @@ export const getSurahTiming = async (surahNumber, reciter = 'mishary') => {
     // Convert to Qurani.ai format
     const quranaiReciter = mapReciterToQuranai(reciter);
     
-    console.log(`🎤 Fetching timing for reciter: ${reciter} → ${quranaiReciter}`);
-    
     // Try to get timing data from the timing endpoint
     const response = await rateLimitedFetch(
       `${QURANAI_BASE_URL}/timing/${quranaiReciter}/${surahNumber}`
     );
     
     if (!response.ok) {
-      console.warn(`⚠️ Timing API returned ${response.status}`);
       return null;
     }
     
     const data = await response.json();
-    console.log(`✅ Loaded timing data:`, data);
     return data;
   } catch (error) {
     console.error('Error fetching timing data:', error);

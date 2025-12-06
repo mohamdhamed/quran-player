@@ -87,24 +87,13 @@ export default function PlayerBar() {
 
     const audioKey = `${currentReciter}-${currentSurah.number}`;
     
-    console.log('🔍 PlayerBar Effect:', {
-      isPlaying,
-      audioKey,
-      currentAudioRef: currentAudioRef.current,
-      hasHowl: !!audioPlayer.howl,
-      howlPlaying: audioPlayer.isPlaying()
-    });
-    
     if (isPlaying) {
       // تحقق: هل نفس السورة والقارئ وهناك صوت محمّل؟
       if (currentAudioRef.current === audioKey && audioPlayer.howl) {
         // نفس الصوت موجود → استئناف فقط
-        console.log('✅ Same audio → Resuming from', audioPlayer.getCurrentTime().toFixed(2), 's');
         audioPlayer.resume();
       } else {
         // صوت جديد → تحميل
-        console.log('🆕 Different audio → Loading:', audioKey, '(was:', currentAudioRef.current, ')');
-        
         getAudioUrl(currentReciter, currentSurah.number)
           .then(audioUrl => {
             if (audioUrl) {
@@ -122,17 +111,15 @@ export default function PlayerBar() {
                 }
               );
               audioPlayer.setVolume(volume);
-              console.log('✅ Audio loaded and playing');
             }
           })
           .catch(error => {
-            console.error('❌ Error loading audio:', error);
+            console.error('Error loading audio:', error);
           });
       }
     } else {
       // إيقاف مؤقت فقط
       if (audioPlayer.isPlaying()) {
-        console.log('⏸️ Pausing audio at', audioPlayer.getCurrentTime().toFixed(2), 's');
         audioPlayer.pause();
       }
     }
@@ -158,13 +145,6 @@ export default function PlayerBar() {
     
     // RTL: نعكس الحساب - من اليمين لليسار
     const seekTime = ((width - clickX) / width) * duration;
-    
-    console.log('🎯 Seeking:', {
-      clickX,
-      width,
-      seekTime: seekTime.toFixed(2),
-      duration: duration.toFixed(2)
-    });
     
     audioPlayer.seek(seekTime);
     setCurrentTime(seekTime);
@@ -202,13 +182,6 @@ export default function PlayerBar() {
     
     // RTL: نعكس الحساب - من اليمين لليسار
     const seekTime = ((width - clickX) / width) * duration;
-    
-    console.log('🎯 Modal Seeking:', {
-      clickX,
-      width,
-      seekTime: seekTime.toFixed(2),
-      duration: duration.toFixed(2)
-    });
     
     audioPlayer.seek(seekTime);
     setCurrentTime(seekTime);

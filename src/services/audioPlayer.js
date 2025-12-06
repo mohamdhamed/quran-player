@@ -26,35 +26,28 @@ class AudioPlayerService {
     // Build playlist of all ayah URLs
     const audioUrls = audioData.ayahs.map(ayah => ayah.audio);
     
-    console.log(`🎵 Playing ${audioUrls.length} ayahs from API`);
-    
     // For now, play first ayah (we'll implement full surah playback later)
     // TODO: Concatenate all ayahs or use playlist functionality
     this.howl = new Howl({
       src: audioUrls, // Howler will play them sequentially
       html5: true,
       format: ['mp3'],
-      onload: () => {
-        console.log('✅ Audio loaded from API');
-      },
+      onload: () => {},
       onplay: () => {
-        console.log('▶️ Playing from API');
         this.startTimeUpdates();
       },
       onpause: () => {
-        console.log('⏸️ Paused');
         this.stopTimeUpdates();
       },
       onend: () => {
-        console.log('⏹️ Ended');
         this.stopTimeUpdates();
         if (onEnd) onEnd();
       },
       onloaderror: (id, error) => {
-        console.error('❌ Load error:', error);
+        console.error('Audio load error:', error);
       },
       onplayerror: (id, error) => {
-        console.error('❌ Play error:', error);
+        console.error('Audio play error:', error);
         this.howl.once('unlock', () => {
           this.howl.play();
         });
@@ -80,27 +73,22 @@ class AudioPlayerService {
       src: [audioUrl],
       html5: true,
       format: ['mp3'],
-      onload: () => {
-        console.log('Audio loaded successfully');
-      },
+      onload: () => {},
       onplay: () => {
-        console.log('Audio playing');
         this.startTimeUpdates();
       },
       onpause: () => {
-        console.log('Audio paused');
         this.stopTimeUpdates();
       },
       onend: () => {
-        console.log('Audio ended');
         this.stopTimeUpdates();
         if (onEnd) onEnd();
       },
       onloaderror: (id, error) => {
-        console.error('Load error:', error);
+        console.error('Audio load error:', error);
       },
       onplayerror: (id, error) => {
-        console.error('Play error:', error);
+        console.error('Audio play error:', error);
         this.howl.once('unlock', () => {
           this.howl.play();
         });

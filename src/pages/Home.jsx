@@ -28,31 +28,40 @@ export default function Home() {
   const SurahCard = ({ surah, index = 0 }) => {
     const isPlaying = currentSurah?.number === surah.number;
     const isMeccan = surah.revelationType === 'Meccan';
-    
+
     // ألوان حسب نوع السورة
-    const typeColors = isMeccan 
+    const typeColors = isMeccan
       ? {
-          bg: 'bg-blue-500/10',
-          bgHover: 'group-hover:bg-blue-500/20',
-          border: 'border-blue-500/30',
-          text: 'text-blue-400',
-          glow: 'group-hover:shadow-blue-500/20'
-        }
+        bg: 'bg-blue-500/10',
+        bgHover: 'group-hover:bg-blue-500/20',
+        border: 'border-blue-500/30',
+        text: 'text-blue-400',
+        glow: 'group-hover:shadow-blue-500/20'
+      }
       : {
-          bg: 'bg-green-500/10',
-          bgHover: 'group-hover:bg-green-500/20',
-          border: 'border-green-500/30',
-          text: 'text-green-400',
-          glow: 'group-hover:shadow-green-500/20'
-        };
-    
+        bg: 'bg-green-500/10',
+        bgHover: 'group-hover:bg-green-500/20',
+        border: 'border-green-500/30',
+        text: 'text-green-400',
+        glow: 'group-hover:shadow-green-500/20'
+      };
+
     return (
-      <div
-        className={`surah-card group relative overflow-hidden ${typeColors.bg} ${typeColors.bgHover} border ${typeColors.border}`}
+      <button
+        className={`surah-card group relative overflow-hidden ${typeColors.bg} ${typeColors.bgHover} border ${typeColors.border} w-full text-right`}
         onClick={() => playSurah(surah)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            playSurah(surah);
+          }
+        }}
         style={{
           transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         }}
+        aria-label={`تشغيل سورة ${surah.name} - ${surah.nameEn} - ${surah.verses} آية - ${surah.revelationType === 'Meccan' ? 'مكية' : 'مدنية'}`}
+        role="button"
+        tabIndex={0}
       >
         <div className="flex items-center gap-4 relative z-10">
           {/* Thumbnail مع Wave Animation */}
@@ -63,7 +72,7 @@ export default function Home() {
             <span className="text-xs text-gray-400 mt-0.5 transition-colors duration-300 group-hover:text-white">
               {surah.nameEn}
             </span>
-            
+
             {/* Wave Animation عند التشغيل */}
             {isPlaying && (
               <div className="absolute -bottom-1 -left-1 flex items-end gap-0.5 bg-spotify-green rounded-full px-1.5 py-1 shadow-lg animate-fadeIn">
@@ -74,7 +83,7 @@ export default function Home() {
               </div>
             )}
           </div>
-          
+
           {/* معلومات السورة */}
           <div className="flex-1 text-right">
             <h3 className={`text-lg font-semibold arabic-text mb-1 transition-colors duration-300 group-hover:${typeColors.text}`}>
@@ -84,21 +93,21 @@ export default function Home() {
               {surah.verses} آية • {isMeccan ? 'مكية' : 'مدنية'}
             </p>
           </div>
-          
+
           {/* Play Button */}
           <button className="play-button-sm opacity-0 group-hover:opacity-100 transition-all duration-300 transform group-hover:scale-110 group-hover:rotate-12">
             <Play size={20} fill="white" />
           </button>
         </div>
-        
+
         {/* Progress Bar عند التشغيل */}
         {isPlaying && (
-          <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-l from-spotify-green to-green-400 shadow-lg shadow-spotify-green/50"></div>
+          <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-l from-spotify-green to-green-400 shadow-lg shadow-spotify-green/50" aria-hidden="true"></div>
         )}
-        
+
         {/* Glow Effect on Hover */}
-        <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${typeColors.glow} blur-xl -z-10`}></div>
-      </div>
+        <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${typeColors.glow} blur-xl -z-10`} aria-hidden="true"></div>
+      </button>
     );
   };
 
@@ -144,10 +153,18 @@ export default function Home() {
           ].map((item, index) => {
             const delayClass = index === 0 ? '' : index === 1 ? 'delay-100' : index === 2 ? 'delay-200' : 'delay-300';
             return (
-              <div
+              <button
                 key={item.surah.number}
-                className={`bg-spotify-lightGray hover:bg-gray-700 rounded-lg p-6 cursor-pointer text-center animate-scaleIn ${delayClass}`}
+                className={`bg-spotify-lightGray hover:bg-gray-700 rounded-lg p-6 cursor-pointer text-center animate-scaleIn ${delayClass} w-full`}
                 onClick={() => playSurah(item.surah)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    playSurah(item.surah);
+                  }
+                }}
+                aria-label={`${item.desc} - سورة ${item.surah.name}`}
+                tabIndex={0}
                 style={{
                   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                   transform: 'scale(1)',
@@ -161,7 +178,7 @@ export default function Home() {
                   e.currentTarget.style.boxShadow = 'none';
                 }}
               >
-                <div 
+                <div
                   className="text-5xl mb-3 transition-transform duration-300"
                   style={{ display: 'inline-block' }}
                   onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.25) rotate(10deg)'}
@@ -171,7 +188,7 @@ export default function Home() {
                 </div>
                 <h3 className="text-lg font-semibold arabic-text mb-1 transition-colors duration-300 hover:text-spotify-green">{item.surah.name}</h3>
                 <p className="text-sm text-gray-400 transition-colors duration-300 hover:text-white">{item.desc}</p>
-              </div>
+              </button>
             );
           })}
         </div>

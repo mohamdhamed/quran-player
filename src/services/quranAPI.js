@@ -39,9 +39,6 @@ export const getAudioUrl = async (reciterId, surahNumber) => {
       const firstAyahNumber = data.data.ayahs[0].number;
       const lastAyahNumber = data.data.ayahs[data.data.ayahs.length - 1].number;
       
-      console.log(`🎵 Audio URL: ${basePath}`);
-      console.log(`📊 Ayahs range: ${firstAyahNumber} - ${lastAyahNumber}`);
-      
       return {
         basePath,
         firstAyahNumber,
@@ -141,18 +138,13 @@ let quranCache = null;
  */
 export const searchVerses = async (query, language = 'ar') => {
   try {
-    console.log(`🔍 Searching for: "${query}"`);
-    
     // Load entire Quran if not cached
     if (!quranCache) {
-      console.log('📥 Loading entire Quran...');
       const response = await fetch('https://api.alquran.cloud/v1/quran/quran-uthmani');
       const data = await response.json();
       
       if (data.code === 200) {
         quranCache = data.data.surahs;
-        console.log(`✅ Loaded ${quranCache.length} surahs`);
-        console.log('📝 Sample ayah text:', quranCache[0].ayahs[0].text);
       } else {
         throw new Error('Failed to load Quran');
       }
@@ -184,7 +176,6 @@ export const searchVerses = async (query, language = 'ar') => {
     
     quranCache.forEach(surah => {
       if (!surah.ayahs || surah.ayahs.length === 0) {
-        console.warn(`⚠️ Surah ${surah.number} has no ayahs!`);
         return;
       }
       
@@ -210,7 +201,7 @@ export const searchVerses = async (query, language = 'ar') => {
     // Return first 50 results to avoid overwhelming the UI
     return results.slice(0, 50);
   } catch (error) {
-    console.error('❌ Error searching verses:', error);
+    console.error('Error searching verses:', error);
     throw error;
   }
 };

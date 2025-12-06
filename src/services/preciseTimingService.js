@@ -40,12 +40,8 @@ export const loadPreciseTimings = async (surahNumber, reciter, verseCount) => {
   // Check cache first
   const cacheKey = `${reciter}-${surahNumber}`;
   if (timingCache.has(cacheKey)) {
-    console.log(`✅ Using cached timings for ${cacheKey}`);
     return timingCache.get(cacheKey);
   }
-
-  console.log(`\n🎯 Loading PRECISE timings for Surah ${surahNumber} with reciter: ${reciter}`);
-  console.log(`📊 Total verses to load: ${verseCount}`);
   
   try {
     const timings = [];
@@ -62,7 +58,6 @@ export const loadPreciseTimings = async (surahNumber, reciter, verseCount) => {
     }
     
     const ayahs = data.data.ayahs;
-    console.log(`📖 Fetched ${ayahs.length} ayahs from API`);
     
     // تحميل مدة كل آية من ملف الصوت الخاص بها
     for (let i = 0; i < ayahs.length; i++) {
@@ -81,13 +76,7 @@ export const loadPreciseTimings = async (surahNumber, reciter, verseCount) => {
         });
         
         currentTime += duration;
-        
-        // Log progress every 10 verses
-        if ((i + 1) % 10 === 0 || i === ayahs.length - 1) {
-          console.log(`⏱️  Loaded ${i + 1}/${ayahs.length} verses (${Math.round((i + 1) / ayahs.length * 100)}%)`);
-        }
       } catch (error) {
-        console.warn(`⚠️  Failed to load ayah ${i + 1}, using average duration`);
         // استخدام متوسط مدة الآيات السابقة كـ fallback
         const avgDuration = currentTime / Math.max(i, 1);
         const fallbackDuration = avgDuration || 5; // 5 seconds default
@@ -105,16 +94,12 @@ export const loadPreciseTimings = async (surahNumber, reciter, verseCount) => {
       }
     }
     
-    console.log(`✅ Successfully loaded ${timings.length} precise timings`);
-    console.log(`⏱️  Total duration: ${Math.round(currentTime / 60)} minutes ${Math.round(currentTime % 60)} seconds`);
-    console.log(`📊 Sample timings:`, timings.slice(0, 3));
-    
     // حفظ في Cache
     timingCache.set(cacheKey, timings);
     
     return timings;
   } catch (error) {
-    console.error('❌ Error loading precise timings:', error);
+    console.error('Error loading precise timings:', error);
     throw error;
   }
 };
@@ -144,7 +129,6 @@ export const getCurrentAyah = (currentTime, timings) => {
  */
 export const clearTimingCache = () => {
   timingCache.clear();
-  console.log('🗑️  Timing cache cleared');
 };
 
 /**

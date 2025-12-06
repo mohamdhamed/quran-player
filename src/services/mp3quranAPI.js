@@ -80,11 +80,8 @@ export async function getRecitersWithTimings() {
   try {
     // تحقق من الـ cache
     if (recitersCache.size > 0) {
-      console.log('📦 Loading reciters from cache');
       return Array.from(recitersCache.values());
     }
-
-    console.log('🌐 Fetching reciters with timings from mp3quran.net...');
     
     const response = await fetch(`${API_BASE}/ayat_timing/reads`);
     const data = await response.json();
@@ -95,13 +92,12 @@ export async function getRecitersWithTimings() {
         recitersCache.set(reciter.id, reciter);
       });
       
-      console.log(`✅ Loaded ${data.value.length} reciters with timings`);
       return data.value;
     }
     
     return [];
   } catch (error) {
-    console.error('❌ Error fetching reciters:', error);
+    console.error('Error fetching reciters:', error);
     return [];
   }
 }
@@ -121,12 +117,8 @@ export async function getPreciseTimings(surahNumber, localReciterId) {
     // تحقق من الـ cache
     const cacheKey = `${readId}-${surahNumber}`;
     if (timingsCache.has(cacheKey)) {
-      console.log(`📦 Loading timings from cache: ${cacheKey}`);
       return timingsCache.get(cacheKey);
     }
-
-    console.log(`\n🎯 Fetching precise timings for Surah ${surahNumber}`);
-    console.log(`🎙️ Reciter: ${localReciterId} (read_id: ${readId})`);
     
     const response = await fetch(
       `${API_BASE}/ayat_timing?surah=${surahNumber}&read=${readId}`
@@ -150,21 +142,12 @@ export async function getPreciseTimings(surahNumber, localReciterId) {
       // حفظ في الـ cache
       timingsCache.set(cacheKey, timings);
       
-      console.log(`✅ Loaded ${timings.length} precise timings`);
-      console.log(`⏱️  Total duration: ${(timings[timings.length - 1]?.endTime || 0).toFixed(2)}s`);
-      
-      // عرض أول 3 توقيتات كمثال
-      console.log('\n📊 Sample timings:');
-      timings.slice(0, 3).forEach(t => {
-        console.log(`   Ayah ${t.ayah}: ${t.startTime.toFixed(2)}s - ${t.endTime.toFixed(2)}s (${t.duration.toFixed(2)}s)`);
-      });
-      
       return timings;
     }
     
     return [];
   } catch (error) {
-    console.error('❌ Error fetching timings:', error);
+    console.error('Error fetching timings:', error);
     return [];
   }
 }
@@ -184,7 +167,6 @@ export async function getAudioUrl(localReciterId, surahNumber) {
     const mapping = RECITER_MAPPING[localReciterId];
     if (mapping && mapping.folder) {
       const audioUrl = `${mapping.folder}/${paddedNumber}.mp3`;
-      console.log(`🎵 Audio URL (from mapping): ${audioUrl}`);
       return audioUrl;
     }
     
@@ -200,13 +182,12 @@ export async function getAudioUrl(localReciterId, surahNumber) {
     
     if (reciter && reciter.folder_url) {
       const audioUrl = `${reciter.folder_url}${paddedNumber}.mp3`;
-      console.log(`🎵 Audio URL (from API fallback): ${audioUrl}`);
       return audioUrl;
     }
     
     throw new Error(`No audio URL found for reciter: ${localReciterId}`);
   } catch (error) {
-    console.error('❌ Error getting audio URL:', error);
+    console.error('Error getting audio URL:', error);
     return null;
   }
 }
@@ -220,17 +201,12 @@ export async function getAudioUrl(localReciterId, surahNumber) {
  */
 export function findCurrentAyah(currentTime, timings) {
   if (!timings || timings.length === 0) {
-    console.warn('⚠️  No timings available');
     return 0;
   }
   
   // البحث عن الآية الحالية بدقة (من الأخير للأول)
   for (let i = timings.length - 1; i >= 0; i--) {
     if (currentTime >= timings[i].startTime) {
-      // Log للتأكد من عمل الدالة
-      if (i === 0 || i === timings.length - 1 || Math.random() < 0.1) {
-        console.log(`🔍 findCurrentAyah: time=${currentTime.toFixed(2)}s → ayah ${timings[i].ayah} (${timings[i].startTime.toFixed(2)}s - ${timings[i].endTime.toFixed(2)}s)`);
-      }
       return timings[i].ayah;
     }
   }
@@ -246,17 +222,10 @@ function getReadIdFromLocal(localReciterId) {
   const mapping = RECITER_MAPPING[localReciterId];
   
   if (!mapping) {
-    console.warn(`⚠️  Unknown reciter: ${localReciterId}, using default (Husary)`);
     return 118; // الحصري
   }
   
-  const readId = mapping.readId || mapping.fallback;
-  
-  if (mapping.readId === null) {
-    console.log(`ℹ️  ${mapping.name} doesn't have timings, using fallback`);
-  }
-  
-  return readId;
+  return mapping.readId || mapping.fallback;
 }
 
 /**
@@ -282,7 +251,6 @@ export async function getReciterInfo(localReciterId) {
 export function clearCache() {
   timingsCache.clear();
   recitersCache.clear();
-  console.log('🗑️  Cache cleared');
 }
 
 /**
