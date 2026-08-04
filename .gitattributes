@@ -1,0 +1,17 @@
+# نهايات السطور: LF في المستودع وفي شجرة العمل على كل الأنظمة
+# ده بيمنع ظهور الملفات كـ "modified" لمجرد اختلاف CRLF/LF
+# بين الشغل من ويندوز والشغل من لينكس
+* text=auto eol=lf
+
+# ملفات ثنائية - ممنوع أي تحويل عليها
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.mp3 binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
