@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { User, ChevronDown } from 'lucide-react';
 import { usePlayerStore } from '../../store/playerStore';
 import quranService from '../../services/QuranService';
+import { useTranslation } from '../../i18n';
 
 export default function ReciterSelector() {
+  const { t } = useTranslation();
   const currentReciter = usePlayerStore((state) => state.currentReciter);
   const setCurrentReciter = usePlayerStore((state) => state.setCurrentReciter);
   const [isOpen, setIsOpen] = useState(false);
@@ -48,7 +50,7 @@ export default function ReciterSelector() {
                 {currentReciter === reciter.id && (
                   <div className="mt-1">
                     <span className="inline-block px-2 py-0.5 bg-spotify-green text-on-accent text-xs rounded-full">
-                      محدد
+                      {t('محدد')}
                     </span>
                   </div>
                 )}

@@ -8,7 +8,8 @@ import audioPlayer from '../../../services/audioPlayer';
  * - handleSeek: التنقل في الصوت
  * - handleProgressHover: إظهار tooltip عند التحويم
  */
-export function usePlayerLogic({ duration, currentTime, setCurrentTime }) {
+export function usePlayerLogic({ duration, currentTime, setCurrentTime, dir = 'rtl' }) {
+    const isRtl = dir !== 'ltr';
     const progressRef = useRef(null);
     const [hoveredTime, setHoveredTime] = useState(null);
     const [hoverPosition, setHoverPosition] = useState(0);
@@ -36,12 +37,13 @@ export function usePlayerLogic({ duration, currentTime, setCurrentTime }) {
         const clickX = e.clientX - rect.left;
         const width = rect.width;
 
-        // RTL: نعكس الحساب - من اليمين لليسار
-        const seekTime = ((width - clickX) / width) * duration;
+        // في RTL الشريط بيمتلي من اليمين، وفي LTR من الشمال
+        const ratio = isRtl ? (width - clickX) / width : clickX / width;
+        const seekTime = ratio * duration;
 
         audioPlayer.seek(seekTime);
         setCurrentTime(seekTime);
-    }, [duration, setCurrentTime]);
+    }, [duration, setCurrentTime, isRtl]);
 
     /**
      * معالج التحويم على شريط التقدم
@@ -56,14 +58,11 @@ export function usePlayerLogic({ duration, currentTime, setCurrentTime }) {
         const x = e.clientX - rect.left;
         const width = rect.width;
 
-        // RTL: الوقت من اليمين لليسار (معكوس)
-        const time = ((width - x) / width) * duration;
-        // RTL: الموضع أيضاً معكوس (من اليمين)
-        const percentage = ((width - x) / width) * 100;
+        const ratio = isRtl ? (width - x) / width : x / width;
 
-        setHoveredTime(time);
-        setHoverPosition(percentage);
-    }, [duration]);
+        setHoveredTime(ratio * duration);
+        setHoverPosition(ratio * 100);
+    }, [duration, isRtl]);
 
     /**
      * معالج مغادرة شريط التقدم

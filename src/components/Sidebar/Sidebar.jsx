@@ -1,6 +1,9 @@
 import { Home as HomeIcon, Library, Heart, Settings, Sparkles, ListMusic } from 'lucide-react';
+import { useTranslation } from '../../i18n';
 
 export default function Sidebar({ currentPage, setCurrentPage }) {
+  const { t } = useTranslation();
+
   const menuItems = [
     { id: 'home', name: 'الرئيسية', icon: HomeIcon },
     { id: 'library', name: 'المكتبة', icon: Library },
@@ -47,7 +50,7 @@ export default function Sidebar({ currentPage, setCurrentPage }) {
           <div className="w-10 h-10 bg-spotify-green rounded-full flex items-center justify-center transition-all hover:scale-110 hover:rotate-12 animate-pulse">
             <span className="text-2xl">🕌</span>
           </div>
-          <h1 className="text-xl font-bold transition-colors hover:text-spotify-green">مشغل القرآن</h1>
+          <h1 className="text-xl font-bold transition-colors hover:text-spotify-green">{t('مشغل القرآن')}</h1>
         </div>
 
         {/* Menu */}
@@ -72,7 +75,7 @@ export default function Sidebar({ currentPage, setCurrentPage }) {
                       : 'group-hover:scale-110'
                   }`}
                 />
-                <span className="text-sm font-semibold transition-all">{item.name}</span>
+                <span className="text-sm font-semibold transition-all">{t(item.name)}</span>
               </button>
             );
           })}
@@ -83,8 +86,8 @@ export default function Sidebar({ currentPage, setCurrentPage }) {
 
         {/* Footer */}
         <div className="text-xs text-content-secondary text-center animate-fadeIn transition-colors hover:text-gray-400">
-          <p>مشغل القرآن الكريم</p>
-          <p className="mt-1">الإصدار 1.0</p>
+          <p>{t('مشغل القرآن الكريم')}</p>
+          <p className="mt-1">{t('الإصدار 1.0')}</p>
         </div>
       </div>
     </aside>

@@ -1,5 +1,17 @@
 import React from 'react';
 import { AlertTriangle } from 'lucide-react';
+import { usePlayerStore } from '../store/playerStore';
+import en from '../i18n/en';
+
+/**
+ * ده كلاس، فمينفعش يستخدم hooks.
+ * وهو أصلاً بيترسم لما حاجة تكون اتكسرت، فقراءة اللغة مرة واحدة
+ * وقت العرض كافية - مش محتاج يتابع تغييرها.
+ */
+function t(text) {
+  const language = usePlayerStore.getState().language;
+  return language === 'en' ? en[text] ?? text : text;
+}
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -24,16 +36,16 @@ class ErrorBoundary extends React.Component {
               <AlertTriangle size={40} className="text-red-500" />
             </div>
             <h1 className="text-3xl font-bold mb-4 text-white">
-              عذراً، حدث خطأ
+              {t('عذراً، حدث خطأ')}
             </h1>
             <p className="text-gray-400 mb-8">
-              حدث خطأ غير متوقع. يرجى تحديث الصفحة والمحاولة مرة أخرى.
+              {t('حدث خطأ غير متوقع. يرجى تحديث الصفحة والمحاولة مرة أخرى.')}
             </p>
             <button
               onClick={() => window.location.reload()}
               className="bg-spotify-green hover:bg-spotify-darkGreen text-on-accent px-6 py-3 rounded-full font-semibold transition-all duration-200"
             >
-              تحديث الصفحة
+              {t('تحديث الصفحة')}
             </button>
             
             {import.meta.env.DEV && this.state.error && (

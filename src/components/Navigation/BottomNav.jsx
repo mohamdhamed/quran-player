@@ -1,6 +1,9 @@
 import { Home, Library, Heart, ListMusic, Settings } from 'lucide-react';
+import { useTranslation } from '../../i18n';
 
 export default function BottomNav({ currentPage, setCurrentPage }) {
+  const { t } = useTranslation();
+
   const navItems = [
     { id: 'home', name: 'الرئيسية', icon: Home },
     { id: 'library', name: 'المكتبة', icon: Library },
@@ -17,7 +20,7 @@ export default function BottomNav({ currentPage, setCurrentPage }) {
         boxShadow: '0 -4px 20px rgba(0, 0, 0, 0.5)'
       }}
       role="navigation"
-      aria-label="التنقل الرئيسي"
+      aria-label={t('التنقل الرئيسي')}
     >
       <div className="flex items-center justify-around px-2 pt-2 pb-1">
         {navItems.map((item) => {
@@ -33,7 +36,7 @@ export default function BottomNav({ currentPage, setCurrentPage }) {
                   ? 'text-spotify-green scale-105' 
                   : 'text-gray-400 hover:text-white active:scale-95'
               }`}
-              aria-label={item.name}
+              aria-label={t(item.name)}
               aria-current={isActive ? 'page' : undefined}
             >
               <div className="relative">
@@ -54,7 +57,7 @@ export default function BottomNav({ currentPage, setCurrentPage }) {
                   isActive ? 'text-spotify-green' : 'text-gray-400'
                 }`}
               >
-                {item.name}
+                {t(item.name)}
               </span>
               {/* Active Underline */}
               {isActive && (

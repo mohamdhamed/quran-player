@@ -2,6 +2,7 @@ import { memo } from 'react';
 import { Heart } from 'lucide-react';
 import PropTypes from 'prop-types';
 import WaveAnimation from '../../UI/WaveAnimation';
+import { useTranslation } from '../../../i18n';
 
 /**
  * مكون معلومات السورة الحالية
@@ -14,6 +15,7 @@ function SurahInfo({
     onToggleFavorite,
     onExpand
 }) {
+  const { tVerses } = useTranslation();
     if (!currentSurah) return null;
 
     return (
@@ -56,7 +58,7 @@ function SurahInfo({
                 <div className="flex items-center gap-2 text-xs text-gray-400">
                     <span className="transition-colors group-hover/expand:text-white cursor-pointer">{currentSurah.nameEn}</span>
                     <span className="text-gray-600">•</span>
-                    <span className="transition-colors group-hover/expand:text-spotify-green cursor-pointer">{currentSurah.verses} آية</span>
+                    <span className="transition-colors group-hover/expand:text-spotify-green cursor-pointer">{tVerses(currentSurah.verses)}</span>
                 </div>
             </button>
 

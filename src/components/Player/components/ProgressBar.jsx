@@ -2,6 +2,7 @@ import { memo, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { usePlayerLogic } from '../hooks/usePlayerLogic';
 import { usePlayerStore } from '../../../store/playerStore';
+import { useTranslation } from '../../../i18n';
 import audioPlayer from '../../../services/audioPlayer';
 
 /**
@@ -19,6 +20,9 @@ function ProgressBar({
 }) {
     const localProgressRef = useRef(null);
 
+    const { t, dir } = useTranslation();
+    const isRtl = dir !== 'ltr';
+
     const currentTime = usePlayerStore((state) => state.currentTime);
     const duration = usePlayerStore((state) => state.duration);
     const isPlaying = usePlayerStore((state) => state.isPlaying);
@@ -32,7 +36,7 @@ function ProgressBar({
         handleSeek,
         handleProgressHover,
         handleProgressLeave
-    } = usePlayerLogic({ duration, currentTime, setCurrentTime });
+    } = usePlayerLogic({ duration, currentTime, setCurrentTime, dir });
 
     const handleLocalSeek = (e) => handleSeek(e, localProgressRef);
     const handleLocalHover = (e) => handleProgressHover(e, localProgressRef);
@@ -51,8 +55,9 @@ function ProgressBar({
         let next = null;
 
         switch (e.key) {
-            case 'ArrowLeft': next = currentTime + STEP; break;
-            case 'ArrowRight': next = currentTime - STEP; break;
+            // اتجاه السهم بيتبع اتجاه امتلاء الشريط
+            case 'ArrowLeft': next = currentTime + (isRtl ? STEP : -STEP); break;
+            case 'ArrowRight': next = currentTime + (isRtl ? -STEP : STEP); break;
             case 'ArrowUp': next = currentTime + STEP; break;
             case 'ArrowDown': next = currentTime - STEP; break;
             case 'PageUp': next = currentTime + BIG_STEP; break;
@@ -69,17 +74,17 @@ function ProgressBar({
         const clamped = Math.min(duration, Math.max(0, next));
         audioPlayer.seek(clamped);
         setCurrentTime(clamped);
-    }, [currentTime, duration, setCurrentTime]);
+    }, [currentTime, duration, setCurrentTime, isRtl]);
 
     // خصائص مشتركة تخلي الشريط عنصر slider حقيقي لقارئات الشاشة
     const sliderProps = {
         role: 'slider',
         tabIndex: 0,
-        'aria-label': 'موضع التشغيل داخل السورة',
+        'aria-label': t('موضع التشغيل داخل السورة'),
         'aria-valuemin': 0,
         'aria-valuemax': Math.round(duration) || 0,
         'aria-valuenow': Math.round(currentTime) || 0,
-        'aria-valuetext': `${formatTime(currentTime)} من ${formatTime(duration)}`,
+        'aria-valuetext': `${formatTime(currentTime)} ${t('من')} ${formatTime(duration)}`,
         onKeyDown: handleKeyDown
     };
 
@@ -96,7 +101,7 @@ function ProgressBar({
                 >
                     <div
                         className="absolute top-0 h-full bg-gradient-to-l from-spotify-green via-green-500 to-green-400 rounded-full transition-all duration-200"
-                        style={{ width: `${progressPercentage}%`, right: 0 }}
+                        style={{ width: `${progressPercentage}%`, [isRtl ? 'right' : 'left']: 0 }}
                     >
                         <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-4 h-4 bg-white rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     </div>
@@ -105,7 +110,7 @@ function ProgressBar({
                     {hoveredTime !== null && (
                         <div
                             className="absolute -top-10 transform -translate-x-1/2 bg-spotify-lightGray px-3 py-1.5 rounded-lg text-xs font-semibold shadow-xl border border-gray-700 whitespace-nowrap pointer-events-none"
-                            style={{ right: `${hoverPosition}%`, transform: 'translateX(50%)' }}
+                            style={{ [isRtl ? 'right' : 'left']: `${hoverPosition}%`, transform: `translateX(${isRtl ? '50%' : '-50%'})` }}
                         >
                             {formatTime(hoveredTime)}
                         </div>
@@ -148,7 +153,7 @@ function ProgressBar({
                         {/* Progress Fill with Gradient */}
                         <div
                             className="absolute h-full bg-gradient-to-l from-spotify-green via-green-400 to-green-300 rounded-full transition-all duration-150 shadow-lg shadow-spotify-green/20"
-                            style={{ width: `${progressPercentage}%`, right: 0 }}
+                            style={{ width: `${progressPercentage}%`, [isRtl ? 'right' : 'left']: 0 }}
                         >
                             {/* Playhead */}
                             <div className="absolute left-0 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-3.5 h-3.5 bg-white rounded-full opacity-0 group-hover:opacity-100 shadow-xl shadow-spotify-green/40 transition-all duration-200 scale-0 group-hover:scale-100 ring-2 ring-spotify-green/30"></div>
@@ -164,8 +169,8 @@ function ProgressBar({
                             <div
                                 className="absolute -top-10 transition-all duration-100 pointer-events-none"
                                 style={{
-                                    right: `${hoverPosition}%`,
-                                    transform: 'translateX(50%)'
+                                    [isRtl ? 'right' : 'left']: `${hoverPosition}%`,
+                                    transform: `translateX(${isRtl ? '50%' : '-50%'})`
                                 }}
                             >
                                 <div className="bg-white text-black px-2.5 py-1.5 rounded-lg shadow-xl text-xs font-semibold whitespace-nowrap">

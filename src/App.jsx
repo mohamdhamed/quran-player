@@ -18,6 +18,7 @@ const SmartSearch = lazy(() => import('./pages/SmartSearch'));
 import { Menu, X } from 'lucide-react';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import { useTheme } from './hooks/useTheme';
+import { useLanguage } from './i18n';
 
 // Map routes to page IDs for navigation state
 const routeToPage = {
@@ -61,8 +62,9 @@ function App() {
   // Enable keyboard shortcuts
   useKeyboardShortcuts();
 
-  // بيطبّق الثيم المختار على <html>
+  // بيطبّقوا الثيم واللغة/الاتجاه على <html>
   useTheme();
+  useLanguage();
 
   // Get current page from URL
   const currentPage = routeToPage[location.pathname] || 'home';
@@ -75,7 +77,7 @@ function App() {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-black text-white" dir="rtl">
+    <div className="h-screen flex flex-col bg-black text-white">
       {/* Toast Notifications */}
       <ToastContainer toasts={toasts} onDismiss={dismiss} />
 

@@ -12,6 +12,7 @@ import ReciterSelector from './ReciterSelector';
 const QuranTextViewer = lazy(() => import('./QuranTextViewerUnified'));
 
 // المكونات المقسمة
+import { useTranslation } from '../../i18n';
 import {
   PlayerControls,
   ProgressBar,
@@ -32,6 +33,7 @@ import {
  * - ExpandedPlayer: المشغل الموسع (Popup)
  */
 export default function PlayerBar() {
+  const { t } = useTranslation();
   // State المحلي
   const [showTextViewer, setShowTextViewer] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
@@ -197,7 +199,7 @@ export default function PlayerBar() {
     return (
       <div className="fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-t from-black via-spotify-gray to-transparent px-6 py-4 border-t border-gray-800/50">
         <div className="text-center text-content-secondary text-sm">
-          <p>اختر سورة للبدء 🎵</p>
+          <p>{t('اختر سورة للبدء 🎵')}</p>
         </div>
       </div>
     );
@@ -247,8 +249,8 @@ export default function PlayerBar() {
               data-text-viewer-button
               onClick={() => setShowTextViewer(true)}
               className="p-2 hover:bg-gray-700/50 rounded-lg transition-all hover:scale-110 active:scale-95 group"
-              title="عرض النص القرآني"
-              aria-label="عرض النص القرآني"
+              title={t('عرض النص القرآني')}
+              aria-label={t('عرض النص القرآني')}
             >
               <BookOpen size={18} className="text-gray-400 group-hover:text-spotify-green transition-colors" />
             </button>

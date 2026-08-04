@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { useTranslation } from '../../i18n';
 
 /**
  * صفحة المصحف مع تظليل الآية الجارية
@@ -37,6 +38,7 @@ async function loadViewBox(pageUrl) {
 }
 
 export default function MushafPage({ pageUrl, timings = [], currentAyah, onSeek }) {
+  const { t } = useTranslation();
   const [viewBox, setViewBox] = useState(() => viewBoxCache.get(pageUrl) || null);
 
   useEffect(() => {
@@ -58,7 +60,7 @@ export default function MushafPage({ pageUrl, timings = [], currentAyah, onSeek 
         <div
           className="w-10 h-10 border-4 border-gray-700 border-t-spotify-green rounded-full animate-spin"
           role="status"
-          aria-label="جاري تحميل صفحة المصحف"
+          aria-label={t('جاري تحميل صفحة المصحف')}
         ></div>
       </div>
     );
@@ -67,7 +69,7 @@ export default function MushafPage({ pageUrl, timings = [], currentAyah, onSeek 
   const [, , width, height] = viewBox.split(/\s+/).map(Number);
 
   // آيات الصفحة المعروضة بس
-  const pageTimings = timings.filter((t) => t.page === pageUrl && t.polygon);
+  const pageTimings = timings.filter((item) => item.page === pageUrl && item.polygon);
 
   const handleActivate = (timing) => {
     if (onSeek) onSeek(timing.startTime, timing.ayah);
@@ -75,7 +77,7 @@ export default function MushafPage({ pageUrl, timings = [], currentAyah, onSeek 
 
   return (
     <div className="mushaf-page">
-      <svg viewBox={viewBox} className="w-full h-auto" role="group" aria-label="صفحة المصحف">
+      <svg viewBox={viewBox} className="w-full h-auto" role="group" aria-label={t('صفحة المصحف')}>
         {/* الصفحة كصورة: بترسم من غير ما الـ SVG الخارجي يتحقن في الصفحة،
             فمفيش أي سكربت جواه يقدر يشتغل */}
         <image href={pageUrl} x="0" y="0" width={width} height={height} />

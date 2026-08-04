@@ -1,6 +1,7 @@
 import { memo, useCallback } from 'react';
 import { Play, Pause, SkipForward, SkipBack, Repeat, Repeat1 } from 'lucide-react';
 import PropTypes from 'prop-types';
+import { useTranslation } from '../../../i18n';
 
 /**
  * مكون أزرار التحكم بالمشغل
@@ -16,6 +17,7 @@ function PlayerControls({
     size = 'normal', // 'normal' | 'compact'
     children // للمكونات الإضافية مثل ReciterSelector
 }) {
+  const { t } = useTranslation();
 
     /**
      * الحصول على أيقونة التكرار المناسبة
@@ -62,8 +64,8 @@ function PlayerControls({
             <button
                 onClick={onPreviousSurah}
                 className={`${navButtonPadding} hover:bg-gray-700/60 rounded-xl transition-all group hover:scale-110 active:scale-95`}
-                title="السابق"
-                aria-label="السورة السابقة"
+                title={t('السابق')}
+                aria-label={t('السورة السابقة')}
             >
                 <SkipBack size={navIconSize} className="text-gray-300 group-hover:text-white transition-colors" />
             </button>
@@ -86,8 +88,8 @@ function PlayerControls({
             <button
                 onClick={onNextSurah}
                 className={`${navButtonPadding} hover:bg-gray-700/60 rounded-xl transition-all group hover:scale-110 active:scale-95`}
-                title="التالي"
-                aria-label="السورة التالية"
+                title={t('التالي')}
+                aria-label={t('السورة التالية')}
             >
                 <SkipForward size={navIconSize} className="text-gray-300 group-hover:text-white transition-colors" />
             </button>

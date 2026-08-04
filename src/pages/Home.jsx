@@ -3,9 +3,11 @@ import { Play } from 'lucide-react';
 import { usePlayerStore } from '../store/playerStore';
 import WaveAnimation from '../components/UI/WaveAnimation';
 import surahsData from '../data/surahs.json';
+import { useTranslation } from '../i18n';
 
 // مكون الكارد خارج المكون الرئيسي ومحفوظ بـ memo
 const SurahCard = memo(function SurahCard({ surah, isCurrentSurah, onPlay }) {
+  const { t, tVerses } = useTranslation();
   const isMeccan = surah.revelationType === 'Meccan';
 
   // ألوان حسب نوع السورة
@@ -44,7 +46,7 @@ const SurahCard = memo(function SurahCard({ surah, isCurrentSurah, onPlay }) {
       style={{
         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
       }}
-      aria-label={`تشغيل سورة ${surah.name} - ${surah.nameEn} - ${surah.verses} آية - ${surah.revelationType === 'Meccan' ? 'مكية' : 'مدنية'}`}
+      aria-label={`${t('تشغيل السورة')} ${surah.name} - ${surah.nameEn} - ${tVerses(surah.verses)} - ${t(surah.revelationType === 'Meccan' ? 'مكية' : 'مدنية')}`}
       role="button"
       tabIndex={0}
     >
@@ -72,7 +74,7 @@ const SurahCard = memo(function SurahCard({ surah, isCurrentSurah, onPlay }) {
             سورة {surah.name}
           </h3>
           <p className="text-xs text-content-secondary mt-1 transition-colors duration-300 group-hover:text-gray-300">
-            {surah.verses} آية • {isMeccan ? 'مكية' : 'مدنية'}
+            {tVerses(surah.verses)} • {t(isMeccan ? 'مكية' : 'مدنية')}
           </p>
         </div>
 
@@ -94,6 +96,7 @@ const SurahCard = memo(function SurahCard({ surah, isCurrentSurah, onPlay }) {
 });
 
 export default function Home() {
+  const { t, tVerses } = useTranslation();
   // استخدام selectors لتجنب re-render عند تغيير أي state آخر
   const playSurah = usePlayerStore((state) => state.playSurah);
   // نراقب فقط رقم السورة الحالية وليس الـ object كله
@@ -119,14 +122,14 @@ export default function Home() {
     <div className="p-8 pb-32 animate-fadeIn">
       {/* Header */}
       <div className="mb-8 animate-slideDown">
-        <h1 className="text-4xl font-bold mb-2">السلام عليكم</h1>
-        <p className="text-gray-400">استمتع بالاستماع للقرآن الكريم</p>
+        <h1 className="text-4xl font-bold mb-2">{t('السلام عليكم')}</h1>
+        <p className="text-gray-400">{t('استمتع بالاستماع للقرآن الكريم')}</p>
       </div>
 
       {/* Recently Played */}
       {stableRecentlyPlayed.length > 0 && (
         <section className="mb-12" key="recently-played-section">
-          <h2 className="text-2xl font-bold mb-4 animate-slideUp">المستمع إليها مؤخراً</h2>
+          <h2 className="text-2xl font-bold mb-4 animate-slideUp">{t('المستمع إليها مؤخراً')}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {stableRecentlyPlayed.map((surah) => (
               <SurahCard 
@@ -142,7 +145,7 @@ export default function Home() {
 
       {/* Popular Surahs */}
       <section>
-        <h2 className="text-2xl font-bold mb-4 animate-slideUp delay-100">السور الأكثر استماعاً</h2>
+        <h2 className="text-2xl font-bold mb-4 animate-slideUp delay-100">{t('السور الأكثر استماعاً')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {popularSurahs.map((surah) => (
             <SurahCard 
@@ -157,7 +160,7 @@ export default function Home() {
 
       {/* Quick Access */}
       <section className="mt-12">
-        <h2 className="text-2xl font-bold mb-4 animate-slideUp delay-200">سور مميزة</h2>
+        <h2 className="text-2xl font-bold mb-4 animate-slideUp delay-200">{t('سور مميزة')}</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
             { surah: surahsData[0], emoji: '🌟', desc: 'فاتحة الكتاب' },
@@ -177,13 +180,13 @@ export default function Home() {
                     playSurah(item.surah);
                   }
                 }}
-                aria-label={`${item.desc} - سورة ${item.surah.name}`}
+                aria-label={`${t(item.desc)} - ${item.surah.name}`}
               >
                 <div className="quick-card__icon" aria-hidden="true">
                   {item.emoji}
                 </div>
                 <h3 className="text-lg font-semibold arabic-text mb-1 transition-colors duration-300 hover:text-spotify-green">{item.surah.name}</h3>
-                <p className="text-sm text-gray-400 transition-colors duration-300 hover:text-white">{item.desc}</p>
+                <p className="text-sm text-gray-400 transition-colors duration-300 hover:text-white">{t(item.desc)}</p>
               </button>
             );
           })}

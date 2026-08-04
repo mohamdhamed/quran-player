@@ -3,8 +3,10 @@ import { Play, Search, Heart, BookOpen, ListPlus } from 'lucide-react';
 import { usePlayerStore } from '../store/playerStore';
 import surahsData from '../data/surahs.json';
 import AddToPlaylistMenu from '../components/Playlist/AddToPlaylistMenu';
+import { useTranslation } from '../i18n';
 
 const Library = memo(function Library() {
+  const { t, tVerses } = useTranslation();
   // استخدام selectors لتجنب re-render غير ضروري
   const playSurah = usePlayerStore((state) => state.playSurah);
   const currentSurah = usePlayerStore((state) => state.currentSurah);
@@ -45,7 +47,7 @@ const Library = memo(function Library() {
       {/* Header */}
       <div className="mb-8 animate-slideDown">
         <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-white to-spotify-green bg-clip-text text-transparent">
-          المكتبة
+          {t('المكتبة')}
         </h1>
         
         {/* Search */}
@@ -53,7 +55,7 @@ const Library = memo(function Library() {
           <Search className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 transition-all" size={20} />
           <input
             type="text"
-            placeholder="ابحث عن سورة..."
+            placeholder={t('ابحث عن سورة...')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="search-input pr-12 transition-smooth focus:scale-[1.02]"
@@ -84,7 +86,7 @@ const Library = memo(function Library() {
           <div className="mb-12">
             <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
               <Heart size={24} className="text-spotify-green" />
-              الأكثر استماعاً
+              {t('الأكثر استماعاً')}
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
               {popularSurahs.map((surah, index) => (
@@ -105,7 +107,7 @@ const Library = memo(function Library() {
           <div>
             <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
               <BookOpen size={24} className="text-spotify-green" />
-              جميع السور
+              {t('جميع السور')}
             </h2>
             <SurahsList 
               surahs={surahsData} 
@@ -123,8 +125,8 @@ const Library = memo(function Library() {
       {filteredSurahs.length === 0 && (
         <div className="text-center py-20 text-gray-400 animate-fadeIn">
           <Search size={48} className="mx-auto mb-4 opacity-50" />
-          <p className="text-xl">لم يتم العثور على نتائج</p>
-          <p className="text-sm mt-2">جرب البحث بكلمات مختلفة</p>
+          <p className="text-xl">{t('لم يتم العثور على نتائج')}</p>
+          <p className="text-sm mt-2">{t('جرب البحث بكلمات مختلفة')}</p>
         </div>
       )}
     </div>
@@ -133,6 +135,7 @@ const Library = memo(function Library() {
 
 // Surah Card Component (Grid)
 function SurahCard({ surah, isPlaying, playSurah, isFavorite, toggleFavorite, delay = 0 }) {
+  const { t, tVerses } = useTranslation();
   const tiltRef = useRef(null);
 
   // الزاوية بتتكتب كمتغيرات CSS على العنصر مباشرةً.
@@ -238,12 +241,12 @@ function SurahCard({ surah, isPlaying, playSurah, isFavorite, toggleFavorite, de
               ? 'bg-gradient-to-r from-blue-500/30 to-blue-600/20 text-blue-300 border border-blue-400/40 shadow-lg shadow-blue-500/20' 
               : 'bg-gradient-to-r from-green-500/30 to-green-600/20 text-green-300 border border-green-400/40 shadow-lg shadow-green-500/20'
           }`}>
-            {surah.revelationType === 'Meccan' ? '🕋 مكية' : '🕌 مدنية'}
+            {t(surah.revelationType === 'Meccan' ? '🕋 مكية' : '🕌 مدنية')}
           </span>
           <span className="text-gray-300 font-bold flex items-center gap-1.5">
             <span className="text-spotify-green text-base">📖</span>
             <span className="text-sm">
-              {surah.verses} {surah.verses === 1 ? 'آية' : surah.verses === 2 ? 'آيتان' : surah.verses <= 10 ? 'آيات' : 'آية'}
+              {tVerses(surah.verses)}
             </span>
           </span>
         </div>
@@ -269,6 +272,7 @@ function SurahCard({ surah, isPlaying, playSurah, isFavorite, toggleFavorite, de
 
 // Surahs List Component (Table)
 function SurahsList({ surahs, currentSurah, playSurah, favorites, toggleFavorite, showPlaylistMenu, setShowPlaylistMenu }) {
+  const { t, tVerses } = useTranslation();
   return (
     <div className="bg-gradient-to-br from-spotify-lightGray to-gray-800/30 rounded-2xl overflow-hidden animate-slideUp shadow-2xl border border-gray-700/30" dir="rtl">
       {/* Scrollable Container */}
@@ -283,14 +287,14 @@ function SurahsList({ surahs, currentSurah, playSurah, favorites, toggleFavorite
               <th className="p-4">
                 <span className="flex items-center gap-2">
                   <span className="text-spotify-green">📖</span>
-                  <span>اسم السورة</span>
+                  <span>{t('اسم السورة')}</span>
                 </span>
               </th>
               <th className="p-4 hidden md:table-cell" style={{ width: '200px' }} dir="ltr">
                 <span className="block text-left">Name</span>
               </th>
-              <th className="p-4" style={{ width: '120px' }}>الآيات</th>
-              <th className="p-4" style={{ width: '140px' }}>النوع</th>
+              <th className="p-4" style={{ width: '120px' }}>{t('الآيات')}</th>
+              <th className="p-4" style={{ width: '140px' }}>{t('النوع')}</th>
               <th className="p-4" style={{ width: '140px' }}></th>
             </tr>
           </thead>
@@ -343,7 +347,7 @@ function SurahsList({ surahs, currentSurah, playSurah, favorites, toggleFavorite
                 </td>
                 <td className="p-4 transition-colors group-hover:text-white font-bold">
                   <span className={isPlaying ? 'text-spotify-green' : 'text-gray-300'}>
-                    {surah.verses} {surah.verses === 1 ? 'آية' : surah.verses === 2 ? 'آيتان' : surah.verses <= 10 ? 'آيات' : 'آية'}
+                    {tVerses(surah.verses)}
                   </span>
                 </td>
                 <td className="p-4">
@@ -352,7 +356,7 @@ function SurahsList({ surahs, currentSurah, playSurah, favorites, toggleFavorite
                       ? 'bg-gradient-to-r from-blue-500/20 to-blue-600/10 text-blue-300 border-blue-400/40 group-hover:from-blue-500/30 group-hover:to-blue-600/20 group-hover:border-blue-400/60 shadow-lg shadow-blue-500/10'
                       : 'bg-gradient-to-r from-green-500/20 to-green-600/10 text-green-300 border-green-400/40 group-hover:from-green-500/30 group-hover:to-green-600/20 group-hover:border-green-400/60 shadow-lg shadow-green-500/10'
                   }`}>
-                    {surah.revelationType === 'Meccan' ? '🕋 مكية' : '🕌 مدنية'}
+                    {t(surah.revelationType === 'Meccan' ? '🕋 مكية' : '🕌 مدنية')}
                   </span>
                 </td>
                 <td className="p-4">

@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { Search, Sparkles, Loader } from 'lucide-react';
 import { semanticSearchQuran } from '../services/quranaiAPI';
 import { usePlayerStore } from '../store/playerStore';
+import { useTranslation } from '../i18n';
 
 export default function SemanticSearch() {
+  const { t } = useTranslation();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -60,9 +62,9 @@ export default function SemanticSearch() {
       <div className="mb-8 animate-slideDown">
         <div className="flex items-center gap-3 mb-4">
           <Sparkles className="text-spotify-green" size={32} />
-          <h1 className="text-4xl font-bold">البحث الذكي</h1>
+          <h1 className="text-4xl font-bold">{t('البحث الذكي')}</h1>
         </div>
-        <p className="text-gray-400">ابحث في القرآن الكريم بالمعنى وليس بالكلمات</p>
+        <p className="text-gray-400">{t('ابحث في القرآن الكريم بالمعنى وليس بالكلمات')}</p>
       </div>
 
       {/* Search Box */}
@@ -75,7 +77,7 @@ export default function SemanticSearch() {
             />
             <input
               type="text"
-              placeholder="مثال: ابحث عن الآيات التي تتحدث عن الصبر والشكر..."
+              placeholder={t('مثال: ابحث عن الآيات التي تتحدث عن الصبر والشكر...')}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyPress={handleKeyPress}
@@ -98,7 +100,7 @@ export default function SemanticSearch() {
 
         {/* Example Queries */}
         <div className="mb-8">
-          <p className="text-sm text-gray-400 mb-3">أمثلة للبحث:</p>
+          <p className="text-sm text-gray-400 mb-3">{t('أمثلة للبحث:')}</p>
           <div className="flex flex-wrap gap-2">
             {exampleQueries.map((example, index) => (
               <button
@@ -117,7 +119,7 @@ export default function SemanticSearch() {
           <div className="flex items-start gap-3">
             <Sparkles className="text-spotify-green flex-shrink-0 mt-1" size={20} />
             <div>
-              <h3 className="font-semibold mb-1 text-spotify-green">ما هو البحث الذكي؟</h3>
+              <h3 className="font-semibold mb-1 text-spotify-green">{t('ما هو البحث الذكي؟')}</h3>
               <p className="text-sm text-gray-300">
                 البحث الذكي يستخدم الذكاء الاصطناعي للبحث بالمعنى وليس بالكلمات الدقيقة. 
                 يمكنك البحث عن مواضيع أو مفاهيم وسيجد لك الآيات المتعلقة بها حتى لو لم تحتوي على نفس الكلمات.
@@ -140,7 +142,7 @@ export default function SemanticSearch() {
       {isLoading && (
         <div className="flex flex-col items-center justify-center py-20 animate-fadeIn">
           <Loader className="animate-spin text-spotify-green mb-4" size={48} />
-          <p className="text-gray-400">جاري البحث...</p>
+          <p className="text-gray-400">{t('جاري البحث...')}</p>
         </div>
       )}
 
@@ -227,7 +229,7 @@ export default function SemanticSearch() {
       {!isLoading && !error && results.length === 0 && query && (
         <div className="text-center py-20 animate-fadeIn">
           <Search size={64} className="mx-auto text-gray-600 mb-4" />
-          <p className="text-gray-400">ابدأ البحث للعثور على الآيات</p>
+          <p className="text-gray-400">{t('ابدأ البحث للعثور على الآيات')}</p>
         </div>
       )}
     </div>

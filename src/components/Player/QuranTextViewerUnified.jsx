@@ -6,6 +6,7 @@ import audioPlayer from '../../services/audioPlayer';
 import { useModal } from '../../hooks/useModal';
 import MushafPage from './MushafPage';
 import quranService from '../../services/QuranService';
+import { useTranslation } from '../../i18n';
 
 /**
  * غلاف بسيط: بيمنع المحتوى من الاشتراك في الـ store وهو مقفول.
@@ -19,6 +20,7 @@ export default function QuranTextViewer({ isOpen, onClose }) {
 }
 
 function QuranTextViewerContent({ onClose }) {
+  const { t, tVerses } = useTranslation();
   const { currentSurah, currentReciter, currentTime } = usePlayerStore(
     useShallow((state) => ({
       currentSurah: state.currentSurah,
@@ -185,19 +187,19 @@ function QuranTextViewerContent({ onClose }) {
                 {currentSurah?.name}
               </h2>
               <p className="text-xs text-gray-400 truncate">
-                {currentSurah?.verses} آيات
+                {tVerses(currentSurah?.verses || 0)}
                 {reciterInfo && ` • ${reciterInfo.name || reciterInfo.nameEn}`}
               </p>
             </div>
           </div>
           {/* التبديل بين قائمة الآيات وصفحة المصحف */}
-          <div className="flex items-center gap-1 bg-black/30 rounded-lg p-1 flex-shrink-0 me-2" role="group" aria-label="طريقة العرض">
+          <div className="flex items-center gap-1 bg-black/30 rounded-lg p-1 flex-shrink-0 me-2" role="group" aria-label={t('طريقة العرض')}>
             <button
               onClick={() => setMode('text')}
               className={`p-1.5 rounded-md transition-colors ${mode === 'text' ? 'bg-spotify-green text-on-accent' : 'text-content-secondary hover:text-white'}`}
               aria-pressed={mode === 'text'}
-              aria-label="عرض النص كقائمة آيات"
-              title="قائمة الآيات"
+              aria-label={t('عرض النص كقائمة آيات')}
+              title={t('قائمة الآيات')}
             >
               <AlignRight size={16} />
             </button>
@@ -205,8 +207,8 @@ function QuranTextViewerContent({ onClose }) {
               onClick={() => setMode('mushaf')}
               className={`p-1.5 rounded-md transition-colors ${mode === 'mushaf' ? 'bg-spotify-green text-on-accent' : 'text-content-secondary hover:text-white'}`}
               aria-pressed={mode === 'mushaf'}
-              aria-label="عرض صفحة المصحف"
-              title="صفحة المصحف"
+              aria-label={t('عرض صفحة المصحف')}
+              title={t('صفحة المصحف')}
             >
               <BookOpen size={16} />
             </button>
@@ -227,7 +229,7 @@ function QuranTextViewerContent({ onClose }) {
           <button
             onClick={onClose}
             className="p-1.5 hover:bg-gray-700/60 rounded-lg transition-all hover:scale-110 active:scale-95 flex-shrink-0"
-            aria-label="إغلاق عارض النص"
+            aria-label={t('إغلاق عارض النص')}
           >
             <X size={20} className="text-gray-400 hover:text-white transition-colors" />
           </button>
@@ -242,8 +244,8 @@ function QuranTextViewerContent({ onClose }) {
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-20">
               <Loader className="animate-spin text-spotify-green mb-4" size={48} />
-              <p className="text-white text-lg mb-2">جاري تحميل التوقيتات الدقيقة...</p>
-              <p className="text-gray-400 text-sm">من mp3quran.net ⚡</p>
+              <p className="text-white text-lg mb-2">{t('جاري تحميل التوقيتات الدقيقة...')}</p>
+              <p className="text-gray-400 text-sm">{t('من mp3quran.net ⚡')}</p>
             </div>
           ) : mode === 'mushaf' ? (
             mushafTiming ? (
@@ -257,12 +259,12 @@ function QuranTextViewerContent({ onClose }) {
               </div>
             ) : (
               <div className="text-center py-20">
-                <p className="text-content-secondary">صفحة المصحف غير متاحة لهذا القارئ</p>
+                <p className="text-content-secondary">{t('صفحة المصحف غير متاحة لهذا القارئ')}</p>
               </div>
             )
           ) : ayahs.length === 0 ? (
             <div className="text-center py-20">
-              <p className="text-gray-400">لا توجد بيانات متاحة</p>
+              <p className="text-gray-400">{t('لا توجد بيانات متاحة')}</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -326,12 +328,12 @@ function QuranTextViewerContent({ onClose }) {
               <Zap className="text-spotify-green" size={16} />
               <CheckCircle className="text-spotify-green" size={14} />
               <span className="text-spotify-green font-semibold">
-                تزامن آية بآية • mp3quran.net
+                {t('تزامن آية بآية • mp3quran.net')}
               </span>
             </div>
             {timings.length > 0 && (
               <div className="text-gray-400">
-                {timings.length} آية موقّتة ⚡
+                {timings.length} {t('آية موقّتة')} ⚡
               </div>
             )}
           </div>

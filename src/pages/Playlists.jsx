@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { Play, Plus, Trash2, Music, X } from 'lucide-react';
 import { usePlayerStore } from '../store/playerStore';
 import PlaylistDetail from './PlaylistDetail';
+import { useTranslation } from '../i18n';
 
 export default function Playlists() {
+  const { t } = useTranslation();
   const playlists = usePlayerStore((state) => state.playlists);
   const createPlaylist = usePlayerStore((state) => state.createPlaylist);
   const deletePlaylist = usePlayerStore((state) => state.deletePlaylist);
@@ -39,15 +41,15 @@ export default function Playlists() {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-4xl font-bold mb-2">قوائم التشغيل</h1>
-          <p className="text-gray-400">أنشئ قوائم تشغيل مخصصة لسورك المفضلة</p>
+          <h1 className="text-4xl font-bold mb-2">{t('قوائم التشغيل')}</h1>
+          <p className="text-gray-400">{t('أنشئ قوائم تشغيل مخصصة لسورك المفضلة')}</p>
         </div>
         <button
           onClick={() => setShowCreateModal(true)}
           className="flex items-center gap-2 px-6 py-3 bg-spotify-green hover:bg-spotify-darkGreen rounded-full text-on-accent font-bold transition-all hover:scale-105"
         >
           <Plus size={20} />
-          <span>قائمة جديدة</span>
+          <span>{t('قائمة جديدة')}</span>
         </button>
       </div>
 
@@ -55,13 +57,13 @@ export default function Playlists() {
       {playlists.length === 0 ? (
         <div className="text-center py-20 animate-fadeIn">
           <Music size={64} className="mx-auto mb-4 text-gray-600" />
-          <h3 className="text-xl font-bold mb-2 text-gray-400">لا توجد قوائم تشغيل</h3>
-          <p className="text-content-secondary mb-6">أنشئ قائمة تشغيل جديدة للبدء</p>
+          <h3 className="text-xl font-bold mb-2 text-gray-400">{t('لا توجد قوائم تشغيل')}</h3>
+          <p className="text-content-secondary mb-6">{t('أنشئ قائمة تشغيل جديدة للبدء')}</p>
           <button
             onClick={() => setShowCreateModal(true)}
             className="px-6 py-3 bg-spotify-green hover:bg-spotify-darkGreen rounded-full text-on-accent font-bold transition-all"
           >
-            إنشاء قائمة تشغيل
+            {t('إنشاء قائمة تشغيل')}
           </button>
         </div>
       ) : (
@@ -113,7 +115,7 @@ export default function Playlists() {
                   className="flex-1 px-3 py-2 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 rounded-lg text-red-400 text-sm font-medium transition-all flex items-center justify-center gap-1.5"
                 >
                   <Trash2 size={14} />
-                  حذف
+                  {t('حذف')}
                 </button>
               </div>
             </div>
@@ -126,7 +128,7 @@ export default function Playlists() {
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 animate-fadeIn">
           <div className="bg-spotify-lightGray rounded-xl p-8 max-w-md w-full mx-4 animate-slideUp">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold">قائمة تشغيل جديدة</h2>
+              <h2 className="text-2xl font-bold">{t('قائمة تشغيل جديدة')}</h2>
               <button
                 onClick={() => setShowCreateModal(false)}
                 className="text-gray-400 hover:text-white transition-colors"
@@ -137,23 +139,23 @@ export default function Playlists() {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-2">اسم القائمة</label>
+                <label className="block text-sm font-medium mb-2">{t('اسم القائمة')}</label>
                 <input
                   type="text"
                   value={newPlaylistName}
                   onChange={(e) => setNewPlaylistName(e.target.value)}
-                  placeholder="مثال: سور الصباح"
+                  placeholder={t('مثال: سور الصباح')}
                   className="w-full px-4 py-3 bg-spotify-gray border border-gray-700/50 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-spotify-green"
                   autoFocus
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">الوصف (اختياري)</label>
+                <label className="block text-sm font-medium mb-2">{t('الوصف (اختياري)')}</label>
                 <textarea
                   value={newPlaylistDesc}
                   onChange={(e) => setNewPlaylistDesc(e.target.value)}
-                  placeholder="أضف وصفاً للقائمة..."
+                  placeholder={t('أضف وصفاً للقائمة...')}
                   rows={3}
                   className="w-full px-4 py-3 bg-spotify-gray border border-gray-700/50 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-spotify-green resize-none"
                 />
@@ -165,13 +167,13 @@ export default function Playlists() {
                   disabled={!newPlaylistName.trim()}
                   className="flex-1 px-6 py-3 bg-spotify-green hover:bg-spotify-darkGreen disabled:bg-gray-700 disabled:cursor-not-allowed rounded-full text-on-accent font-bold transition-all"
                 >
-                  إنشاء
+                  {t('إنشاء')}
                 </button>
                 <button
                   onClick={() => setShowCreateModal(false)}
                   className="flex-1 px-6 py-3 bg-white/10 hover:bg-white/20 rounded-full text-white font-bold transition-all"
                 >
-                  إلغاء
+                  {t('إلغاء')}
                 </button>
               </div>
             </div>

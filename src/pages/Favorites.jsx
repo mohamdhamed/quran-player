@@ -2,8 +2,10 @@ import { Play, Heart } from 'lucide-react';
 import { usePlayerStore } from '../store/playerStore';
 import { EmptyFavorites } from '../components/EmptyStates/EmptyStates';
 import WaveAnimation from '../components/UI/WaveAnimation';
+import { useTranslation } from '../i18n';
 
 export default function Favorites() {
+  const { t, tVerses } = useTranslation();
   // استخدام selectors لتجنب re-render غير ضروري
   const favorites = usePlayerStore((state) => state.favorites);
   const playSurah = usePlayerStore((state) => state.playSurah);
@@ -13,7 +15,7 @@ export default function Favorites() {
   if (favorites.length === 0) {
     return (
       <div className="p-8 pb-32 animate-fadeIn">
-        <h1 className="text-4xl font-bold mb-8 animate-slideDown">المفضلة</h1>
+        <h1 className="text-4xl font-bold mb-8 animate-slideDown">{t('المفضلة')}</h1>
         <EmptyFavorites />
       </div>
     );
@@ -23,7 +25,7 @@ export default function Favorites() {
     <div className="p-8 pb-32 animate-fadeIn">
       {/* Header */}
       <div className="mb-8 animate-slideDown">
-        <h1 className="text-4xl font-bold mb-2">المفضلة</h1>
+        <h1 className="text-4xl font-bold mb-2">{t('المفضلة')}</h1>
         <p className="text-gray-400">{favorites.length} سورة</p>
       </div>
 
@@ -81,7 +83,7 @@ export default function Favorites() {
                     سورة {surah.name}
                   </h3>
                   <p className="text-xs text-content-secondary mt-1 transition-colors duration-300 group-hover:text-gray-300">
-                    {surah.verses} آية • {isMeccan ? 'مكية' : 'مدنية'}
+                    {tVerses(surah.verses)} • {t(isMeccan ? 'مكية' : 'مدنية')}
                   </p>
                 </div>
                 <div className="flex flex-col gap-2">

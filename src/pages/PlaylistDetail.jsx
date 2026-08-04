@@ -1,8 +1,10 @@
 import { Play, Trash2, ArrowLeft, Music } from 'lucide-react';
 import { usePlayerStore } from '../store/playerStore';
 import WaveAnimation from '../components/UI/WaveAnimation';
+import { useTranslation } from '../i18n';
 
 export default function PlaylistDetail({ playlistId, onBack }) {
+  const { t, tVerses } = useTranslation();
   const playlist = usePlayerStore((state) => state.getPlaylist(playlistId));
   const removeFromPlaylist = usePlayerStore((state) => state.removeFromPlaylist);
   const playSurah = usePlayerStore((state) => state.playSurah);
@@ -12,7 +14,7 @@ export default function PlaylistDetail({ playlistId, onBack }) {
   if (!playlist) {
     return (
       <div className="p-8 pb-32" dir="rtl">
-        <p className="text-gray-400">القائمة غير موجودة</p>
+        <p className="text-gray-400">{t('القائمة غير موجودة')}</p>
       </div>
     );
   }
@@ -31,7 +33,7 @@ export default function PlaylistDetail({ playlistId, onBack }) {
         className="flex items-center gap-2 text-gray-400 hover:text-white mb-6 transition-colors"
       >
         <ArrowLeft size={20} />
-        <span>رجوع</span>
+        <span>{t('رجوع')}</span>
       </button>
 
       <div className="flex items-start gap-6 mb-8">
@@ -42,7 +44,7 @@ export default function PlaylistDetail({ playlistId, onBack }) {
 
         {/* Playlist Info */}
         <div className="flex-1">
-          <p className="text-sm text-gray-400 mb-2">قائمة تشغيل</p>
+          <p className="text-sm text-gray-400 mb-2">{t('قائمة تشغيل')}</p>
           <h1 className="text-5xl font-bold mb-4">{playlist.name}</h1>
           {playlist.description && (
             <p className="text-gray-300 mb-4">{playlist.description}</p>
@@ -60,7 +62,7 @@ export default function PlaylistDetail({ playlistId, onBack }) {
               className="mt-6 px-8 py-3 bg-spotify-green hover:bg-spotify-darkGreen rounded-full text-on-accent font-bold transition-all hover:scale-105 flex items-center gap-2"
             >
               <Play size={20} fill="white" />
-              <span>تشغيل الكل</span>
+              <span>{t('تشغيل الكل')}</span>
             </button>
           )}
         </div>
@@ -70,8 +72,8 @@ export default function PlaylistDetail({ playlistId, onBack }) {
       {playlist.surahs.length === 0 ? (
         <div className="text-center py-20">
           <Music size={64} className="mx-auto mb-4 text-gray-600" />
-          <p className="text-gray-400">القائمة فارغة</p>
-          <p className="text-sm text-content-secondary mt-2">أضف سوراً من صفحة المكتبة</p>
+          <p className="text-gray-400">{t('القائمة فارغة')}</p>
+          <p className="text-sm text-content-secondary mt-2">{t('أضف سوراً من صفحة المكتبة')}</p>
         </div>
       ) : (
         <div className="bg-spotify-gray/30 rounded-xl overflow-hidden">
@@ -79,9 +81,9 @@ export default function PlaylistDetail({ playlistId, onBack }) {
             <thead>
               <tr className="border-b border-gray-800/50">
                 <th className="p-4 text-right text-sm text-gray-400 font-medium">#</th>
-                <th className="p-4 text-right text-sm text-gray-400 font-medium">السورة</th>
-                <th className="p-4 text-right text-sm text-gray-400 font-medium">الآيات</th>
-                <th className="p-4 text-right text-sm text-gray-400 font-medium">النوع</th>
+                <th className="p-4 text-right text-sm text-gray-400 font-medium">{t('السورة')}</th>
+                <th className="p-4 text-right text-sm text-gray-400 font-medium">{t('الآيات')}</th>
+                <th className="p-4 text-right text-sm text-gray-400 font-medium">{t('النوع')}</th>
                 <th className="p-4"></th>
               </tr>
             </thead>
@@ -118,7 +120,7 @@ export default function PlaylistDetail({ playlistId, onBack }) {
                       </div>
                     </td>
                     <td className="p-4">
-                      <span className="text-sm text-gray-400">{surah.verses} آية</span>
+                      <span className="text-sm text-gray-400">{tVerses(surah.verses)}</span>
                     </td>
                     <td className="p-4">
                       <span className={`px-3 py-1 rounded-full text-xs ${

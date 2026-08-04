@@ -5,6 +5,7 @@ import WaveAnimation from '../../UI/WaveAnimation';
 import PlayerControls from './PlayerControls';
 import ProgressBar from './ProgressBar';
 import { useModal } from '../../../hooks/useModal';
+import { useTranslation } from '../../../i18n';
 
 /**
  * مكون المشغل الموسع (Popup)
@@ -23,6 +24,7 @@ function ExpandedPlayer({
     onToggleFavorite,
     isFavorite = false
 }) {
+  const { t, tVerses } = useTranslation();
     const expandedRef = useModal(isOpen, onClose);
 
     // إغلاق عند الضغط خارج المكون
@@ -69,7 +71,7 @@ function ExpandedPlayer({
                     <button
                         onClick={onClose}
                         className="absolute top-3 left-3 p-1.5 hover:bg-gray-700/60 rounded-lg transition-all hover:scale-110 active:scale-95 group"
-                        aria-label="إغلاق"
+                        aria-label={t('إغلاق')}
                     >
                         <ChevronDown size={20} className="text-gray-400 group-hover:text-white transition-colors" />
                     </button>
@@ -103,7 +105,7 @@ function ExpandedPlayer({
                                 </span>
                             </div>
                             <p className="text-sm text-gray-400 mb-1">{currentSurah.nameEn}</p>
-                            <p className="text-spotify-green text-xs">{currentSurah.verses} آية</p>
+                            <p className="text-spotify-green text-xs">{tVerses(currentSurah.verses)}</p>
                         </div>
 
                         {/* Progress Bar */}

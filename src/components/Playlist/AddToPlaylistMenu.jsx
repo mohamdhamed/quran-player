@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { Check } from 'lucide-react';
 import { usePlayerStore } from '../../store/playerStore';
+import { useTranslation } from '../../i18n';
 
 export default function AddToPlaylistMenu({ surah, onClose }) {
+  const { t } = useTranslation();
   const playlists = usePlayerStore((state) => state.playlists);
   const addToPlaylist = usePlayerStore((state) => state.addToPlaylist);
   const [addedTo, setAddedTo] = useState(new Set());
@@ -20,8 +22,8 @@ export default function AddToPlaylistMenu({ surah, onClose }) {
   if (playlists.length === 0) {
     return (
       <div className="absolute left-0 top-full mt-2 bg-spotify-lightGray border border-gray-700/50 rounded-lg shadow-xl p-4 z-10 min-w-[200px]">
-        <p className="text-sm text-gray-400 text-center">لا توجد قوائم تشغيل</p>
-        <p className="text-xs text-content-secondary text-center mt-1">أنشئ قائمة من صفحة القوائم</p>
+        <p className="text-sm text-gray-400 text-center">{t('لا توجد قوائم تشغيل')}</p>
+        <p className="text-xs text-content-secondary text-center mt-1">{t('أنشئ قائمة من صفحة القوائم')}</p>
       </div>
     );
   }
@@ -29,7 +31,7 @@ export default function AddToPlaylistMenu({ surah, onClose }) {
   return (
     <div className="absolute left-0 top-full mt-2 bg-spotify-lightGray border border-gray-700/50 rounded-lg shadow-xl overflow-hidden z-10 min-w-[220px] animate-slideDown">
       <div className="p-2 border-b border-gray-700/50">
-        <p className="text-xs text-gray-400 font-medium px-2">إضافة إلى قائمة تشغيل</p>
+        <p className="text-xs text-gray-400 font-medium px-2">{t('إضافة إلى قائمة تشغيل')}</p>
       </div>
       <div className="max-h-60 overflow-y-auto">
         {playlists.map((playlist) => {
