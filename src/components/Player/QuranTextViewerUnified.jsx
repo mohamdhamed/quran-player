@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { X, Loader, CheckCircle, Zap } from 'lucide-react';
 import { usePlayerStore } from '../../store/playerStore';
+import { useModal } from '../../hooks/useModal';
 import quranService from '../../services/QuranService';
 
 /**
@@ -30,7 +31,8 @@ function QuranTextViewerContent({ onClose }) {
   const [reciterInfo, setReciterInfo] = useState(null);
   const scrollContainerRef = useRef(null);
   const ayahRefs = useRef({});
-  const textViewerRef = useRef(null);
+  // بيدّي الفوكس للمودال، بيلفّه جواه، وبيقفل بـ Escape
+  const textViewerRef = useModal(true, onClose);
 
   // تحميل السورة والتوقيتات
   useEffect(() => {
@@ -120,6 +122,10 @@ function QuranTextViewerContent({ onClose }) {
       {/* Popup على اليمين */}
       <div 
         ref={textViewerRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={`نص سورة ${currentSurah?.name || ''}`}
+        tabIndex={-1}
         className="fixed bottom-24 left-6 w-[500px] max-h-[70vh] bg-spotify-gray/98 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-700/50 z-50 flex flex-col animate-slideUp pointer-events-auto"
         style={{ 
           animation: 'slideUpScale 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
@@ -146,6 +152,7 @@ function QuranTextViewerContent({ onClose }) {
           <button
             onClick={onClose}
             className="p-1.5 hover:bg-gray-700/60 rounded-lg transition-all hover:scale-110 active:scale-95 flex-shrink-0"
+            aria-label="إغلاق عارض النص"
           >
             <X size={20} className="text-gray-400 hover:text-white transition-colors" />
           </button>

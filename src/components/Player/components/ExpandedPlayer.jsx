@@ -1,9 +1,10 @@
-import { memo, useRef, useEffect } from 'react';
+import { memo, useEffect } from 'react';
 import { ChevronDown, Heart } from 'lucide-react';
 import PropTypes from 'prop-types';
 import WaveAnimation from '../../UI/WaveAnimation';
 import PlayerControls from './PlayerControls';
 import ProgressBar from './ProgressBar';
+import { useModal } from '../../../hooks/useModal';
 
 /**
  * مكون المشغل الموسع (Popup)
@@ -22,7 +23,7 @@ function ExpandedPlayer({
     onToggleFavorite,
     isFavorite
 }) {
-    const expandedRef = useRef(null);
+    const expandedRef = useModal(isOpen, onClose);
 
     // إغلاق عند الضغط خارج المكون
     useEffect(() => {
@@ -53,6 +54,10 @@ function ExpandedPlayer({
             {/* Expanded Popup */}
             <div
                 ref={expandedRef}
+                role="dialog"
+                aria-modal="true"
+                aria-label={`المشغل الموسع - سورة ${currentSurah?.name || ''}`}
+                tabIndex={-1}
                 className="fixed bottom-24 right-6 w-96 bg-spotify-gray/98 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-700/50 z-50 animate-slideUp pointer-events-auto"
                 style={{
                     animation: 'slideUpScale 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',

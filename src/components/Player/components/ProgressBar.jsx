@@ -1,7 +1,8 @@
-import { memo, useRef } from 'react';
+import { memo, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { usePlayerLogic } from '../hooks/usePlayerLogic';
 import { usePlayerStore } from '../../../store/playerStore';
+import audioPlayer from '../../../services/audioPlayer';
 
 /**
  * مكون شريط التقدم
@@ -36,11 +37,58 @@ function ProgressBar({
     const handleLocalSeek = (e) => handleSeek(e, localProgressRef);
     const handleLocalHover = (e) => handleProgressHover(e, localProgressRef);
 
+    /**
+     * التنقل بالكيبورد - قبل كده كان التنقل بالماوس بس، يعني مستخدم
+     * الكيبورد أو قارئ الشاشة ما كانش يقدر يتحرك جوه السورة خالص.
+     * الأسهم بتتحرك 5 ثواني، PageUp/Down دقيقة، Home/End للبداية والنهاية.
+     * ملاحظة RTL: السهم الشمال بيقدّم واليمين بيرجّع، زي اتجاه القراءة.
+     */
+    const handleKeyDown = useCallback((e) => {
+        if (!duration) return;
+
+        const STEP = 5;
+        const BIG_STEP = 60;
+        let next = null;
+
+        switch (e.key) {
+            case 'ArrowLeft': next = currentTime + STEP; break;
+            case 'ArrowRight': next = currentTime - STEP; break;
+            case 'ArrowUp': next = currentTime + STEP; break;
+            case 'ArrowDown': next = currentTime - STEP; break;
+            case 'PageUp': next = currentTime + BIG_STEP; break;
+            case 'PageDown': next = currentTime - BIG_STEP; break;
+            case 'Home': next = 0; break;
+            case 'End': next = duration; break;
+            default: return;
+        }
+
+        // نوقف الحدث هنا عشان ما يوصلش لاختصارات المشغل العامة
+        e.preventDefault();
+        e.stopPropagation();
+
+        const clamped = Math.min(duration, Math.max(0, next));
+        audioPlayer.seek(clamped);
+        setCurrentTime(clamped);
+    }, [currentTime, duration, setCurrentTime]);
+
+    // خصائص مشتركة تخلي الشريط عنصر slider حقيقي لقارئات الشاشة
+    const sliderProps = {
+        role: 'slider',
+        tabIndex: 0,
+        'aria-label': 'موضع التشغيل داخل السورة',
+        'aria-valuemin': 0,
+        'aria-valuemax': Math.round(duration) || 0,
+        'aria-valuenow': Math.round(currentTime) || 0,
+        'aria-valuetext': `${formatTime(currentTime)} من ${formatTime(duration)}`,
+        onKeyDown: handleKeyDown
+    };
+
     if (variant === 'compact') {
         return (
             <div className="w-full">
                 <div
                     ref={localProgressRef}
+                    {...sliderProps}
                     className="relative h-1.5 bg-gray-700/50 rounded-full cursor-pointer overflow-hidden group"
                     onClick={handleLocalSeek}
                     onMouseMove={handleLocalHover}
@@ -88,6 +136,7 @@ function ProgressBar({
                 <div className="flex-1 relative">
                     <div
                         ref={localProgressRef}
+                        {...sliderProps}
                         className="h-1.5 bg-gray-700/60 rounded-full cursor-pointer relative group transition-all duration-200 hover:h-2.5"
                         onClick={handleLocalSeek}
                         onMouseMove={handleLocalHover}
