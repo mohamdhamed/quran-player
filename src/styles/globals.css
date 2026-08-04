@@ -4,6 +4,39 @@
 @tailwind components;
 @tailwind utilities;
 
+/**
+ * ═══════════════════════════════════════════════════════════════
+ * رموز التصميم (Design Tokens)
+ * ═══════════════════════════════════════════════════════════════
+ * القيم هنا هي المصدر الوحيد للألوان. tailwind.config بيشاور عليها،
+ * فأي لون بيتغيّر من مكان واحد بدل ما يتلاحق في 291 موضع.
+ *
+ * الصيغة "R G B" من غير rgb() عشان Tailwind يقدر يضيف الشفافية:
+ * bg-spotify-green/20 بيشتغل عادي.
+ *
+ * الثيم الفاتح لما ييجي هيبقى إعادة تعريف للمتغيرات دي تحت
+ * [data-theme="light"] وخلاص - من غير لمس أي مكوّن.
+ */
+:root {
+  /* الأسطح */
+  --surface-base: 0 0 0;
+  --surface-raised: 18 18 18;
+  --surface-overlay: 40 40 40;
+
+  /* النصوص */
+  --content-primary: 255 255 255;
+  --content-secondary: 156 163 175; /* تباين 7:1 على الأسود */
+  --content-muted: 107 114 128; /* للزخرفة فقط - تحت معيار WCAG للنصوص */
+
+  /* اللون المميز */
+  --accent: 29 185 84;
+  --accent-hover: 26 163 74;
+
+  /* تمييز نوع السورة */
+  --meccan: 96 165 250;
+  --medinan: 74 222 128;
+}
+
 @layer base {
   body {
     @apply bg-black text-white font-sans antialiased;
@@ -116,7 +149,129 @@
   .surah-card:hover {
     @apply bg-gray-700;
     transform: translateY(-4px) scale(1.01);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(29, 185, 84, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgb(var(--accent) / 0.1);
+  }
+
+  /**
+   * طبقة خلفية التطبيق
+   *
+   * الفكرة أصلها من فرع update-v3 اللي مكملش: بدل ما النقش يتحط
+   * inline في App.jsx ويسكرول مع المحتوى، بقى طبقة CSS ثابتة.
+   *   - الأساس: متدرّج بطيء بيدّي إحساس بالعمق
+   *   - ::before: شبكة خطوط خفيفة جداً
+   *   - ::after: النقاط الإسلامية (نفس نقش master الحالي)
+   */
+  .app-pattern {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      135deg,
+      rgb(var(--surface-base)) 0%,
+      rgb(var(--surface-raised) / 0.6) 25%,
+      rgb(var(--surface-overlay) / 0.35) 50%,
+      rgb(var(--surface-raised) / 0.6) 75%,
+      rgb(var(--surface-base)) 100%
+    );
+    background-size: 400% 400%;
+    animation: gradientShift 20s ease infinite;
+  }
+
+  .app-pattern::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.35;
+    background-image: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgb(var(--accent) / 0.03) 2px,
+        rgb(var(--accent) / 0.03) 4px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 2px,
+        rgb(var(--accent) / 0.03) 2px,
+        rgb(var(--accent) / 0.03) 4px
+      );
+  }
+
+  .app-pattern::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.6;
+    background-image: radial-gradient(
+        circle at 25% 25%,
+        rgb(var(--accent) / 0.2) 1.5px,
+        transparent 1.5px
+      ),
+      radial-gradient(circle at 75% 75%, rgb(var(--accent) / 0.2) 1.5px, transparent 1.5px),
+      radial-gradient(circle at 25% 75%, rgb(var(--accent) / 0.15) 1px, transparent 1px),
+      radial-gradient(circle at 75% 25%, rgb(var(--accent) / 0.15) 1px, transparent 1px),
+      radial-gradient(circle at 50% 50%, rgb(var(--accent) / 0.18) 2px, transparent 2px);
+    background-size: 100px 100px;
+    animation: patternFloat 60s linear infinite;
+  }
+
+  @keyframes gradientShift {
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  /**
+   * كارت الوصول السريع - كان الـ hover بتاعه متعمول بـ JS
+   * (onMouseEnter بيعدّل style مباشرة)، وده بيتخطى الـ transitions
+   * وبيمنع :focus-visible من إظهار نفس التأثير لمستخدم الكيبورد
+   */
+  .quick-card {
+    @apply bg-spotify-lightGray rounded-lg p-6 cursor-pointer text-center w-full;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease,
+      background-color 0.3s ease;
+  }
+
+  .quick-card:hover,
+  .quick-card:focus-visible {
+    @apply bg-gray-700;
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+  }
+
+  .quick-card__icon {
+    @apply text-5xl mb-3 inline-block;
+    transition: transform 0.3s ease;
+  }
+
+  .quick-card:hover .quick-card__icon,
+  .quick-card:focus-visible .quick-card__icon {
+    transform: scale(1.25) rotate(10deg);
+  }
+
+  /**
+   * كارت المكتبة بميلان يتبع الماوس.
+   * الزاوية بتتحدّث كمتغيرات CSS من ref مباشرةً - قبل كده كانت في
+   * React state، يعني re-render مع كل بكسل حركة ماوس.
+   */
+  .tilt-card {
+    transform: perspective(1000px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg))
+      scale(var(--tilt-scale, 1));
+    transform-style: preserve-3d;
+    transition: transform 0.15s ease-out, border-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  }
+
+  .group:hover .tilt-card,
+  .group:focus-within .tilt-card {
+    --tilt-scale: 1.05;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgb(var(--accent) / 0.2);
   }
 
   /* Play button */
