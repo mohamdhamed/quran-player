@@ -71,7 +71,7 @@ const SurahCard = memo(function SurahCard({ surah, isCurrentSurah, onPlay }) {
           <h3 className={`text-lg font-semibold arabic-text mb-1 transition-colors duration-300 group-hover:${typeColors.text}`}>
             سورة {surah.name}
           </h3>
-          <p className="text-xs text-gray-500 mt-1 transition-colors duration-300 group-hover:text-gray-300">
+          <p className="text-xs text-content-secondary mt-1 transition-colors duration-300 group-hover:text-gray-300">
             {surah.verses} آية • {isMeccan ? 'مكية' : 'مدنية'}
           </p>
         </div>
@@ -169,7 +169,7 @@ export default function Home() {
             return (
               <button
                 key={item.surah.number}
-                className={`bg-spotify-lightGray hover:bg-gray-700 rounded-lg p-6 cursor-pointer text-center animate-scaleIn ${delayClass} w-full`}
+                className={`quick-card animate-scaleIn ${delayClass}`}
                 onClick={() => playSurah(item.surah)}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') {
@@ -178,26 +178,8 @@ export default function Home() {
                   }
                 }}
                 aria-label={`${item.desc} - سورة ${item.surah.name}`}
-                tabIndex={0}
-                style={{
-                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                  transform: 'scale(1)',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-8px) scale(1.02)';
-                  e.currentTarget.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.6)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'scale(1)';
-                  e.currentTarget.style.boxShadow = 'none';
-                }}
               >
-                <div
-                  className="text-5xl mb-3 transition-transform duration-300"
-                  style={{ display: 'inline-block' }}
-                  onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.25) rotate(10deg)'}
-                  onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1) rotate(0deg)'}
-                >
+                <div className="quick-card__icon" aria-hidden="true">
                   {item.emoji}
                 </div>
                 <h3 className="text-lg font-semibold arabic-text mb-1 transition-colors duration-300 hover:text-spotify-green">{item.surah.name}</h3>

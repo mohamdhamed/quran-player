@@ -107,19 +107,8 @@ function App() {
 
         {/* Main Content */}
         <main className="flex-1 overflow-y-auto bg-gradient-to-b from-spotify-gray to-black pb-32 md:pb-24 relative">
-          {/* Islamic Pattern Overlay */}
-          <div className="absolute inset-0 pointer-events-none z-0 opacity-60" style={{
-            backgroundImage: `
-              radial-gradient(circle at 25% 25%, rgba(29, 185, 84, 0.2) 1.5px, transparent 1.5px),
-              radial-gradient(circle at 75% 75%, rgba(29, 185, 84, 0.2) 1.5px, transparent 1.5px),
-              radial-gradient(circle at 25% 75%, rgba(29, 185, 84, 0.15) 1px, transparent 1px),
-              radial-gradient(circle at 75% 25%, rgba(29, 185, 84, 0.15) 1px, transparent 1px),
-              radial-gradient(circle at 50% 50%, rgba(29, 185, 84, 0.18) 2px, transparent 2px)
-            `,
-            backgroundSize: '100px 100px',
-            animation: 'patternFloat 60s linear infinite',
-            minHeight: '100%'
-          }}></div>
+          {/* طبقة النقش - معرّفة في globals.css */}
+          <div className="app-pattern" aria-hidden="true"></div>
           <div className="relative z-10">
             <Suspense fallback={<PageLoader />}>
             <Routes>

@@ -82,7 +82,7 @@ export default function Sidebar({ currentPage, setCurrentPage }) {
         <div className="flex-1"></div>
 
         {/* Footer */}
-        <div className="text-xs text-gray-500 text-center animate-fadeIn transition-colors hover:text-gray-400">
+        <div className="text-xs text-content-secondary text-center animate-fadeIn transition-colors hover:text-gray-400">
           <p>مشغل القرآن الكريم</p>
           <p className="mt-1">الإصدار 1.0</p>
         </div>

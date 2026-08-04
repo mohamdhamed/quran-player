@@ -520,7 +520,7 @@ const Settings = memo(function Settings() {
               <p className="text-sm text-gray-400 mb-2">
                 صُنع بـ <span className="text-red-500">❤️</span> للمسلمين في كل مكان
               </p>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-content-secondary">
                 جميع الحقوق محفوظة © 2025 مشغل القرآن الكريم
               </p>
             </div>

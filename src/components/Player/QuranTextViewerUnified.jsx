@@ -212,7 +212,7 @@ function QuranTextViewerContent({ onClose }) {
                         </p>
                         {timing && (
                           <div className="mt-2 flex items-center gap-4 text-xs">
-                            <div className="text-gray-500">
+                            <div className="text-content-secondary">
                               ⏱️ {timing.startTime.toFixed(1)}s - {timing.endTime.toFixed(1)}s
                             </div>
                             <div className="text-spotify-green">
@@ -246,7 +246,7 @@ function QuranTextViewerContent({ onClose }) {
             )}
           </div>
           {reciterInfo && (
-            <div className="mt-2 text-xs text-gray-500">
+            <div className="mt-2 text-xs text-content-secondary">
               🎙️ القارئ: {reciterInfo.name} • {reciterInfo.rewaya || 'حفص عن عاصم'}
             </div>
           )}

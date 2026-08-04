@@ -196,7 +196,7 @@ export default function PlayerBar() {
   if (!currentSurah) {
     return (
       <div className="fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-t from-black via-spotify-gray to-transparent px-6 py-4 border-t border-gray-800/50">
-        <div className="text-center text-gray-500 text-sm">
+        <div className="text-center text-content-secondary text-sm">
           <p>اختر سورة للبدء 🎵</p>
         </div>
       </div>

@@ -56,7 +56,7 @@ export default function Playlists() {
         <div className="text-center py-20 animate-fadeIn">
           <Music size={64} className="mx-auto mb-4 text-gray-600" />
           <h3 className="text-xl font-bold mb-2 text-gray-400">لا توجد قوائم تشغيل</h3>
-          <p className="text-gray-500 mb-6">أنشئ قائمة تشغيل جديدة للبدء</p>
+          <p className="text-content-secondary mb-6">أنشئ قائمة تشغيل جديدة للبدء</p>
           <button
             onClick={() => setShowCreateModal(true)}
             className="px-6 py-3 bg-spotify-green hover:bg-spotify-darkGreen rounded-full text-white font-bold transition-all"
@@ -96,7 +96,7 @@ export default function Playlists() {
                 <p className="text-sm text-gray-400 mb-3 line-clamp-2">{playlist.description}</p>
               )}
               
-              <div className="flex items-center gap-4 text-xs text-gray-500 mb-4">
+              <div className="flex items-center gap-4 text-xs text-content-secondary mb-4">
                 <span className="flex items-center gap-1">
                   <Music size={14} />
                   {playlist.surahs.length} سورة

@@ -71,7 +71,7 @@ export default function PlaylistDetail({ playlistId, onBack }) {
         <div className="text-center py-20">
           <Music size={64} className="mx-auto mb-4 text-gray-600" />
           <p className="text-gray-400">القائمة فارغة</p>
-          <p className="text-sm text-gray-500 mt-2">أضف سوراً من صفحة المكتبة</p>
+          <p className="text-sm text-content-secondary mt-2">أضف سوراً من صفحة المكتبة</p>
         </div>
       ) : (
         <div className="bg-spotify-gray/30 rounded-xl overflow-hidden">

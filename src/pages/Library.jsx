@@ -1,4 +1,4 @@
-import { useState, useMemo, memo } from 'react';
+import { useState, useMemo, memo, useRef } from 'react';
 import { Play, Search, Heart, BookOpen, ListPlus } from 'lucide-react';
 import { usePlayerStore } from '../store/playerStore';
 import surahsData from '../data/surahs.json';
@@ -133,44 +133,40 @@ const Library = memo(function Library() {
 
 // Surah Card Component (Grid)
 function SurahCard({ surah, isPlaying, playSurah, isFavorite, toggleFavorite, delay = 0 }) {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [isHovered, setIsHovered] = useState(false);
+  const tiltRef = useRef(null);
 
+  // الزاوية بتتكتب كمتغيرات CSS على العنصر مباشرةً.
+  // كانت في useState، يعني كل حركة ماوس = re-render للكارت.
   const handleMouseMove = (e) => {
+    const el = tiltRef.current;
+    if (!el) return;
+
     const rect = e.currentTarget.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 20; // -10 to 10
-    const y = ((e.clientY - rect.top) / rect.height - 0.5) * -20; // -10 to 10
-    setMousePosition({ x, y });
+    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 20;
+    const y = ((e.clientY - rect.top) / rect.height - 0.5) * -20;
+
+    el.style.setProperty('--tilt-y', `${x}deg`);
+    el.style.setProperty('--tilt-x', `${y}deg`);
+  };
+
+  const resetTilt = () => {
+    const el = tiltRef.current;
+    if (!el) return;
+    el.style.setProperty('--tilt-y', '0deg');
+    el.style.setProperty('--tilt-x', '0deg');
   };
 
   return (
     <div 
       className="group cursor-pointer animate-slideUp relative"
-      style={{ 
-        animationDelay: `${delay}ms`,
-        transformStyle: 'preserve-3d',
-        perspective: '1000px'
-      }}
+      style={{ animationDelay: `${delay}ms` }}
       onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => {
-        setIsHovered(false);
-        setMousePosition({ x: 0, y: 0 });
-      }}
+      onMouseLeave={resetTilt}
       onClick={() => playSurah(surah)}
     >
       <div
-        className="bg-gradient-to-br from-spotify-lightGray to-gray-800/50 rounded-2xl p-6 hover:from-gray-700/70 hover:to-gray-800/70 transition-all duration-300 relative overflow-hidden h-72 border border-gray-700/30 hover:border-spotify-green/50"
-        style={{
-          transform: isHovered 
-            ? `rotateX(${mousePosition.y}deg) rotateY(${mousePosition.x}deg) scale(1.05)` 
-            : 'rotateX(0deg) rotateY(0deg) scale(1)',
-          transition: 'transform 0.15s ease-out, border-color 0.3s ease',
-          transformStyle: 'preserve-3d',
-          boxShadow: isHovered 
-            ? '0 20px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(29, 185, 84, 0.2)' 
-            : '0 8px 24px rgba(0, 0, 0, 0.4)'
-        }}
+        ref={tiltRef}
+        className="tilt-card bg-gradient-to-br from-spotify-lightGray to-gray-800/50 rounded-2xl p-6 hover:from-gray-700/70 hover:to-gray-800/70 relative overflow-hidden h-72 border border-gray-700/30 hover:border-spotify-green/50"
       >
       {/* Background Pattern - Enhanced */}
       <div className="absolute inset-0 opacity-10">
@@ -217,7 +213,7 @@ function SurahCard({ surah, isPlaying, playSurah, isFavorite, toggleFavorite, de
             {surah.name}
           </h3>
           <p className="text-base text-gray-400 mb-1 transition-all duration-400 group-hover:opacity-70">{surah.nameEn}</p>
-          <p className="text-xs text-gray-500 mb-4 transition-all duration-400 group-hover:opacity-50">{surah.nameTranslation}</p>
+          <p className="text-xs text-content-secondary mb-4 transition-all duration-400 group-hover:opacity-50">{surah.nameTranslation}</p>
           
           {/* Play Button - تحت الاسم */}
           <button 

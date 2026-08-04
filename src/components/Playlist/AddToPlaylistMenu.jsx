@@ -21,7 +21,7 @@ export default function AddToPlaylistMenu({ surah, onClose }) {
     return (
       <div className="absolute left-0 top-full mt-2 bg-spotify-lightGray border border-gray-700/50 rounded-lg shadow-xl p-4 z-10 min-w-[200px]">
         <p className="text-sm text-gray-400 text-center">لا توجد قوائم تشغيل</p>
-        <p className="text-xs text-gray-500 text-center mt-1">أنشئ قائمة من صفحة القوائم</p>
+        <p className="text-xs text-content-secondary text-center mt-1">أنشئ قائمة من صفحة القوائم</p>
       </div>
     );
   }

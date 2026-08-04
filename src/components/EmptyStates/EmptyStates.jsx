@@ -10,7 +10,7 @@ export function EmptyFavorites() {
             <p className="text-gray-400 mb-6 max-w-md">
                 ابدأ بإضافة السور المفضلة لديك بالضغط على أيقونة القلب ❤️
             </p>
-            <div className="flex items-center gap-2 text-sm text-gray-500">
+            <div className="flex items-center gap-2 text-sm text-content-secondary">
                 <span>💡</span>
                 <span>نصيحة: يمكنك الوصول السريع للسور المفضلة من هنا</span>
             </div>

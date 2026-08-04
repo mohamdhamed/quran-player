@@ -80,7 +80,7 @@ export default function Favorites() {
                   <h3 className={`text-lg font-semibold arabic-text mb-1 transition-colors duration-300 group-hover:${typeColors.text}`}>
                     سورة {surah.name}
                   </h3>
-                  <p className="text-xs text-gray-500 mt-1 transition-colors duration-300 group-hover:text-gray-300">
+                  <p className="text-xs text-content-secondary mt-1 transition-colors duration-300 group-hover:text-gray-300">
                     {surah.verses} آية • {isMeccan ? 'مكية' : 'مدنية'}
                   </p>
                 </div>
