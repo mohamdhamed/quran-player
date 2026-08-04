@@ -1,0 +1,141 @@
+/**
+ * بيانات السور القرآنية
+ */
+
+export interface Surah {
+    number: number;
+    name: string;
+    nameEn: string;
+    verses: number;
+    revelationType: 'Meccan' | 'Medinan';
+}
+
+export const SURAHS: Surah[] = [
+    { number: 1, name: 'الفاتحة', nameEn: 'Al-Fatiha', verses: 7, revelationType: 'Meccan' },
+    { number: 2, name: 'البقرة', nameEn: 'Al-Baqarah', verses: 286, revelationType: 'Medinan' },
+    { number: 3, name: 'آل عمران', nameEn: 'Aal-Imran', verses: 200, revelationType: 'Medinan' },
+    { number: 4, name: 'النساء', nameEn: 'An-Nisa', verses: 176, revelationType: 'Medinan' },
+    { number: 5, name: 'المائدة', nameEn: 'Al-Maidah', verses: 120, revelationType: 'Medinan' },
+    { number: 6, name: 'الأنعام', nameEn: 'Al-Anam', verses: 165, revelationType: 'Meccan' },
+    { number: 7, name: 'الأعراف', nameEn: 'Al-Araf', verses: 206, revelationType: 'Meccan' },
+    { number: 8, name: 'الأنفال', nameEn: 'Al-Anfal', verses: 75, revelationType: 'Medinan' },
+    { number: 9, name: 'التوبة', nameEn: 'At-Tawbah', verses: 129, revelationType: 'Medinan' },
+    { number: 10, name: 'يونس', nameEn: 'Yunus', verses: 109, revelationType: 'Meccan' },
+    { number: 11, name: 'هود', nameEn: 'Hud', verses: 123, revelationType: 'Meccan' },
+    { number: 12, name: 'يوسف', nameEn: 'Yusuf', verses: 111, revelationType: 'Meccan' },
+    { number: 13, name: 'الرعد', nameEn: 'Ar-Rad', verses: 43, revelationType: 'Medinan' },
+    { number: 14, name: 'إبراهيم', nameEn: 'Ibrahim', verses: 52, revelationType: 'Meccan' },
+    { number: 15, name: 'الحجر', nameEn: 'Al-Hijr', verses: 99, revelationType: 'Meccan' },
+    { number: 16, name: 'النحل', nameEn: 'An-Nahl', verses: 128, revelationType: 'Meccan' },
+    { number: 17, name: 'الإسراء', nameEn: 'Al-Isra', verses: 111, revelationType: 'Meccan' },
+    { number: 18, name: 'الكهف', nameEn: 'Al-Kahf', verses: 110, revelationType: 'Meccan' },
+    { number: 19, name: 'مريم', nameEn: 'Maryam', verses: 98, revelationType: 'Meccan' },
+    { number: 20, name: 'طه', nameEn: 'Ta-Ha', verses: 135, revelationType: 'Meccan' },
+    { number: 21, name: 'الأنبياء', nameEn: 'Al-Anbiya', verses: 112, revelationType: 'Meccan' },
+    { number: 22, name: 'الحج', nameEn: 'Al-Hajj', verses: 78, revelationType: 'Medinan' },
+    { number: 23, name: 'المؤمنون', nameEn: 'Al-Muminun', verses: 118, revelationType: 'Meccan' },
+    { number: 24, name: 'النور', nameEn: 'An-Nur', verses: 64, revelationType: 'Medinan' },
+    { number: 25, name: 'الفرقان', nameEn: 'Al-Furqan', verses: 77, revelationType: 'Meccan' },
+    { number: 26, name: 'الشعراء', nameEn: 'Ash-Shuara', verses: 227, revelationType: 'Meccan' },
+    { number: 27, name: 'النمل', nameEn: 'An-Naml', verses: 93, revelationType: 'Meccan' },
+    { number: 28, name: 'القصص', nameEn: 'Al-Qasas', verses: 88, revelationType: 'Meccan' },
+    { number: 29, name: 'العنكبوت', nameEn: 'Al-Ankabut', verses: 69, revelationType: 'Meccan' },
+    { number: 30, name: 'الروم', nameEn: 'Ar-Rum', verses: 60, revelationType: 'Meccan' },
+    { number: 31, name: 'لقمان', nameEn: 'Luqman', verses: 34, revelationType: 'Meccan' },
+    { number: 32, name: 'السجدة', nameEn: 'As-Sajdah', verses: 30, revelationType: 'Meccan' },
+    { number: 33, name: 'الأحزاب', nameEn: 'Al-Ahzab', verses: 73, revelationType: 'Medinan' },
+    { number: 34, name: 'سبأ', nameEn: 'Saba', verses: 54, revelationType: 'Meccan' },
+    { number: 35, name: 'فاطر', nameEn: 'Fatir', verses: 45, revelationType: 'Meccan' },
+    { number: 36, name: 'يس', nameEn: 'Ya-Sin', verses: 83, revelationType: 'Meccan' },
+    { number: 37, name: 'الصافات', nameEn: 'As-Saffat', verses: 182, revelationType: 'Meccan' },
+    { number: 38, name: 'ص', nameEn: 'Sad', verses: 88, revelationType: 'Meccan' },
+    { number: 39, name: 'الزمر', nameEn: 'Az-Zumar', verses: 75, revelationType: 'Meccan' },
+    { number: 40, name: 'غافر', nameEn: 'Ghafir', verses: 85, revelationType: 'Meccan' },
+    { number: 41, name: 'فصلت', nameEn: 'Fussilat', verses: 54, revelationType: 'Meccan' },
+    { number: 42, name: 'الشورى', nameEn: 'Ash-Shura', verses: 53, revelationType: 'Meccan' },
+    { number: 43, name: 'الزخرف', nameEn: 'Az-Zukhruf', verses: 89, revelationType: 'Meccan' },
+    { number: 44, name: 'الدخان', nameEn: 'Ad-Dukhan', verses: 59, revelationType: 'Meccan' },
+    { number: 45, name: 'الجاثية', nameEn: 'Al-Jathiyah', verses: 37, revelationType: 'Meccan' },
+    { number: 46, name: 'الأحقاف', nameEn: 'Al-Ahqaf', verses: 35, revelationType: 'Meccan' },
+    { number: 47, name: 'محمد', nameEn: 'Muhammad', verses: 38, revelationType: 'Medinan' },
+    { number: 48, name: 'الفتح', nameEn: 'Al-Fath', verses: 29, revelationType: 'Medinan' },
+    { number: 49, name: 'الحجرات', nameEn: 'Al-Hujurat', verses: 18, revelationType: 'Medinan' },
+    { number: 50, name: 'ق', nameEn: 'Qaf', verses: 45, revelationType: 'Meccan' },
+    { number: 51, name: 'الذاريات', nameEn: 'Adh-Dhariyat', verses: 60, revelationType: 'Meccan' },
+    { number: 52, name: 'الطور', nameEn: 'At-Tur', verses: 49, revelationType: 'Meccan' },
+    { number: 53, name: 'النجم', nameEn: 'An-Najm', verses: 62, revelationType: 'Meccan' },
+    { number: 54, name: 'القمر', nameEn: 'Al-Qamar', verses: 55, revelationType: 'Meccan' },
+    { number: 55, name: 'الرحمن', nameEn: 'Ar-Rahman', verses: 78, revelationType: 'Medinan' },
+    { number: 56, name: 'الواقعة', nameEn: 'Al-Waqiah', verses: 96, revelationType: 'Meccan' },
+    { number: 57, name: 'الحديد', nameEn: 'Al-Hadid', verses: 29, revelationType: 'Medinan' },
+    { number: 58, name: 'المجادلة', nameEn: 'Al-Mujadilah', verses: 22, revelationType: 'Medinan' },
+    { number: 59, name: 'الحشر', nameEn: 'Al-Hashr', verses: 24, revelationType: 'Medinan' },
+    { number: 60, name: 'الممتحنة', nameEn: 'Al-Mumtahanah', verses: 13, revelationType: 'Medinan' },
+    { number: 61, name: 'الصف', nameEn: 'As-Saff', verses: 14, revelationType: 'Medinan' },
+    { number: 62, name: 'الجمعة', nameEn: 'Al-Jumuah', verses: 11, revelationType: 'Medinan' },
+    { number: 63, name: 'المنافقون', nameEn: 'Al-Munafiqun', verses: 11, revelationType: 'Medinan' },
+    { number: 64, name: 'التغابن', nameEn: 'At-Taghabun', verses: 18, revelationType: 'Medinan' },
+    { number: 65, name: 'الطلاق', nameEn: 'At-Talaq', verses: 12, revelationType: 'Medinan' },
+    { number: 66, name: 'التحريم', nameEn: 'At-Tahrim', verses: 12, revelationType: 'Medinan' },
+    { number: 67, name: 'الملك', nameEn: 'Al-Mulk', verses: 30, revelationType: 'Meccan' },
+    { number: 68, name: 'القلم', nameEn: 'Al-Qalam', verses: 52, revelationType: 'Meccan' },
+    { number: 69, name: 'الحاقة', nameEn: 'Al-Haqqah', verses: 52, revelationType: 'Meccan' },
+    { number: 70, name: 'المعارج', nameEn: 'Al-Maarij', verses: 44, revelationType: 'Meccan' },
+    { number: 71, name: 'نوح', nameEn: 'Nuh', verses: 28, revelationType: 'Meccan' },
+    { number: 72, name: 'الجن', nameEn: 'Al-Jinn', verses: 28, revelationType: 'Meccan' },
+    { number: 73, name: 'المزمل', nameEn: 'Al-Muzzammil', verses: 20, revelationType: 'Meccan' },
+    { number: 74, name: 'المدثر', nameEn: 'Al-Muddathir', verses: 56, revelationType: 'Meccan' },
+    { number: 75, name: 'القيامة', nameEn: 'Al-Qiyamah', verses: 40, revelationType: 'Meccan' },
+    { number: 76, name: 'الإنسان', nameEn: 'Al-Insan', verses: 31, revelationType: 'Medinan' },
+    { number: 77, name: 'المرسلات', nameEn: 'Al-Mursalat', verses: 50, revelationType: 'Meccan' },
+    { number: 78, name: 'النبأ', nameEn: 'An-Naba', verses: 40, revelationType: 'Meccan' },
+    { number: 79, name: 'النازعات', nameEn: 'An-Naziat', verses: 46, revelationType: 'Meccan' },
+    { number: 80, name: 'عبس', nameEn: 'Abasa', verses: 42, revelationType: 'Meccan' },
+    { number: 81, name: 'التكوير', nameEn: 'At-Takwir', verses: 29, revelationType: 'Meccan' },
+    { number: 82, name: 'الانفطار', nameEn: 'Al-Infitar', verses: 19, revelationType: 'Meccan' },
+    { number: 83, name: 'المطففين', nameEn: 'Al-Mutaffifin', verses: 36, revelationType: 'Meccan' },
+    { number: 84, name: 'الانشقاق', nameEn: 'Al-Inshiqaq', verses: 25, revelationType: 'Meccan' },
+    { number: 85, name: 'البروج', nameEn: 'Al-Buruj', verses: 22, revelationType: 'Meccan' },
+    { number: 86, name: 'الطارق', nameEn: 'At-Tariq', verses: 17, revelationType: 'Meccan' },
+    { number: 87, name: 'الأعلى', nameEn: 'Al-Ala', verses: 19, revelationType: 'Meccan' },
+    { number: 88, name: 'الغاشية', nameEn: 'Al-Ghashiyah', verses: 26, revelationType: 'Meccan' },
+    { number: 89, name: 'الفجر', nameEn: 'Al-Fajr', verses: 30, revelationType: 'Meccan' },
+    { number: 90, name: 'البلد', nameEn: 'Al-Balad', verses: 20, revelationType: 'Meccan' },
+    { number: 91, name: 'الشمس', nameEn: 'Ash-Shams', verses: 15, revelationType: 'Meccan' },
+    { number: 92, name: 'الليل', nameEn: 'Al-Layl', verses: 21, revelationType: 'Meccan' },
+    { number: 93, name: 'الضحى', nameEn: 'Ad-Duhaa', verses: 11, revelationType: 'Meccan' },
+    { number: 94, name: 'الشرح', nameEn: 'Ash-Sharh', verses: 8, revelationType: 'Meccan' },
+    { number: 95, name: 'التين', nameEn: 'At-Tin', verses: 8, revelationType: 'Meccan' },
+    { number: 96, name: 'العلق', nameEn: 'Al-Alaq', verses: 19, revelationType: 'Meccan' },
+    { number: 97, name: 'القدر', nameEn: 'Al-Qadr', verses: 5, revelationType: 'Meccan' },
+    { number: 98, name: 'البينة', nameEn: 'Al-Bayyinah', verses: 8, revelationType: 'Medinan' },
+    { number: 99, name: 'الزلزلة', nameEn: 'Az-Zalzalah', verses: 8, revelationType: 'Medinan' },
+    { number: 100, name: 'العاديات', nameEn: 'Al-Adiyat', verses: 11, revelationType: 'Meccan' },
+    { number: 101, name: 'القارعة', nameEn: 'Al-Qariah', verses: 11, revelationType: 'Meccan' },
+    { number: 102, name: 'التكاثر', nameEn: 'At-Takathur', verses: 8, revelationType: 'Meccan' },
+    { number: 103, name: 'العصر', nameEn: 'Al-Asr', verses: 3, revelationType: 'Meccan' },
+    { number: 104, name: 'الهمزة', nameEn: 'Al-Humazah', verses: 9, revelationType: 'Meccan' },
+    { number: 105, name: 'الفيل', nameEn: 'Al-Fil', verses: 5, revelationType: 'Meccan' },
+    { number: 106, name: 'قريش', nameEn: 'Quraysh', verses: 4, revelationType: 'Meccan' },
+    { number: 107, name: 'الماعون', nameEn: 'Al-Maun', verses: 7, revelationType: 'Meccan' },
+    { number: 108, name: 'الكوثر', nameEn: 'Al-Kawthar', verses: 3, revelationType: 'Meccan' },
+    { number: 109, name: 'الكافرون', nameEn: 'Al-Kafirun', verses: 6, revelationType: 'Meccan' },
+    { number: 110, name: 'النصر', nameEn: 'An-Nasr', verses: 3, revelationType: 'Medinan' },
+    { number: 111, name: 'المسد', nameEn: 'Al-Masad', verses: 5, revelationType: 'Meccan' },
+    { number: 112, name: 'الإخلاص', nameEn: 'Al-Ikhlas', verses: 4, revelationType: 'Meccan' },
+    { number: 113, name: 'الفلق', nameEn: 'Al-Falaq', verses: 5, revelationType: 'Meccan' },
+    { number: 114, name: 'الناس', nameEn: 'An-Nas', verses: 6, revelationType: 'Meccan' },
+];
+
+export const getSurahByNumber = (number: number): Surah | undefined => {
+    return SURAHS.find(s => s.number === number);
+};
+
+export const searchSurahs = (query: string): Surah[] => {
+    const normalizedQuery = query.toLowerCase().trim();
+    return SURAHS.filter(
+        s =>
+            s.name.includes(query) ||
+            s.nameEn.toLowerCase().includes(normalizedQuery)
+    );
+};
