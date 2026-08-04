@@ -6,6 +6,7 @@
  */
 
 import { getTimingReadId } from '../reciterRegistry';
+import surahsData from '../../data/surahs.json';
 
 // لازم www: الدومين من غيرها بيرجّع 301
 const API_BASE = 'https://www.mp3quran.net/api/v3';
@@ -50,9 +51,11 @@ export class TimingProvider {
                 return [];
             }
 
-            // تحويل من milliseconds إلى seconds
+            const offset = this._detectAyahOffset(raw, surahNumber);
+
+            // تحويل من milliseconds إلى seconds + توحيد ترقيم الآيات
             const timings = raw.map((timing) => ({
-                ayah: timing.ayah,
+                ayah: timing.ayah + offset,
                 startTime: timing.start_time / 1000,
                 endTime: timing.end_time / 1000,
                 duration: (timing.end_time - timing.start_time) / 1000,
@@ -72,10 +75,35 @@ export class TimingProvider {
     }
 
     /**
+     * تحديد إزاحة ترقيم الآيات من البيانات نفسها
+     *
+     * الـ API مش ثابت على ترقيم واحد - بيختلف من قارئ لقارئ ومن سورة لسورة:
+     *   مشاري / الفاتحة      → 1..7    مطابق لترقيم المصحف
+     *   الحصري / الفاتحة     → 0..6    مزاح بواحد (البسملة هي آية 1 في الفاتحة)
+     *   الحصري / الإخلاص     → 0..4    الصفر = البسملة، والباقي مطابق
+     *   عبدالباسط / الفاتحة  → 0..7    الصفر = الاستعاذة، والباقي مطابق
+     *
+     * فبدل ما نفترض إزاحة ثابتة (اللي بيخلي التظليل سابق أو متأخر عن الصوت
+     * حسب القارئ)، بنقارن أكبر رقم آية بعدد آيات السورة الحقيقي.
+     *
+     * @private
+     * @returns {number} 0 أو 1
+     */
+    _detectAyahOffset(raw, surahNumber) {
+        const surah = surahsData.find((s) => s.number === Number(surahNumber));
+        if (!surah) return 0;
+
+        const maxAyah = Math.max(...raw.map((t) => t.ayah));
+
+        // ناقص واحد عن عدد الآيات → الترقيم بيبدأ من صفر
+        return maxAyah === surah.verses - 1 ? 1 : 0;
+    }
+
+    /**
      * إيجاد الآية الحالية بناءً على الوقت
      * @param {number} currentTime - الوقت الحالي بالثواني
-     * @param {Array} timings - مصفوفة التوقيتات
-     * @returns {number} رقم الآية بترقيم mp3quran (البسملة = 0)
+     * @param {Array} timings - مصفوفة التوقيتات (بترقيم المصحف بعد التوحيد)
+     * @returns {number} رقم الآية زي ما هو في المصحف (0 = البسملة/الاستعاذة)
      */
     findCurrentAyah(currentTime, timings) {
         if (!timings || timings.length === 0) {
@@ -89,8 +117,9 @@ export class TimingProvider {
             }
         }
 
-        // إذا الوقت أقل من أول آية
-        return timings[0].ayah;
+        // لسه في الاستعاذة/البسملة قبل ما أول آية تبدأ - ما نظللش حاجة،
+        // عشان المكتوب ما يسبقش الصوت
+        return 0;
     }
 
     /**
