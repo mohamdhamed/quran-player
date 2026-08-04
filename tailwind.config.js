@@ -24,8 +24,24 @@ export default {
           DEFAULT: token('accent'),
           hover: token('accent-hover')
         },
+        // لون النص اللي يتحط فوق خلفية accent - بيختلف حسب الثيم
+        'on-accent': token('on-accent'),
         meccan: token('meccan'),
         medinan: token('medinan'),
+
+        // سلّم الرمادي وأبيض/أسود مربوطين بالمتغيرات كمان، عشان الـ 300
+        // استخدام المنتشرين في المكوّنات يتقلبوا مع الثيم لوحدهم
+        white: token('white'),
+        black: token('black'),
+        gray: {
+          300: token('gray-300'),
+          400: token('gray-400'),
+          500: token('gray-500'),
+          600: token('gray-600'),
+          700: token('gray-700'),
+          800: token('gray-800'),
+          900: token('gray-900')
+        },
 
         // الأسماء القديمة - متروكة عشان 291 استخدام في المكوّنات،
         // وبتشاور على نفس المتغيرات فمفيش مصدرين للحقيقة

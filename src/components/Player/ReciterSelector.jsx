@@ -47,7 +47,7 @@ export default function ReciterSelector() {
                 <p className="text-xs text-gray-400">{reciter.nameEn}</p>
                 {currentReciter === reciter.id && (
                   <div className="mt-1">
-                    <span className="inline-block px-2 py-0.5 bg-spotify-green text-white text-xs rounded-full">
+                    <span className="inline-block px-2 py-0.5 bg-spotify-green text-on-accent text-xs rounded-full">
                       محدد
                     </span>
                   </div>

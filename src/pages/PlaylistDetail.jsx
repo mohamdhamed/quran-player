@@ -57,7 +57,7 @@ export default function PlaylistDetail({ playlistId, onBack }) {
           {playlist.surahs.length > 0 && (
             <button
               onClick={() => playPlaylist(playlistId)}
-              className="mt-6 px-8 py-3 bg-spotify-green hover:bg-spotify-darkGreen rounded-full text-white font-bold transition-all hover:scale-105 flex items-center gap-2"
+              className="mt-6 px-8 py-3 bg-spotify-green hover:bg-spotify-darkGreen rounded-full text-on-accent font-bold transition-all hover:scale-105 flex items-center gap-2"
             >
               <Play size={20} fill="white" />
               <span>تشغيل الكل</span>

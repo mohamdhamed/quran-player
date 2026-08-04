@@ -85,7 +85,7 @@ export default function SemanticSearch() {
             <button
               onClick={() => handleSearch()}
               disabled={isLoading || !query.trim()}
-              className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-spotify-green hover:bg-spotify-darkGreen disabled:bg-gray-600 text-white px-6 py-2 rounded-full transition-all duration-300 hover:scale-105 active:scale-95 disabled:cursor-not-allowed"
+              className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-spotify-green hover:bg-spotify-darkGreen disabled:bg-gray-600 text-on-accent px-6 py-2 rounded-full transition-all duration-300 hover:scale-105 active:scale-95 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <Loader className="animate-spin" size={20} />

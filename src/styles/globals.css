@@ -31,10 +31,68 @@
   /* اللون المميز */
   --accent: 29 185 84;
   --accent-hover: 26 163 74;
+  /* لون النص فوق خلفية خضراء: الأسود على الأخضر الفاتح = 8:1،
+     بينما الأبيض عليه 2.6:1 وراسب */
+  --on-accent: 0 0 0;
 
   /* تمييز نوع السورة */
   --meccan: 96 165 250;
   --medinan: 74 222 128;
+
+  /*
+   * سلّم الرمادي و أبيض/أسود مربوطين بالمتغيرات كمان.
+   * السبب: 192 استخدام لـ gray-* و 108 لـ white/black في المكوّنات،
+   * وتعديلهم واحد واحد مستحيل. كده بيتقلبوا مع الثيم من غير أي تعديل.
+   * القيم دي هي قيم Tailwind الافتراضية بالظبط، فالشكل ما اتغيرش.
+   */
+  --gray-300: 209 213 219;
+  --gray-400: 156 163 175;
+  --gray-500: 107 114 128;
+  --gray-600: 75 85 99;
+  --gray-700: 55 65 81;
+  --gray-800: 31 41 55;
+  --gray-900: 17 24 39;
+  --white: 255 255 255;
+  --black: 0 0 0;
+
+  color-scheme: dark;
+}
+
+/*
+ * الثيم الفاتح
+ * الأدوار بتتقلب: 300-400 (نصوص) بتغمق، و 600-900 (أسطح) بتفتح.
+ * كل القيم متأكد إنها فوق 4.5:1 للنصوص.
+ */
+:root[data-theme='light'] {
+  --surface-base: 250 249 246;
+  --surface-raised: 255 255 255;
+  --surface-overlay: 237 234 228;
+
+  --content-primary: 24 24 27;
+  --content-secondary: 82 92 104;
+  --content-muted: 113 122 133;
+
+  /* أغمق من أخضر الثيم الداكن عشان يفضل مقروء على خلفية فاتحة */
+  --accent: 21 128 61;
+  --accent-hover: 15 106 50;
+  /* الأخضر الغامق هنا، فالأبيض هو اللي بيدي تباين كافي فوقه */
+  --on-accent: 255 255 255;
+
+  --meccan: 29 78 216;
+  --medinan: 21 128 61;
+
+  --gray-300: 71 85 105;
+  --gray-400: 82 92 104;
+  --gray-500: 100 116 139;
+  --gray-600: 203 213 225;
+  --gray-700: 226 232 240;
+  --gray-800: 241 245 249;
+  --gray-900: 248 250 252;
+
+  --white: 24 24 27;
+  --black: 250 249 246;
+
+  color-scheme: light;
 }
 
 @layer base {
@@ -314,7 +372,7 @@
 
   /* Play button */
   .play-button {
-    @apply bg-spotify-green hover:bg-spotify-darkGreen text-white rounded-full w-12 h-12 flex items-center justify-center;
+    @apply bg-spotify-green hover:bg-spotify-darkGreen text-on-accent rounded-full w-12 h-12 flex items-center justify-center;
     transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
@@ -324,7 +382,7 @@
   }
 
   .play-button-sm {
-    @apply bg-spotify-green hover:bg-spotify-darkGreen text-white rounded-full w-10 h-10 flex items-center justify-center;
+    @apply bg-spotify-green hover:bg-spotify-darkGreen text-on-accent rounded-full w-10 h-10 flex items-center justify-center;
     transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
@@ -352,7 +410,7 @@
 
   /* Search input */
   .search-input {
-    @apply bg-spotify-lightGray text-white px-4 py-2 rounded-full w-full focus:outline-none focus:ring-2 focus:ring-spotify-green placeholder-gray-400;
+    @apply bg-spotify-lightGray text-on-accent px-4 py-2 rounded-full w-full focus:outline-none focus:ring-2 focus:ring-spotify-green placeholder-gray-400;
   }
 
   /* Button base */
@@ -361,7 +419,7 @@
   }
 
   .btn-primary {
-    @apply bg-spotify-green text-white hover:bg-spotify-darkGreen hover:scale-105;
+    @apply bg-spotify-green text-on-accent hover:bg-spotify-darkGreen hover:scale-105;
   }
 
   .btn-secondary {

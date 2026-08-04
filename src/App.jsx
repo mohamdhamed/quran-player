@@ -17,6 +17,7 @@ const SemanticSearch = lazy(() => import('./pages/SemanticSearch'));
 const SmartSearch = lazy(() => import('./pages/SmartSearch'));
 import { Menu, X } from 'lucide-react';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
+import { useTheme } from './hooks/useTheme';
 
 // Map routes to page IDs for navigation state
 const routeToPage = {
@@ -60,6 +61,9 @@ function App() {
   // Enable keyboard shortcuts
   useKeyboardShortcuts();
 
+  // بيطبّق الثيم المختار على <html>
+  useTheme();
+
   // Get current page from URL
   const currentPage = routeToPage[location.pathname] || 'home';
 
@@ -79,7 +83,7 @@ function App() {
         {/* Mobile Menu Button */}
         <button
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          className="md:hidden fixed top-4 right-4 z-50 bg-spotify-green text-white p-2 rounded-full shadow-lg"
+          className="md:hidden fixed top-4 right-4 z-50 bg-spotify-green text-on-accent p-2 rounded-full shadow-lg"
           aria-label="Toggle Menu"
         >
           {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}

@@ -66,7 +66,7 @@ const Settings = memo(function Settings() {
               onClick={() => setTheme('dark')}
               className={`p-4 rounded-lg transition-all duration-300 hover-lift ${
                 theme === 'dark'
-                  ? 'bg-spotify-green text-white shadow-lg shadow-spotify-green/30'
+                  ? 'bg-spotify-green text-on-accent shadow-lg shadow-spotify-green/30'
                   : 'bg-spotify-gray hover:bg-gray-700'
               }`}
             >
@@ -92,7 +92,7 @@ const Settings = memo(function Settings() {
               onClick={() => setTheme('light')}
               className={`p-4 rounded-lg transition-all duration-300 hover-lift ${
                 theme === 'light'
-                  ? 'bg-spotify-green text-white shadow-lg shadow-spotify-green/30'
+                  ? 'bg-spotify-green text-on-accent shadow-lg shadow-spotify-green/30'
                   : 'bg-spotify-gray hover:bg-gray-700'
               }`}
             >
@@ -128,7 +128,7 @@ const Settings = memo(function Settings() {
               onClick={() => setLanguage('ar')}
               className={`p-4 rounded-lg transition-all duration-300 hover-lift ${
                 language === 'ar'
-                  ? 'bg-spotify-green text-white shadow-lg shadow-spotify-green/30'
+                  ? 'bg-spotify-green text-on-accent shadow-lg shadow-spotify-green/30'
                   : 'bg-spotify-gray hover:bg-gray-700'
               }`}
             >
@@ -150,7 +150,7 @@ const Settings = memo(function Settings() {
               onClick={() => setLanguage('en')}
               className={`p-4 rounded-lg transition-all duration-300 hover-lift ${
                 language === 'en'
-                  ? 'bg-spotify-green text-white shadow-lg shadow-spotify-green/30'
+                  ? 'bg-spotify-green text-on-accent shadow-lg shadow-spotify-green/30'
                   : 'bg-spotify-gray hover:bg-gray-700'
               }`}
             >
@@ -184,7 +184,7 @@ const Settings = memo(function Settings() {
                 onClick={() => setCurrentReciter(reciter.id)}
                 className={`p-4 rounded-lg text-right transition-all duration-300 hover-lift animate-scaleIn ${
                   currentReciter === reciter.id
-                    ? 'bg-spotify-green text-white shadow-lg shadow-spotify-green/30'
+                    ? 'bg-spotify-green text-on-accent shadow-lg shadow-spotify-green/30'
                     : 'bg-spotify-gray hover:bg-gray-700'
                 }`}
               >
@@ -224,7 +224,7 @@ const Settings = memo(function Settings() {
                 onClick={() => setPlaybackSpeed(speed.value)}
                 className={`p-4 rounded-lg text-center transition-all duration-300 hover-lift ${
                   playbackSpeed === speed.value
-                    ? 'bg-spotify-green text-white shadow-lg shadow-spotify-green/30 scale-105'
+                    ? 'bg-spotify-green text-on-accent shadow-lg shadow-spotify-green/30 scale-105'
                     : 'bg-spotify-gray hover:bg-gray-700'
                 }`}
               >
@@ -276,7 +276,7 @@ const Settings = memo(function Settings() {
                   onClick={() => setVolume(preset)}
                   className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${
                     Math.abs(volume - preset) < 0.01
-                      ? 'bg-spotify-green text-white'
+                      ? 'bg-spotify-green text-on-accent'
                       : 'bg-spotify-gray hover:bg-gray-700'
                   }`}
                 >

@@ -31,7 +31,7 @@ class ErrorBoundary extends React.Component {
             </p>
             <button
               onClick={() => window.location.reload()}
-              className="bg-spotify-green hover:bg-spotify-darkGreen text-white px-6 py-3 rounded-full font-semibold transition-all duration-200"
+              className="bg-spotify-green hover:bg-spotify-darkGreen text-on-accent px-6 py-3 rounded-full font-semibold transition-all duration-200"
             >
               تحديث الصفحة
             </button>

@@ -44,7 +44,7 @@ export default function Playlists() {
         </div>
         <button
           onClick={() => setShowCreateModal(true)}
-          className="flex items-center gap-2 px-6 py-3 bg-spotify-green hover:bg-spotify-darkGreen rounded-full text-white font-bold transition-all hover:scale-105"
+          className="flex items-center gap-2 px-6 py-3 bg-spotify-green hover:bg-spotify-darkGreen rounded-full text-on-accent font-bold transition-all hover:scale-105"
         >
           <Plus size={20} />
           <span>قائمة جديدة</span>
@@ -59,7 +59,7 @@ export default function Playlists() {
           <p className="text-content-secondary mb-6">أنشئ قائمة تشغيل جديدة للبدء</p>
           <button
             onClick={() => setShowCreateModal(true)}
-            className="px-6 py-3 bg-spotify-green hover:bg-spotify-darkGreen rounded-full text-white font-bold transition-all"
+            className="px-6 py-3 bg-spotify-green hover:bg-spotify-darkGreen rounded-full text-on-accent font-bold transition-all"
           >
             إنشاء قائمة تشغيل
           </button>
@@ -163,7 +163,7 @@ export default function Playlists() {
                 <button
                   onClick={handleCreatePlaylist}
                   disabled={!newPlaylistName.trim()}
-                  className="flex-1 px-6 py-3 bg-spotify-green hover:bg-spotify-darkGreen disabled:bg-gray-700 disabled:cursor-not-allowed rounded-full text-white font-bold transition-all"
+                  className="flex-1 px-6 py-3 bg-spotify-green hover:bg-spotify-darkGreen disabled:bg-gray-700 disabled:cursor-not-allowed rounded-full text-on-accent font-bold transition-all"
                 >
                   إنشاء
                 </button>

@@ -194,7 +194,7 @@ function QuranTextViewerContent({ onClose }) {
           <div className="flex items-center gap-1 bg-black/30 rounded-lg p-1 flex-shrink-0 me-2" role="group" aria-label="طريقة العرض">
             <button
               onClick={() => setMode('text')}
-              className={`p-1.5 rounded-md transition-colors ${mode === 'text' ? 'bg-spotify-green text-black' : 'text-content-secondary hover:text-white'}`}
+              className={`p-1.5 rounded-md transition-colors ${mode === 'text' ? 'bg-spotify-green text-on-accent' : 'text-content-secondary hover:text-white'}`}
               aria-pressed={mode === 'text'}
               aria-label="عرض النص كقائمة آيات"
               title="قائمة الآيات"
@@ -203,7 +203,7 @@ function QuranTextViewerContent({ onClose }) {
             </button>
             <button
               onClick={() => setMode('mushaf')}
-              className={`p-1.5 rounded-md transition-colors ${mode === 'mushaf' ? 'bg-spotify-green text-black' : 'text-content-secondary hover:text-white'}`}
+              className={`p-1.5 rounded-md transition-colors ${mode === 'mushaf' ? 'bg-spotify-green text-on-accent' : 'text-content-secondary hover:text-white'}`}
               aria-pressed={mode === 'mushaf'}
               aria-label="عرض صفحة المصحف"
               title="صفحة المصحف"
@@ -284,7 +284,7 @@ function QuranTextViewerContent({ onClose }) {
                       <div
                         className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
                           isActive
-                            ? 'bg-spotify-green text-black shadow-lg scale-110'
+                            ? 'bg-spotify-green text-on-accent shadow-lg scale-110'
                             : 'bg-gray-700 text-gray-300'
                         }`}
                       >
