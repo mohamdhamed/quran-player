@@ -100,6 +100,10 @@ export default function PlayerBar() {
 
     const audioKey = `${currentReciter}-${currentSurah.number}`;
 
+    // حارس ضد الطلبات القديمة: لو المستخدم غيّر السورة أو القارئ أو عمل Pause
+    // والتحميل لسه شغال، الـ cleanup بيرفع الفلاج والنتيجة القديمة تتجاهل
+    let cancelled = false;
+
     if (isPlaying) {
       // تحقق: هل نفس السورة والقارئ وهناك صوت محمّل؟
       if (currentAudioRef.current === audioKey && audioPlayer.howl) {
@@ -109,24 +113,26 @@ export default function PlayerBar() {
         // صوت جديد → تحميل
         quranService.getAudioUrl(currentReciter, currentSurah.number)
           .then(audioUrl => {
-            if (audioUrl) {
-              // حفظ المرجع قبل التشغيل
-              currentAudioRef.current = audioKey;
+            if (cancelled || !audioUrl) return;
 
-              audioPlayer.play(
-                audioUrl,
-                () => {
-                  nextSurah();
-                },
-                (time, dur) => {
-                  setCurrentTime(time);
-                  setDuration(dur);
-                }
-              );
-              audioPlayer.setVolume(volume);
-            }
+            // حفظ المرجع قبل التشغيل
+            currentAudioRef.current = audioKey;
+
+            audioPlayer.play(
+              audioUrl,
+              () => {
+                nextSurah();
+              },
+              (time, dur) => {
+                setCurrentTime(time);
+                setDuration(dur);
+              }
+            );
+            // الصوت الجديد بيبدأ بـ volume = 1 افتراضياً، فنضبطه من الـ store
+            audioPlayer.setVolume(usePlayerStore.getState().volume);
           })
           .catch(error => {
+            if (cancelled) return;
             console.error('Error loading audio:', error);
           });
       }
@@ -136,7 +142,13 @@ export default function PlayerBar() {
         audioPlayer.pause();
       }
     }
-  }, [currentSurah, isPlaying, currentReciter, nextSurah, setCurrentTime, setDuration, volume]);
+
+    return () => {
+      cancelled = true;
+    };
+    // volume مش في الـ deps عن قصد: تغيير الصوت مالوش دعوة بإعادة تحميل
+    // الملف، وفيه effect منفصل تحت بيتولاه
+  }, [currentSurah, isPlaying, currentReciter, nextSurah, setCurrentTime, setDuration]);
 
   // تحديث الصوت
   useEffect(() => {
