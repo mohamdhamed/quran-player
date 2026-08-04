@@ -119,12 +119,19 @@ export class ApiError extends Error {
      * إنشاء خطأ تحميل صوت
      * @static
      */
-    static audioLoadError(audioUrl, originalError = null) {
+    static audioLoadError(audioUrl, originalError = null, reason = null) {
+        // السبب بيتحط في الرسالة نفسها مش في الـ context بس: من غيره
+        // المستخدم بيشوف "تأكد من اتصالك بالإنترنت" حتى لما النت شغال
+        // والمشكلة حاجة تانية خالص، وبيبلّغ عن باج مالوش علاقة
+        const message = reason
+            ? `${ErrorMessages[ErrorCodes.AUDIO_LOAD_ERROR]} (${reason})`
+            : ErrorMessages[ErrorCodes.AUDIO_LOAD_ERROR];
+
         return new ApiError(
-            ErrorMessages[ErrorCodes.AUDIO_LOAD_ERROR],
+            message,
             ErrorCodes.AUDIO_LOAD_ERROR,
             originalError,
-            { audioUrl }
+            { audioUrl, reason }
         );
     }
 

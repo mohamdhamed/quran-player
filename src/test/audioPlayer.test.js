@@ -25,6 +25,108 @@ function fakeHowl(startTime = 0) {
   };
 }
 
+describe('audioPlayer - المحاولة التانية', () => {
+  let created;
+  let onFailure;
+
+  beforeEach(() => {
+    vi.spyOn(errorHandler, 'handle').mockImplementation(() => {});
+
+    created = [];
+    onFailure = vi.fn();
+
+    audioPlayer.Howl = function FakeHowl(options) {
+      const instance = {
+        options,
+        volume: vi.fn(),
+        rate: vi.fn(),
+        play: vi.fn(),
+        unload: vi.fn(),
+        once: vi.fn(),
+        seek: () => 0,
+        duration: () => 0,
+        playing: () => false
+      };
+      created.push(instance);
+      return instance;
+    };
+
+    audioPlayer.currentUrl = 'https://server8.mp3quran.net/afs/018.mp3';
+    audioPlayer.onFailure = onFailure;
+    audioPlayer.volumeValue = 0.4;
+    audioPlayer.rateValue = 1.5;
+  });
+
+  afterEach(() => {
+    audioPlayer.stopTimeUpdates();
+    audioPlayer.howl = null;
+    audioPlayer.Howl = null;
+    vi.restoreAllMocks();
+  });
+
+  /** أول فشل تحميل */
+  function failLoad(code) {
+    created[created.length - 1].options.onloaderror(1, code);
+  }
+
+  it('بيجرّب تاني برابط بيعدّي على أي كاش قبل ما يستسلم', () => {
+    audioPlayer.load(audioPlayer.currentUrl, false);
+    failLoad(2);
+
+    expect(created).toHaveLength(2);
+    expect(created[1].options.src[0]).toMatch(/^https:\/\/server8\.mp3quran\.net\/afs\/018\.mp3\?cb=\d+$/);
+    // لسه مابلّغناش المستخدم - المحاولة التانية ممكن تنجح
+    expect(errorHandler.handle).not.toHaveBeenCalled();
+    expect(onFailure).not.toHaveBeenCalled();
+  });
+
+  it('المحاولة التانية بتفضل بنفس الصوت والسرعة', () => {
+    audioPlayer.load(audioPlayer.currentUrl, false);
+    failLoad(2);
+
+    expect(created[1].volume).toHaveBeenCalledWith(0.4);
+    expect(created[1].rate).toHaveBeenCalledWith(1.5);
+  });
+
+  it('بيستسلم بعد المحاولة التانية مش بيلفّ للأبد', () => {
+    audioPlayer.load(audioPlayer.currentUrl, false);
+    failLoad(2);
+    failLoad(2);
+
+    expect(created).toHaveLength(2);
+    expect(onFailure).toHaveBeenCalledTimes(1);
+  });
+
+  it('بيحدد الصيغة صراحةً - الرابط الجديد مش بينتهي بـ .mp3', () => {
+    audioPlayer.load(audioPlayer.currentUrl, false);
+    failLoad(2);
+
+    expect(created[1].options.format).toEqual(['mp3']);
+  });
+
+  it.each([
+    [2, 'الشبكة قطعت'],
+    [3, 'الملف وصل بايظ'],
+    [4, 'المتصفح رفض الملف']
+  ])('كود %i بيتحوّل لسبب مفهوم', (code, expected) => {
+    audioPlayer.load(audioPlayer.currentUrl, false);
+    failLoad(code);
+    failLoad(code);
+
+    const [error] = errorHandler.handle.mock.calls[0];
+    expect(error.message).toContain(expected);
+  });
+
+  it('كود مش معروف بيتعرض زي ما هو بدل ما يضيع', () => {
+    audioPlayer.load(audioPlayer.currentUrl, false);
+    failLoad(99);
+    failLoad(99);
+
+    const [error] = errorHandler.handle.mock.calls[0];
+    expect(error.message).toContain('99');
+  });
+});
+
 describe('audioPlayer - حارس التوقف', () => {
   let onFailure;
   let onTimeUpdate;
@@ -70,6 +172,13 @@ describe('audioPlayer - حارس التوقف', () => {
 
     expect(onFailure).toHaveBeenCalledTimes(1);
     expect(errorHandler.handle).toHaveBeenCalled();
+  });
+
+  it('الرسالة بتقول السبب مش بس إن فيه غلط', () => {
+    vi.advanceTimersByTime(8100);
+
+    const [error] = errorHandler.handle.mock.calls[0];
+    expect(error.message).toContain('التلاوة وقفت');
   });
 
   it('بيستحمّل تهتهة قصيرة من غير ما يعلن فشل', () => {

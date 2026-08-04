@@ -31,15 +31,40 @@ function loadHowl() {
  */
 const STALL_TIMEOUT_MS = 8000;
 
+/**
+ * أكواد أخطاء عنصر الصوت في المتصفح.
+ *
+ * "تعذر تحميل التلاوة، تأكد من اتصالك بالإنترنت" رسالة مالهاش لازمة
+ * لما السبب مش الإنترنت أصلاً - والكود بيفرّق بين حالات علاجها مختلف
+ * تماماً: الشبكة قطعت، ولا الملف نفسه وصل بايظ (ده بيحصل لما يكون
+ * فيه كاش خزّن رد ناقص)، ولا المتصفح رفض المصدر من أصله (سياسة أمان
+ * أو صيغة مش مدعومة).
+ */
+const MEDIA_ERROR_REASONS = {
+  1: 'التحميل اتلغى',
+  2: 'الشبكة قطعت أثناء التحميل',
+  3: 'الملف وصل بايظ',
+  4: 'المتصفح رفض الملف'
+};
+
+function mediaErrorReason(code) {
+  return MEDIA_ERROR_REASONS[code] || `كود ${code === undefined || code === null ? '؟' : code}`;
+}
+
 class AudioPlayerService {
   constructor() {
     this.howl = null;
+    this.Howl = null;
     this.onTimeUpdate = null;
     this.onFailure = null;
+    this.onEnd = null;
     this.updateInterval = null;
     this.currentUrl = null;
     this.lastProgressTime = 0;
     this.lastProgressAt = 0;
+    // بيتحفظوا هنا عشان المحاولة التانية تبدأ بنفس إعدادات الأولى
+    this.volumeValue = 1;
+    this.rateValue = 1;
   }
 
   /**
@@ -59,15 +84,27 @@ class AudioPlayerService {
 
     this.onTimeUpdate = onTimeUpdate;
     this.onFailure = onFailure;
+    this.onEnd = onEnd;
     this.currentUrl = audioUrl;
 
-    const Howl = await loadHowl();
+    this.Howl = await loadHowl();
 
-    this.howl = new Howl({
-      src: [audioUrl],
+    this.load(audioUrl, false);
+  }
+
+  /**
+   * @param {string} url - الرابط اللي هيتحمّل فعلاً (ممكن يكون فيه
+   *        زيادة لتخطي الكاش في المحاولة التانية)
+   * @param {boolean} isRetry - هل دي المحاولة التانية؟
+   * @private
+   */
+  load(url, isRetry) {
+    this.howl = new this.Howl({
+      src: [url],
       html5: true,
+      // لازم يتحدد صراحةً: في المحاولة التانية الرابط بينتهي بـ query
+      // مش بـ .mp3، و howler مش هيعرف الصيغة لوحده
       format: ['mp3'],
-      onload: () => {},
       onplay: () => {
         this.startTimeUpdates();
       },
@@ -76,12 +113,10 @@ class AudioPlayerService {
       },
       onend: () => {
         this.stopTimeUpdates();
-        if (onEnd) onEnd();
+        if (this.onEnd) this.onEnd();
       },
       onloaderror: (id, error) => {
-        this.stopTimeUpdates();
-        errorHandler.handle(ApiError.audioLoadError(audioUrl, error));
-        if (this.onFailure) this.onFailure();
+        this.handleLoadError(error, isRetry);
       },
       onplayerror: (id, error) => {
         // المتصفح بيمنع التشغيل التلقائي لحد ما المستخدم يتفاعل مع الصفحة.
@@ -92,8 +127,47 @@ class AudioPlayerService {
         console.warn('Audio play deferred until user interaction:', error);
       }
     });
-    
+
+    this.howl.volume(this.volumeValue);
+    this.howl.rate(this.rateValue);
     this.howl.play();
+  }
+
+  /**
+   * محاولة تانية برابط جديد قبل ما نعلن الفشل.
+   *
+   * أشهر سبب لفشل التحميل هو رد باظ أو ناقص متخزّن في الطريق - كاش
+   * المتصفح، أو service worker، أو وسيط في الشبكة. زيادة على الرابط
+   * بتخلّيه رابط جديد بالنسبة لأي كاش، فبيتجاب من المصدر من تاني.
+   * لو المشكلة حقيقية (النت مقطوع فعلاً) المحاولة التانية هتفشل زيها
+   * وهنعلن الفشل ساعتها.
+   * @private
+   */
+  handleLoadError(error, isRetry) {
+    this.stopTimeUpdates();
+
+    if (!isRetry) {
+      const separator = this.currentUrl.includes('?') ? '&' : '?';
+      const freshUrl = `${this.currentUrl}${separator}cb=${Date.now()}`;
+
+      console.warn('Audio load failed, retrying past any cache:', mediaErrorReason(error));
+
+      if (this.howl) this.howl.unload();
+      this.load(freshUrl, true);
+      return;
+    }
+
+    this.fail(mediaErrorReason(error));
+  }
+
+  /**
+   * إعلان إن التلاوة مش هتشتغل، برسالة بتقول السبب
+   * @private
+   */
+  fail(reason) {
+    this.stopTimeUpdates();
+    errorHandler.handle(ApiError.audioLoadError(this.currentUrl, null, reason));
+    if (this.onFailure) this.onFailure();
   }
 
   pause() {
@@ -123,12 +197,14 @@ class AudioPlayerService {
   }
 
   setVolume(value) {
+    this.volumeValue = value;
     if (this.howl) {
       this.howl.volume(value);
     }
   }
 
   setRate(rate) {
+    this.rateValue = rate;
     if (this.howl) {
       this.howl.rate(rate);
     }
@@ -178,9 +254,7 @@ class AudioPlayerService {
    * الصوت وقف من غير ما حد يقول - نعلنها بدل ما نفضل مدّعيين إنه شغال
    */
   handleStall() {
-    this.stopTimeUpdates();
-    errorHandler.handle(ApiError.audioLoadError(this.currentUrl));
-    if (this.onFailure) this.onFailure();
+    this.fail('التلاوة وقفت وما كمّلتش');
   }
 
   stopTimeUpdates() {
