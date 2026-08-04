@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback, lazy, Suspense } from 'react';
 import { BookOpen } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 import { usePlayerStore } from '../../store/playerStore';
@@ -7,7 +7,9 @@ import quranService from '../../services/QuranService';
 import errorHandler from '../../utils/errorHandler';
 import { ApiError } from '../../utils/ApiError';
 import ReciterSelector from './ReciterSelector';
-import QuranTextViewer from './QuranTextViewerUnified';
+
+// الاتنين دول بيتفتحوا عند الطلب بس، فمالهمش لزمة في أول تحميل
+const QuranTextViewer = lazy(() => import('./QuranTextViewerUnified'));
 
 // المكونات المقسمة
 import {
@@ -204,10 +206,11 @@ export default function PlayerBar() {
   return (
     <>
       {/* Quran Text Viewer Modal */}
-      <QuranTextViewer
-        isOpen={showTextViewer}
-        onClose={() => setShowTextViewer(false)}
-      />
+      {showTextViewer && (
+        <Suspense fallback={null}>
+          <QuranTextViewer isOpen onClose={() => setShowTextViewer(false)} />
+        </Suspense>
+      )}
 
       {/* Main Player Bar */}
       <div className="fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-t from-black via-spotify-lightGray/98 to-spotify-gray/95 backdrop-blur-xl border-t border-gray-700/40 shadow-2xl">

@@ -1,17 +1,20 @@
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import Sidebar from './components/Sidebar/Sidebar';
 import PlayerBar from './components/Player/PlayerBar';
 import BottomNav from './components/Navigation/BottomNav';
 import ToastContainer from './components/UI/ToastContainer';
 import { useToast } from './hooks/useToast';
+// الرئيسية فورية - هي أول شاشة بتتفتح.
+// الباقي بيتحمّل أول ما المستخدم يروح له، فما بيتقلش على أول فتح.
 import Home from './pages/Home';
-import Library from './pages/Library';
-import Favorites from './pages/Favorites';
-import Playlists from './pages/Playlists';
-import Settings from './pages/Settings';
-import SemanticSearch from './pages/SemanticSearch';
-import SmartSearch from './pages/SmartSearch';
+
+const Library = lazy(() => import('./pages/Library'));
+const Favorites = lazy(() => import('./pages/Favorites'));
+const Playlists = lazy(() => import('./pages/Playlists'));
+const Settings = lazy(() => import('./pages/Settings'));
+const SemanticSearch = lazy(() => import('./pages/SemanticSearch'));
+const SmartSearch = lazy(() => import('./pages/SmartSearch'));
 import { Menu, X } from 'lucide-react';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 
@@ -35,6 +38,16 @@ const pageToRoute = {
   'semanticsearch': '/semantic-search',
   'settings': '/settings'
 };
+
+/** شاشة انتظار بسيطة أثناء تحميل صفحة */
+function PageLoader() {
+  return (
+    <div className="flex items-center justify-center py-32" role="status" aria-live="polite">
+      <div className="w-10 h-10 border-4 border-gray-700 border-t-spotify-green rounded-full animate-spin"></div>
+      <span className="sr-only">جاري التحميل</span>
+    </div>
+  );
+}
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -108,6 +121,7 @@ function App() {
             minHeight: '100%'
           }}></div>
           <div className="relative z-10">
+            <Suspense fallback={<PageLoader />}>
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/library" element={<Library />} />
@@ -119,6 +133,7 @@ function App() {
               {/* Fallback to Home */}
               <Route path="*" element={<Home />} />
             </Routes>
+            </Suspense>
           </div>
         </main>
       </div>

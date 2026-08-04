@@ -3,6 +3,18 @@ import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
+  build: {
+    rollupOptions: {
+      output: {
+        // فصل المكتبات عن كود التطبيق: لما تعدّل في الكود، المستخدم
+        // بينزّل جزء التطبيق بس والمكتبات تفضل في الكاش بتاعه
+        manualChunks: {
+          react: ['react', 'react-dom'],
+          router: ['react-router-dom']
+        }
+      }
+    }
+  },
   plugins: [
     react(),
     VitePWA({

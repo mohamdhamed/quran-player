@@ -1,6 +1,21 @@
-import { Howl } from 'howler';
 import errorHandler from '../utils/errorHandler';
 import { ApiError } from '../utils/ApiError';
+
+/**
+ * howler وزنه ~105KB وهو 13% من الـ bundle، ومحدش محتاجه لحد ما
+ * المستخدم يضغط تشغيل فعلاً. فبنحمّله عند أول تشغيل بس.
+ *
+ * الاستيراد بيتخزّن في الـ promise دي، فالمرات اللي بعدها بتاخده من
+ * الذاكرة على طول من غير أي انتظار.
+ */
+let howlerPromise = null;
+
+function loadHowl() {
+  if (!howlerPromise) {
+    howlerPromise = import('howler').then((m) => m.Howl);
+  }
+  return howlerPromise;
+}
 
 class AudioPlayerService {
   constructor() {
@@ -15,7 +30,7 @@ class AudioPlayerService {
    * @param {Function} onEnd - يتنادى لما السورة تخلص
    * @param {Function} onTimeUpdate - يتنادى كل 100ms بالوقت والمدة
    */
-  play(audioUrl, onEnd, onTimeUpdate) {
+  async play(audioUrl, onEnd, onTimeUpdate) {
     // Cleanup previous audio
     if (this.howl) {
       this.howl.unload();
@@ -23,7 +38,9 @@ class AudioPlayerService {
     }
 
     this.onTimeUpdate = onTimeUpdate;
-    
+
+    const Howl = await loadHowl();
+
     this.howl = new Howl({
       src: [audioUrl],
       html5: true,
