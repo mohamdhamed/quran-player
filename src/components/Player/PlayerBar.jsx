@@ -143,7 +143,10 @@ export default function PlayerBar() {
             if (cancelled) return;
 
             if (!audioUrl) {
-              errorHandler.handle(ApiError.audioLoadError(audioKey));
+              errorHandler.handle(
+                ApiError.audioLoadError(audioKey, null, 'مفيش رابط للسورة دي')
+              );
+              usePlayerStore.getState().setIsPlaying(false);
               return;
             }
 
@@ -170,7 +173,10 @@ export default function PlayerBar() {
           })
           .catch(error => {
             if (cancelled) return;
-            errorHandler.handle(ApiError.audioLoadError(audioKey, error));
+            errorHandler.handle(
+              ApiError.audioLoadError(audioKey, error, 'فشل تجهيز الرابط')
+            );
+            usePlayerStore.getState().setIsPlaying(false);
           });
       }
     } else {
