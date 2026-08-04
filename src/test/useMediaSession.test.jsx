@@ -11,6 +11,13 @@ import { renderHook, act } from '@testing-library/react';
 import { useMediaSession } from '../hooks/useMediaSession';
 import { usePlayerStore } from '../store/playerStore';
 import audioPlayer from '../services/audioPlayer';
+import { createArtwork } from '../services/surahArtwork';
+
+vi.mock('../services/surahArtwork', () => ({
+  createArtwork: vi.fn(async (meta) => [
+    { src: `artwork:${meta.title}`, sizes: '512x512', type: 'image/png' }
+  ])
+}));
 
 vi.mock('../services/audioPlayer', () => ({
   default: {
@@ -225,6 +232,69 @@ describe('useMediaSession', () => {
       position: 200,
       playbackRate: 1
     });
+  });
+
+  describe('غلاف السورة', () => {
+    it('بيستبدل أيقونة التطبيق بغلاف السورة أول ما يجهز', async () => {
+      renderHook(() => useMediaSession());
+
+      // الأسماء بتوصل فوراً عشان شاشة القفل ماتفضلش فاضية
+      expect(fake.metadata.title).toBe('سورة الفاتحة');
+
+      await act(async () => {});
+
+      expect(fake.metadata.artwork[0].src).toBe('artwork:سورة الفاتحة');
+    });
+
+    it('غلاف اتأخر عن دوره مابيركبش على السورة الجديدة', async () => {
+      let releaseFirst;
+      createArtwork
+        .mockImplementationOnce(
+          () => new Promise((resolve) => {
+            releaseFirst = () => resolve([{ src: 'artwork:قديم', sizes: '512x512' }]);
+          })
+        )
+        .mockImplementationOnce(async () => [{ src: 'artwork:جديد', sizes: '512x512' }]);
+
+      renderHook(() => useMediaSession());
+
+      act(() => {
+        usePlayerStore.setState({ currentSurah: { number: 36, name: 'يس', nameEn: 'Ya-Sin' } });
+      });
+
+      // غلاف السورة الأولانية وصل متأخر - المفروض يتترمي
+      await act(async () => {
+        releaseFirst();
+      });
+
+      expect(fake.metadata.artwork[0].src).toBe('artwork:جديد');
+    });
+
+    it('مابيرميش لو الرسم فشل', async () => {
+      createArtwork.mockRejectedValueOnce(new Error('canvas مش متاح'));
+
+      renderHook(() => useMediaSession());
+      await act(async () => {});
+
+      expect(fake.metadata.title).toBe('سورة الفاتحة');
+    });
+  });
+
+  it('بيعيد إرسال البيانات أول ما التشغيل يبدأ فعلاً', () => {
+    // كروم على أندرويد بيبني جلسة الميديا وقت أول صوت، وبيرمي أي
+    // بيانات اتبعتت قبلها - فلازم نعيدها لما المدة توصل
+    renderHook(() => useMediaSession());
+    createArtwork.mockClear();
+
+    act(() => {
+      usePlayerStore.setState({ isPlaying: true });
+    });
+    expect(createArtwork).not.toHaveBeenCalled();
+
+    act(() => {
+      usePlayerStore.setState({ duration: 300 });
+    });
+    expect(createArtwork).toHaveBeenCalledTimes(1);
   });
 
   it('بيسيب النظام نضيف لما التطبيق يقفل', () => {

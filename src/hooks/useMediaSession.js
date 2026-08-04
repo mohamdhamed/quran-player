@@ -12,6 +12,7 @@ import { useEffect } from 'react';
 import { usePlayerStore } from '../store/playerStore';
 import audioPlayer from '../services/audioPlayer';
 import { getReciter } from '../services/reciterRegistry';
+import { createArtwork } from '../services/surahArtwork';
 import * as mediaSession from '../services/mediaSession';
 
 /** الخطوة الافتراضية للتقديم والترجيع لو النظام ماحددش واحدة */
@@ -56,6 +57,34 @@ export function useMediaSession() {
     if (!mediaSession.isSupported()) return undefined;
 
     let lastPositionSync = 0;
+    // رسم الغلاف بياخد وقت (بيستنى الخطوط)، والمستخدم ممكن يكون غيّر
+    // السورة في الوقت ده - فبنرمي أي غلاف اتأخر عن دوره
+    let metadataToken = 0;
+
+    const applyMetadata = (state) => {
+      const meta = buildMetadata(state);
+      metadataToken += 1;
+      const token = metadataToken;
+
+      if (!meta) {
+        mediaSession.setMetadata(null);
+        return;
+      }
+
+      // بنبعت الأسماء فوراً بأيقونة التطبيق عشان مايفضلش فاضي،
+      // وبنحدّثها بغلاف السورة أول ما يجهز
+      mediaSession.setMetadata(meta);
+
+      createArtwork(meta)
+        .then((artwork) => {
+          if (artwork && token === metadataToken) {
+            mediaSession.setMetadata({ ...meta, artwork });
+          }
+        })
+        .catch(() => {
+          // الغلاف مش ضروري - أيقونة التطبيق اللي اتبعتت فوق كفاية
+        });
+    };
 
     const syncPosition = (state, force = false) => {
       const now = Date.now();
@@ -104,7 +133,7 @@ export function useMediaSession() {
 
     // الحالة وقت التركيب: ممكن يكون فيه تلاوة شغالة من قبل ما الهوك يتركّب
     const initial = usePlayerStore.getState();
-    mediaSession.setMetadata(buildMetadata(initial));
+    applyMetadata(initial);
     mediaSession.setPlaybackState(playbackStateOf(initial));
     syncPosition(initial, true);
 
@@ -114,7 +143,7 @@ export function useMediaSession() {
         state.currentReciter !== prev.currentReciter ||
         state.language !== prev.language
       ) {
-        mediaSession.setMetadata(buildMetadata(state));
+        applyMetadata(state);
       }
 
       if (state.isPlaying !== prev.isPlaying || !state.currentSurah !== !prev.currentSurah) {
@@ -130,6 +159,13 @@ export function useMediaSession() {
         state.playbackSpeed !== prev.playbackSpeed ||
         Math.abs(state.currentTime - prev.currentTime) > SEEK_JUMP_SECONDS
       ) {
+        // أول ما التشغيل يبدأ فعلاً بنعيد إرسال البيانات. بعض نسخ
+        // كروم على أندرويد بتبني جلسة الميديا وقت أول صوت بيطلع،
+        // وبترمي أي بيانات اتبعتت قبلها - فبتظهر عندها أيقونة
+        // المتصفح واسم الصفحة بدل السورة والقارئ
+        if (!(prev.duration > 0) && state.duration > 0) {
+          applyMetadata(state);
+        }
         syncPosition(state, true);
         return;
       }
