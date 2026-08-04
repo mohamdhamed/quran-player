@@ -113,7 +113,14 @@ function App() {
         )}
 
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto bg-gradient-to-b from-spotify-gray to-black pb-32 md:pb-24 relative">
+        {/*
+          المسافة تحت لازم تسع شريط المشغل وشريط التنقل مع بعض، وإلا
+          آخر سورة في القايمة بتفضل مختفية وراهم
+        */}
+        <main
+          className="flex-1 overflow-y-auto bg-gradient-to-b from-spotify-gray to-black relative"
+          style={{ paddingBottom: 'calc(var(--bottom-nav-height) + var(--player-bar-height))' }}
+        >
           {/* طبقة النقش - معرّفة في globals.css */}
           <div className="app-pattern" aria-hidden="true"></div>
           <div className="relative z-10">

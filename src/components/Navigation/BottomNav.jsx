@@ -13,8 +13,13 @@ export default function BottomNav({ currentPage, setCurrentPage }) {
   ];
 
   return (
-    <nav 
-      className="md:hidden fixed bottom-0 left-0 right-0 bg-spotify-gray/98 backdrop-blur-xl border-t border-gray-700/50 z-30 pb-safe"
+    /*
+      الخلفية 98% معتمة، والـ backdrop-blur اتشال: كان بيتحسب من الأول
+      كل مرة اللي تحته يتحرّك، على شريط ثابت على الشاشة طول الوقت -
+      تكلفة كبيرة على الموبايل مقابل فرق مش باين.
+    */
+    <nav
+      className="md:hidden fixed bottom-0 left-0 right-0 bg-spotify-gray/98 border-t border-gray-700/50 z-30 pb-safe"
       style={{ 
         paddingBottom: 'max(env(safe-area-inset-bottom), 0.5rem)',
         boxShadow: '0 -4px 20px rgba(0, 0, 0, 0.5)'

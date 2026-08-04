@@ -158,6 +158,11 @@ export default function PlayerBar() {
               (time, dur) => {
                 setCurrentTime(time);
                 setDuration(dur);
+              },
+              () => {
+                // التلاوة فشلت أو فصلت - لازم الواجهة وشاشة القفل
+                // يعرفوا، وإلا يفضلوا مكتوب عليهم "شغال" وهو واقف
+                usePlayerStore.getState().setIsPlaying(false);
               }
             );
             // الصوت الجديد بيبدأ بـ volume = 1 افتراضياً، فنضبطه من الـ store
@@ -197,7 +202,10 @@ export default function PlayerBar() {
   // إذا لم يكن هناك سورة محددة
   if (!currentSurah) {
     return (
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-t from-black via-spotify-gray to-transparent px-6 py-4 border-t border-gray-800/50">
+      <div
+        className="fixed left-0 right-0 z-50 bg-gradient-to-t from-black via-spotify-gray to-transparent px-6 py-4 border-t border-gray-800/50"
+        style={{ bottom: 'var(--bottom-nav-height)' }}
+      >
         <div className="text-center text-content-secondary text-sm">
           <p>{t('اختر سورة للبدء 🎵')}</p>
         </div>
@@ -215,7 +223,16 @@ export default function PlayerBar() {
       )}
 
       {/* Main Player Bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-t from-black via-spotify-lightGray/98 to-spotify-gray/95 backdrop-blur-xl border-t border-gray-700/40 shadow-2xl">
+      {/*
+        بيقف فوق شريط التنقل مش عليه. و backdrop-blur على الشاشات
+        الكبيرة بس: الشريط ده ثابت على الشاشة طول الوقت، والـ blur
+        بيتحسب من الأول كل مرة اللي تحته يتحرّك - وده غالي جداً على
+        الموبايل. الخلفية أصلاً 95-98% معتمة فالفرق مش باين.
+      */}
+      <div
+        className="fixed left-0 right-0 z-50 bg-gradient-to-t from-black via-spotify-lightGray/98 to-spotify-gray/95 md:backdrop-blur-xl border-t border-gray-700/40 shadow-2xl"
+        style={{ bottom: 'var(--bottom-nav-height)' }}
+      >
         {/* Progress Bar */}
         <ProgressBar variant="full" />
 

@@ -1,4 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700&display=swap');
+/*
+ * الخطوط بتتحمّل من <link> في index.html مع preconnect.
+ *
+ * كان فيه هنا @import لنفس الرابط بالظبط - نسخة تانية من نفس الطلب،
+ * وأسوأ: الـ @import المتصفح مابيكتشفهوش غير بعد ما ينزّل ملف الـ CSS
+ * ده كله ويقراه، فبيتأخر عن الـ <link> اللي في الـ HTML من الأول.
+ */
 
 @tailwind base;
 @tailwind components;
@@ -38,6 +44,24 @@
   /* تمييز نوع السورة */
   --meccan: 96 165 250;
   --medinan: 74 222 128;
+
+  /*
+   * ارتفاع شريط التنقل السفلي.
+   *
+   * الشريط ده بيظهر على الموبايل بس، وشريط المشغل لازم يقف فوقه مش
+   * عليه - الاتنين كانوا bottom-0 والمشغل z-50 والتنقل z-30، فالمشغل
+   * كان قاعد على الأيقونات ومغطيها بطبقته نص الشفافة.
+   *
+   * صفر على الشاشات الكبيرة لأن الشريط بيختفي أصلاً (md:hidden).
+   */
+  --bottom-nav-height: 0px;
+
+  /*
+   * ارتفاع شريط المشغل. على الموبايل بيتقسم لتلات صفوف فوق بعض
+   * (بيانات السورة، الأزرار، الصوت) فبيطلع أطول بكتير.
+   * المحتوى بيسيب المسافة دي تحته عشان آخر سورة ماتختفيش وراه.
+   */
+  --player-bar-height: 7rem;
 
   /*
    * سلّم الرمادي و أبيض/أسود مربوطين بالمتغيرات كمان.
@@ -95,31 +119,26 @@
   color-scheme: light;
 }
 
+/*
+ * 767px هو نفس حد md في Tailwind - تحته شريط التنقل ظاهر وله ارتفاع،
+ * وفوقه بيختفي. لازم القيمتين يفضلوا متطابقين مع md:hidden اللي على
+ * الشريط نفسه.
+ */
+@media (max-width: 767px) {
+  :root {
+    /* الشريط اتقاس 78px من غير المساحة الآمنة - و 4.5rem + 0.5rem
+       بيدوا 80px، يعني بشعرة زيادة عشان مايركبش عليه */
+    --bottom-nav-height: calc(4.5rem + max(env(safe-area-inset-bottom), 0.5rem));
+    --player-bar-height: 14rem;
+  }
+}
+
 @layer base {
   body {
     @apply bg-black text-white font-sans antialiased;
     direction: rtl;
     position: relative;
     overflow-x: hidden;
-  }
-
-  /* Pattern Float Animation */
-  @keyframes patternFloat {
-    0% {
-      transform: translate(0, 0) rotate(0deg);
-    }
-
-    33% {
-      transform: translate(30px, -20px) rotate(120deg);
-    }
-
-    66% {
-      transform: translate(-20px, 30px) rotate(240deg);
-    }
-
-    100% {
-      transform: translate(0, 0) rotate(360deg);
-    }
   }
 
   /* Mandala Rotate Animation */
@@ -219,6 +238,19 @@
    *   - ::before: شبكة خطوط خفيفة جداً
    *   - ::after: النقاط الإسلامية (نفس نقش master الحالي)
    */
+  /*
+   * طبقة النقش وراء التطبيق كله.
+   *
+   * كانت بتتحرّك: تدرّج بـ background-size 400% بيتزحلق على 20 ثانية،
+   * وطبقة نقط فوقه بتلف على 60 ثانية. تحريك background-position مش
+   * حاجة الكارت بيعملها لوحده - دي إعادة رسم لكامل الشاشة كل فريم،
+   * للأبد، ورا كل حاجة تانية في التطبيق. وفوقها شريط المشغل وشريط
+   * التنقل فيهم backdrop-blur، والـ blur ده بيتحسب من الأول كل مرة
+   * اللي تحته يتغيّر. النتيجة كانت تطبيق بطيء جداً على الموبايل.
+   *
+   * الحركة اتشالت والشكل زي ما هو - التدرّج كان بياخد 20 ثانية عشان
+   * يزحلق زحلقة مش باينة أصلاً.
+   */
   .app-pattern {
     position: fixed;
     inset: 0;
@@ -232,8 +264,6 @@
       rgb(var(--surface-raised) / 0.6) 75%,
       rgb(var(--surface-base)) 100%
     );
-    background-size: 400% 400%;
-    animation: gradientShift 20s ease infinite;
   }
 
   .app-pattern::before {
@@ -272,17 +302,6 @@
       radial-gradient(circle at 75% 25%, rgb(var(--accent) / 0.15) 1px, transparent 1px),
       radial-gradient(circle at 50% 50%, rgb(var(--accent) / 0.18) 2px, transparent 2px);
     background-size: 100px 100px;
-    animation: patternFloat 60s linear infinite;
-  }
-
-  @keyframes gradientShift {
-    0%,
-    100% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
   }
 
   /**

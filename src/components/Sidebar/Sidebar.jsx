@@ -15,8 +15,15 @@ export default function Sidebar({ currentPage, setCurrentPage }) {
 
   return (
     <aside className="w-64 bg-black p-6 flex flex-col gap-6 border-l border-gray-800/50 relative overflow-hidden h-screen">
-      {/* Mandala Pattern Background - Multiple Layers */}
-      <div className="absolute inset-0 pointer-events-none opacity-30" style={{
+      {/*
+        Mandala Pattern Background - Multiple Layers
+
+        على الموبايل القائمة دي مزحلقة برّه الشاشة، لكن الطبقتين دول
+        كانوا فاضلين بيلفّوا للأبد ورا الكواليس - رسم conic-gradient
+        متكرر كل فريم لحاجة المستخدم مش شايفها أصلاً. hidden md:block
+        بتوقّفهم على الموبايل خالص.
+      */}
+      <div className="hidden md:block absolute inset-0 pointer-events-none opacity-30" style={{
         backgroundImage: `
           radial-gradient(circle at center, transparent 20%, rgba(29, 185, 84, 0.4) 20%, rgba(29, 185, 84, 0.4) 22%, transparent 22%),
           radial-gradient(circle at center, transparent 35%, rgba(29, 185, 84, 0.3) 35%, rgba(29, 185, 84, 0.3) 37%, transparent 37%),
@@ -29,7 +36,7 @@ export default function Sidebar({ currentPage, setCurrentPage }) {
       }}></div>
       
       {/* Secondary Pattern Layer */}
-      <div className="absolute bottom-0 left-0 right-0 h-64 pointer-events-none opacity-20" style={{
+      <div className="hidden md:block absolute bottom-0 left-0 right-0 h-64 pointer-events-none opacity-20" style={{
         backgroundImage: `
           radial-gradient(circle at center bottom, rgba(29, 185, 84, 0.15) 0%, transparent 60%),
           repeating-conic-gradient(from 45deg at center bottom, transparent 0deg, rgba(29, 185, 84, 0.1) 5deg, transparent 10deg)
