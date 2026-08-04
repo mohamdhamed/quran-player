@@ -13,6 +13,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import surahsData from '../data/surahs.json';
+import audioPlayer from '../services/audioPlayer';
 
 export const usePlayerStore = create(
   persist(
@@ -91,6 +92,9 @@ export const usePlayerStore = create(
         
         // If more than 3 seconds played, restart current surah
         if (currentTime > 3) {
+          // لازم نحرّك الصوت نفسه كمان - تصفير currentTime في الـ store
+          // بيحدّث الواجهة بس والصوت بيفضل ماشي من مكانه
+          audioPlayer.seek(0);
           set({ currentTime: 0 });
           return;
         }

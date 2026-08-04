@@ -4,8 +4,20 @@
  * اختبارات وحدة لـ playerStore
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { usePlayerStore } from '../store/playerStore';
+import audioPlayer from '../services/audioPlayer';
+
+vi.mock('../services/audioPlayer', () => ({
+  default: {
+    seek: vi.fn(),
+    play: vi.fn(),
+    pause: vi.fn(),
+    resume: vi.fn(),
+    setVolume: vi.fn(),
+    isPlaying: vi.fn(() => false)
+  }
+}));
 
 // Sample surah data for testing
 const mockSurah1 = {
@@ -221,9 +233,50 @@ describe('Player Store', () => {
   describe('Playback Speed', () => {
     it('should set playback speed', () => {
       const { setPlaybackSpeed } = usePlayerStore.getState();
-      
+
       setPlaybackSpeed(1.5);
       expect(usePlayerStore.getState().playbackSpeed).toBe(1.5);
+    });
+  });
+
+  describe('previousSurah', () => {
+    beforeEach(() => {
+      vi.clearAllMocks();
+      usePlayerStore.setState({
+        queue: [mockSurah1, mockSurah2],
+        currentSurah: mockSurah2,
+        isPlaying: true
+      });
+    });
+
+    it('يرجّع الصوت لأول السورة لو عدّى 3 ثواني (مش بس العدّاد)', () => {
+      usePlayerStore.setState({ currentTime: 42 });
+
+      usePlayerStore.getState().previousSurah();
+
+      const state = usePlayerStore.getState();
+      expect(audioPlayer.seek).toHaveBeenCalledWith(0);
+      expect(state.currentTime).toBe(0);
+      expect(state.currentSurah).toEqual(mockSurah2);
+    });
+
+    it('ينتقل للسورة السابقة لو لسه في أول 3 ثواني', () => {
+      usePlayerStore.setState({ currentTime: 1 });
+
+      usePlayerStore.getState().previousSurah();
+
+      const state = usePlayerStore.getState();
+      expect(audioPlayer.seek).not.toHaveBeenCalled();
+      expect(state.currentSurah).toEqual(mockSurah1);
+      expect(state.isPlaying).toBe(true);
+    });
+
+    it('ما يعملش حاجة لو إحنا على أول سورة في القائمة', () => {
+      usePlayerStore.setState({ currentSurah: mockSurah1, currentTime: 1 });
+
+      usePlayerStore.getState().previousSurah();
+
+      expect(usePlayerStore.getState().currentSurah).toEqual(mockSurah1);
     });
   });
 });
