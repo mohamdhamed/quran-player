@@ -3,6 +3,8 @@ import { useState } from 'react';
 import Sidebar from './components/Sidebar/Sidebar';
 import PlayerBar from './components/Player/PlayerBar';
 import BottomNav from './components/Navigation/BottomNav';
+import ToastContainer from './components/UI/ToastContainer';
+import { useToast } from './hooks/useToast';
 import Home from './pages/Home';
 import Library from './pages/Library';
 import Favorites from './pages/Favorites';
@@ -38,10 +40,13 @@ function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  
+
+  // Toast notifications
+  const { toasts, dismiss } = useToast();
+
   // Enable keyboard shortcuts
   useKeyboardShortcuts();
-  
+
   // Get current page from URL
   const currentPage = routeToPage[location.pathname] || 'home';
 
@@ -54,6 +59,9 @@ function App() {
 
   return (
     <div className="h-screen flex flex-col bg-black text-white" dir="rtl">
+      {/* Toast Notifications */}
+      <ToastContainer toasts={toasts} onDismiss={dismiss} />
+
       <div className="flex flex-1 overflow-hidden">
         {/* Mobile Menu Button */}
         <button
