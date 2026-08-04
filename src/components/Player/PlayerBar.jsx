@@ -4,6 +4,8 @@ import { useShallow } from 'zustand/react/shallow';
 import { usePlayerStore } from '../../store/playerStore';
 import audioPlayer from '../../services/audioPlayer';
 import quranService from '../../services/QuranService';
+import errorHandler from '../../utils/errorHandler';
+import { ApiError } from '../../utils/ApiError';
 import ReciterSelector from './ReciterSelector';
 import QuranTextViewer from './QuranTextViewerUnified';
 
@@ -134,7 +136,12 @@ export default function PlayerBar() {
         // صوت جديد → تحميل
         quranService.getAudioUrl(currentReciter, currentSurah.number)
           .then(audioUrl => {
-            if (cancelled || !audioUrl) return;
+            if (cancelled) return;
+
+            if (!audioUrl) {
+              errorHandler.handle(ApiError.audioLoadError(audioKey));
+              return;
+            }
 
             // حفظ المرجع قبل التشغيل
             currentAudioRef.current = audioKey;
@@ -154,7 +161,7 @@ export default function PlayerBar() {
           })
           .catch(error => {
             if (cancelled) return;
-            console.error('Error loading audio:', error);
+            errorHandler.handle(ApiError.audioLoadError(audioKey, error));
           });
       }
     } else {

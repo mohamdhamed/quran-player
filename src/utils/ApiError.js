@@ -20,6 +20,11 @@ export const ErrorCodes = {
     AUDIO_LOAD_ERROR: 'AUDIO_LOAD_ERROR',
     AUDIO_PLAY_ERROR: 'AUDIO_PLAY_ERROR',
 
+    // أخطاء المحتوى
+    TEXT_LOAD_ERROR: 'TEXT_LOAD_ERROR',
+    TIMINGS_LOAD_ERROR: 'TIMINGS_LOAD_ERROR',
+    SEARCH_ERROR: 'SEARCH_ERROR',
+
     // أخطاء عامة
     UNKNOWN: 'UNKNOWN',
     VALIDATION_ERROR: 'VALIDATION_ERROR'
@@ -32,8 +37,11 @@ export const ErrorMessages = {
     [ErrorCodes.API_ERROR]: 'حدث خطأ في الخادم',
     [ErrorCodes.NOT_FOUND]: 'لم يتم العثور على البيانات',
     [ErrorCodes.SERVER_ERROR]: 'خطأ في الخادم',
-    [ErrorCodes.AUDIO_LOAD_ERROR]: 'تعذر تحميل الصوت',
+    [ErrorCodes.AUDIO_LOAD_ERROR]: 'تعذر تحميل التلاوة، تأكد من اتصالك بالإنترنت',
     [ErrorCodes.AUDIO_PLAY_ERROR]: 'تعذر تشغيل الصوت',
+    [ErrorCodes.TEXT_LOAD_ERROR]: 'تعذر تحميل نص السورة',
+    [ErrorCodes.TIMINGS_LOAD_ERROR]: 'تعذر تحميل تزامن الآيات، التلاوة هتكمل عادي',
+    [ErrorCodes.SEARCH_ERROR]: 'تعذر إجراء البحث، حاول تاني',
     [ErrorCodes.UNKNOWN]: 'حدث خطأ غير متوقع',
     [ErrorCodes.VALIDATION_ERROR]: 'بيانات غير صحيحة'
 };

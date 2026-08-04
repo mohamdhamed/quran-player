@@ -1,4 +1,6 @@
 import { Howl } from 'howler';
+import errorHandler from '../utils/errorHandler';
+import { ApiError } from '../utils/ApiError';
 
 class AudioPlayerService {
   constructor() {
@@ -85,13 +87,15 @@ class AudioPlayerService {
         if (onEnd) onEnd();
       },
       onloaderror: (id, error) => {
-        console.error('Audio load error:', error);
+        errorHandler.handle(ApiError.audioLoadError(audioUrl, error));
       },
       onplayerror: (id, error) => {
-        console.error('Audio play error:', error);
+        // المتصفح بيمنع التشغيل التلقائي لحد ما المستخدم يتفاعل مع الصفحة.
+        // ده مش خطأ نزعّج بيه المستخدم - howler بيفك القفل لوحده بعد أول لمسة.
         this.howl.once('unlock', () => {
           this.howl.play();
         });
+        console.warn('Audio play deferred until user interaction:', error);
       }
     });
     

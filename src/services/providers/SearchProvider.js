@@ -5,6 +5,9 @@
  * يدعم البحث النصي والبحث الدلالي
  */
 
+import errorHandler from '../../utils/errorHandler';
+import { ApiError, ErrorCodes } from '../../utils/ApiError';
+
 const ALQURAN_API = 'https://api.alquran.cloud/v1';
 
 // Cache للقرآن الكامل
@@ -64,7 +67,9 @@ export class SearchProvider {
 
             return limitedResults;
         } catch (error) {
-            console.error('Error searching verses:', error);
+            errorHandler.handle(
+                new ApiError(error.message, ErrorCodes.SEARCH_ERROR, error, { query })
+            );
             throw error;
         }
     }
@@ -91,7 +96,9 @@ export class SearchProvider {
             const data = await response.json();
             return data;
         } catch (error) {
-            console.error('Error in semantic search:', error);
+            errorHandler.handle(
+                new ApiError(error.message, ErrorCodes.SEARCH_ERROR, error, { query })
+            );
             return [];
         }
     }

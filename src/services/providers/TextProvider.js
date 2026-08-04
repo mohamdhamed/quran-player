@@ -4,6 +4,9 @@
  * مسؤول عن جلب النصوص القرآنية من AlQuran.cloud API
  */
 
+import errorHandler from '../../utils/errorHandler';
+import { ApiError, ErrorCodes } from '../../utils/ApiError';
+
 const API_BASE = 'https://api.alquran.cloud/v1';
 
 // Cache للقرآن الكامل
@@ -32,7 +35,9 @@ export class TextProvider {
 
             return null;
         } catch (error) {
-            console.error('Error fetching surah text:', error);
+            errorHandler.handle(
+                new ApiError(error.message, ErrorCodes.TEXT_LOAD_ERROR, error, { surahNumber })
+            );
             return null;
         }
     }

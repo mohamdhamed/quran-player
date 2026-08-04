@@ -7,6 +7,8 @@
 
 import { getTimingReadId } from '../reciterRegistry';
 import surahsData from '../../data/surahs.json';
+import errorHandler from '../../utils/errorHandler';
+import { ApiError, ErrorCodes } from '../../utils/ApiError';
 
 // لازم www: الدومين من غيرها بيرجّع 301
 const API_BASE = 'https://www.mp3quran.net/api/v3';
@@ -69,7 +71,13 @@ export class TimingProvider {
 
             return timings;
         } catch (error) {
-            console.error('Error fetching timings:', error);
+            // التلاوة نفسها بتكمل، اللي بيضيع هو التظليل بس
+            errorHandler.handle(
+                new ApiError(error.message, ErrorCodes.TIMINGS_LOAD_ERROR, error, {
+                    surahNumber,
+                    reciterId
+                })
+            );
             return [];
         }
     }

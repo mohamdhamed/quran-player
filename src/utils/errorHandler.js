@@ -13,10 +13,14 @@ const errorListeners = new Set();
 /**
  * معالج الأخطاء المركزي
  */
+// لو نفس الخطأ اتكرر خلال المدة دي، بيتسجّل بس من غير toast تاني
+const DUPLICATE_WINDOW_MS = 8000;
+
 class ErrorHandler {
     constructor() {
         this._errorLog = [];
         this._maxLogSize = 50;
+        this._lastNotified = new Map(); // code → timestamp
     }
 
     /**
@@ -146,10 +150,33 @@ class ErrorHandler {
     }
 
     /**
+     * هل الخطأ ده اتعرض للمستخدم من شوية؟
+     *
+     * الخطأ الواحد ممكن يتكرر كذا مرة ورا بعض (تحميل توقيتات لكل سورة،
+     * إعادة محاولة تشغيل...) ومش منطقي نغرق المستخدم بنفس الرسالة.
+     * @private
+     */
+    _isDuplicate(error) {
+        const now = Date.now();
+        const last = this._lastNotified.get(error.code);
+
+        if (last && now - last < DUPLICATE_WINDOW_MS) {
+            return true;
+        }
+
+        this._lastNotified.set(error.code, now);
+        return false;
+    }
+
+    /**
      * إشعار الـ listeners
      * @private
      */
     _notifyListeners(error) {
+        if (this._isDuplicate(error)) {
+            return;
+        }
+
         errorListeners.forEach(listener => {
             try {
                 listener(error);
