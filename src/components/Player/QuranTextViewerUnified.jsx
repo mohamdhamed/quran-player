@@ -25,8 +25,11 @@ export default function QuranTextViewer({ isOpen, onClose }) {
   // تحديث الآية الحالية بناءً على الوقت
   useEffect(() => {
     if (timings.length > 0 && currentTime >= 0) {
-      const ayahNumber = findCurrentAyah(currentTime, timings);
-      
+      // mp3quran بيعدّ من 0 (البسملة = 0)، وalquran.cloud بيعدّ من 1.
+      // بنحوّل هنا مرة واحدة عند الحدود، وباقي المكوّن يشتغل بترقيم
+      // numberInSurah لوحده (1، 2، 3...) عشان ما يحصلش لبس تاني.
+      const ayahNumber = findCurrentAyah(currentTime, timings) + 1;
+
       if (ayahNumber !== currentAyah) {
         setCurrentAyah(ayahNumber);
         scrollToAyah(ayahNumber);
@@ -157,14 +160,11 @@ export default function QuranTextViewer({ isOpen, onClose }) {
           ) : (
             <div className="space-y-4">
               {ayahs.map((ayah) => {
-                // mp3quran.net: ayah يبدأ من 0 (البسملة = 0، آية 1 = 1)
-                // alquran.cloud: numberInSurah يبدأ من 1
-                // لذا نطابق: ayah === numberInSurah - 1
+                // timings جاية من mp3quran بترقيم يبدأ من 0، فبنطرح 1
                 const timing = timings.find(t => t.ayah === ayah.numberInSurah - 1);
-                
-                // currentAyah من findCurrentAyah يرجع ayah مباشرة (يبدأ من 0)
-                // لذا نطابق: currentAyah === numberInSurah - 1
-                const isActive = currentAyah === ayah.numberInSurah - 1;
+
+                // currentAyah متحوّل فوق لترقيم numberInSurah نفسه
+                const isActive = currentAyah === ayah.numberInSurah;
                 
                 return (
                   <div
