@@ -1,11 +1,29 @@
 import { useState, useEffect, useRef } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import { X, Loader, CheckCircle, Zap } from 'lucide-react';
 import { usePlayerStore } from '../../store/playerStore';
 import { getPreciseTimings, findCurrentAyah, getReciterInfo } from '../../services/mp3quranAPI';
 import { getSurahText } from '../../services/quranAPI';
 
+/**
+ * غلاف بسيط: بيمنع المحتوى من الاشتراك في الـ store وهو مقفول.
+ * قبل كده كان المكوّن بيشترك في currentTime طول الوقت، فكان بيعمل
+ * re-render 10 مرات في الثانية حتى لو العارض مش ظاهر أصلاً.
+ */
 export default function QuranTextViewer({ isOpen, onClose }) {
-  const { currentSurah, currentReciter, currentTime } = usePlayerStore();
+  if (!isOpen) return null;
+
+  return <QuranTextViewerContent onClose={onClose} />;
+}
+
+function QuranTextViewerContent({ onClose }) {
+  const { currentSurah, currentReciter, currentTime } = usePlayerStore(
+    useShallow((state) => ({
+      currentSurah: state.currentSurah,
+      currentReciter: state.currentReciter,
+      currentTime: state.currentTime
+    }))
+  );
   const [ayahs, setAyahs] = useState([]);
   const [currentAyah, setCurrentAyah] = useState(0);
   const [timings, setTimings] = useState([]);
@@ -17,10 +35,10 @@ export default function QuranTextViewer({ isOpen, onClose }) {
 
   // تحميل السورة والتوقيتات
   useEffect(() => {
-    if (isOpen && currentSurah) {
+    if (currentSurah) {
       loadSurahData();
     }
-  }, [isOpen, currentSurah, currentReciter]);
+  }, [currentSurah, currentReciter]);
 
   // تحديث الآية الحالية بناءً على الوقت
   useEffect(() => {
@@ -40,7 +58,7 @@ export default function QuranTextViewer({ isOpen, onClose }) {
   // قفل المربع لما تضغط برة
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (isOpen && textViewerRef.current && !textViewerRef.current.contains(event.target)) {
+      if (textViewerRef.current && !textViewerRef.current.contains(event.target)) {
         // تأكد إنه مش ضاغط على زرار الكتاب
         const bookButton = event.target.closest('[data-text-viewer-button]');
         if (!bookButton) {
@@ -51,7 +69,7 @@ export default function QuranTextViewer({ isOpen, onClose }) {
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isOpen, onClose]);
+  }, [onClose]);
 
   const loadSurahData = async () => {
     if (!currentSurah) return;
@@ -96,8 +114,6 @@ export default function QuranTextViewer({ isOpen, onClose }) {
       });
     }
   };
-
-  if (!isOpen) return null;
 
   return (
     <>

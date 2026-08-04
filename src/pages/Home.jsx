@@ -100,10 +100,11 @@ export default function Home() {
   const currentSurahNumber = usePlayerStore((state) => state.currentSurah?.number);
   const recentlyPlayed = usePlayerStore((state) => state.recentlyPlayed);
 
-  // استقرار recentlyPlayed: نحدث فقط عند تغيير محتوى حقيقي
+  // الـ store بيبني مصفوفة جديدة بس لما القائمة تتغيّر فعلاً، فالمرجع
+  // نفسه كافي كـ dependency - مش محتاجين JSON.stringify كل رندر
   const stableRecentlyPlayed = useMemo(() => {
     return recentlyPlayed.slice(0, 6);
-  }, [JSON.stringify(recentlyPlayed.slice(0, 6).map(s => s.number))]);
+  }, [recentlyPlayed]);
 
   const popularSurahs = useMemo(() => [
     surahsData[0],   // الفاتحة

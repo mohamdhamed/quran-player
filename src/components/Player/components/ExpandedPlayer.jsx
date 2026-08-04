@@ -14,16 +14,13 @@ function ExpandedPlayer({
     onClose,
     currentSurah,
     isPlaying,
-    currentTime,
-    duration,
     repeatMode,
     onTogglePlay,
     onNextSurah,
     onPreviousSurah,
     onCycleRepeatMode,
     onToggleFavorite,
-    isFavorite,
-    setCurrentTime
+    isFavorite
 }) {
     const expandedRef = useRef(null);
 
@@ -106,9 +103,6 @@ function ExpandedPlayer({
 
                         {/* Progress Bar */}
                         <ProgressBar
-                            currentTime={currentTime}
-                            duration={duration}
-                            setCurrentTime={setCurrentTime}
                             variant="compact"
                             showTimeLabels={true}
                         />
@@ -159,22 +153,17 @@ ExpandedPlayer.propTypes = {
         revelationType: PropTypes.string
     }),
     isPlaying: PropTypes.bool,
-    currentTime: PropTypes.number,
-    duration: PropTypes.number,
     repeatMode: PropTypes.oneOf(['none', 'one', 'all']),
     onTogglePlay: PropTypes.func.isRequired,
     onNextSurah: PropTypes.func.isRequired,
     onPreviousSurah: PropTypes.func.isRequired,
     onCycleRepeatMode: PropTypes.func.isRequired,
     onToggleFavorite: PropTypes.func.isRequired,
-    isFavorite: PropTypes.bool,
-    setCurrentTime: PropTypes.func.isRequired
+    isFavorite: PropTypes.bool
 };
 
 ExpandedPlayer.defaultProps = {
     isPlaying: false,
-    currentTime: 0,
-    duration: 0,
     repeatMode: 'none',
     isFavorite: false
 };

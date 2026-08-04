@@ -18,21 +18,26 @@
  */
 
 import { useEffect, useCallback, useRef } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import { usePlayerStore } from '../store/playerStore';
 
 export function useKeyboardShortcuts() {
   const previousVolume = useRef(0.8);
   
-  const {
-    togglePlay,
-    nextSurah,
-    previousSurah,
-    volume,
-    setVolume,
-    cycleRepeatMode,
-    currentSurah,
-    toggleFavorite
-  } = usePlayerStore();
+  // الهوك ده بيتنادى في App، فأي اشتراك في state متغيّر هنا معناه
+  // إعادة رندر للتطبيق كله. عشان كده بناخد الـ actions بس (وهي ثابتة
+  // ومش بتسبب re-render)، والقيم المتغيّرة بنقراها وقت الضغط بـ getState.
+  const { togglePlay, nextSurah, previousSurah, setVolume, cycleRepeatMode, toggleFavorite } =
+    usePlayerStore(
+      useShallow((state) => ({
+        togglePlay: state.togglePlay,
+        nextSurah: state.nextSurah,
+        previousSurah: state.previousSurah,
+        setVolume: state.setVolume,
+        cycleRepeatMode: state.cycleRepeatMode,
+        toggleFavorite: state.toggleFavorite
+      }))
+    );
 
   const handleKeyDown = useCallback((event) => {
     // Ignore if typing in input/textarea
@@ -69,29 +74,35 @@ export function useKeyboardShortcuts() {
         }
         break;
 
-      case 'ArrowUp':
+      case 'ArrowUp': {
         // Up Arrow: Volume up
         event.preventDefault();
-        setVolume(Math.min(1, volume + 0.1));
+        const currentVolume = usePlayerStore.getState().volume;
+        setVolume(Math.min(1, currentVolume + 0.1));
         break;
+      }
 
-      case 'ArrowDown':
+      case 'ArrowDown': {
         // Down Arrow: Volume down
         event.preventDefault();
-        setVolume(Math.max(0, volume - 0.1));
+        const currentVolume = usePlayerStore.getState().volume;
+        setVolume(Math.max(0, currentVolume - 0.1));
         break;
+      }
 
       case 'm':
-      case 'M':
+      case 'M': {
         // M: Mute/Unmute
         event.preventDefault();
-        if (volume > 0) {
-          previousVolume.current = volume;
+        const currentVolume = usePlayerStore.getState().volume;
+        if (currentVolume > 0) {
+          previousVolume.current = currentVolume;
           setVolume(0);
         } else {
           setVolume(previousVolume.current || 0.8);
         }
         break;
+      }
 
       case 'r':
       case 'R':
@@ -103,13 +114,15 @@ export function useKeyboardShortcuts() {
         break;
 
       case 'f':
-      case 'F':
+      case 'F': {
         // F: Toggle favorite (if surah is playing)
+        const currentSurah = usePlayerStore.getState().currentSurah;
         if (!event.ctrlKey && !event.metaKey && currentSurah) {
           event.preventDefault();
           toggleFavorite(currentSurah);
         }
         break;
+      }
 
       case '/': {
         // /: Focus search input
@@ -131,7 +144,7 @@ export function useKeyboardShortcuts() {
       default:
         break;
     }
-  }, [togglePlay, nextSurah, previousSurah, volume, setVolume, cycleRepeatMode, currentSurah, toggleFavorite]);
+  }, [togglePlay, nextSurah, previousSurah, setVolume, cycleRepeatMode, toggleFavorite]);
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);

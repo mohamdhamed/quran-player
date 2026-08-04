@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { BookOpen } from 'lucide-react';
+import { useShallow } from 'zustand/react/shallow';
 import { usePlayerStore } from '../../store/playerStore';
 import audioPlayer from '../../services/audioPlayer';
 import quranService from '../../services/QuranService';
@@ -37,13 +38,15 @@ export default function PlayerBar() {
   const currentAudioRef = useRef(null);
 
   // Store
+  // مهم: currentTime و duration مش هنا عن قصد.
+  // دول بيتحدّثوا 10 مرات في الثانية، ولو اشتركنا فيهم هنا كان المشغل
+  // كله (وكل المكوّنات اللي تحته) هيعمل re-render بنفس المعدّل.
+  // ProgressBar بيقراهم من الـ store لوحده.
   const {
     currentSurah,
     currentReciter,
     isPlaying,
     volume,
-    currentTime,
-    duration,
     repeatMode,
     playbackSpeed,
     togglePlay,
@@ -55,7 +58,25 @@ export default function PlayerBar() {
     cycleRepeatMode,
     toggleFavorite,
     isFavorite
-  } = usePlayerStore();
+  } = usePlayerStore(
+    useShallow((state) => ({
+      currentSurah: state.currentSurah,
+      currentReciter: state.currentReciter,
+      isPlaying: state.isPlaying,
+      volume: state.volume,
+      repeatMode: state.repeatMode,
+      playbackSpeed: state.playbackSpeed,
+      togglePlay: state.togglePlay,
+      nextSurah: state.nextSurah,
+      previousSurah: state.previousSurah,
+      setVolume: state.setVolume,
+      setCurrentTime: state.setCurrentTime,
+      setDuration: state.setDuration,
+      cycleRepeatMode: state.cycleRepeatMode,
+      toggleFavorite: state.toggleFavorite,
+      isFavorite: state.isFavorite
+    }))
+  );
 
   // لما واحدة تفتح، التانية تقفل
   useEffect(() => {
@@ -184,13 +205,7 @@ export default function PlayerBar() {
       {/* Main Player Bar */}
       <div className="fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-t from-black via-spotify-lightGray/98 to-spotify-gray/95 backdrop-blur-xl border-t border-gray-700/40 shadow-2xl">
         {/* Progress Bar */}
-        <ProgressBar
-          currentTime={currentTime}
-          duration={duration}
-          isPlaying={isPlaying}
-          setCurrentTime={setCurrentTime}
-          variant="full"
-        />
+        <ProgressBar variant="full" />
 
         {/* Main Controls */}
         <div className="px-3 md:px-6 pb-3 md:pb-5 grid grid-cols-1 md:grid-cols-[2fr_auto_2fr] items-center gap-3 md:gap-8">
@@ -244,8 +259,6 @@ export default function PlayerBar() {
         onClose={() => setIsExpanded(false)}
         currentSurah={currentSurah}
         isPlaying={isPlaying}
-        currentTime={currentTime}
-        duration={duration}
         repeatMode={repeatMode}
         onTogglePlay={togglePlay}
         onNextSurah={nextSurah}
@@ -253,7 +266,6 @@ export default function PlayerBar() {
         onCycleRepeatMode={cycleRepeatMode}
         onToggleFavorite={toggleFavorite}
         isFavorite={isFavorite(currentSurah)}
-        setCurrentTime={setCurrentTime}
       />
     </>
   );

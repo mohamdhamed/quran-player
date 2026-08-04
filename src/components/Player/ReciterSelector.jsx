@@ -4,7 +4,8 @@ import { usePlayerStore } from '../../store/playerStore';
 import { getReciters, getReciterById } from '../../services/quranAPI';
 
 export default function ReciterSelector() {
-  const { currentReciter, setCurrentReciter } = usePlayerStore();
+  const currentReciter = usePlayerStore((state) => state.currentReciter);
+  const setCurrentReciter = usePlayerStore((state) => state.setCurrentReciter);
   const [isOpen, setIsOpen] = useState(false);
   const reciters = getReciters();
   const selectedReciter = getReciterById(currentReciter);

@@ -1,20 +1,27 @@
 import { memo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { usePlayerLogic } from '../hooks/usePlayerLogic';
+import { usePlayerStore } from '../../../store/playerStore';
 
 /**
  * مكون شريط التقدم
  * يعرض تقدم التشغيل ويسمح بالتنقل
+ *
+ * بيقرا الوقت من الـ store مباشرةً بدل ما ياخده props.
+ * السبب: الوقت بيتحدّث 10 مرات في الثانية، ولو كان جاي من فوق كان
+ * لازم كل مكوّن في السلسلة (PlayerBar وما تحته) يعمل re-render معاه.
+ * كده المكوّن ده وحده هو اللي بيتحدّث.
  */
 function ProgressBar({
-    currentTime,
-    duration,
-    isPlaying,
-    setCurrentTime,
     variant = 'full', // 'full' | 'compact'
     showTimeLabels = true
 }) {
     const localProgressRef = useRef(null);
+
+    const currentTime = usePlayerStore((state) => state.currentTime);
+    const duration = usePlayerStore((state) => state.duration);
+    const isPlaying = usePlayerStore((state) => state.isPlaying);
+    const setCurrentTime = usePlayerStore((state) => state.setCurrentTime);
 
     const {
         hoveredTime,
@@ -131,19 +138,8 @@ function ProgressBar({
 }
 
 ProgressBar.propTypes = {
-    currentTime: PropTypes.number.isRequired,
-    duration: PropTypes.number,
-    isPlaying: PropTypes.bool,
-    setCurrentTime: PropTypes.func.isRequired,
     variant: PropTypes.oneOf(['full', 'compact']),
     showTimeLabels: PropTypes.bool
-};
-
-ProgressBar.defaultProps = {
-    duration: 0,
-    isPlaying: false,
-    variant: 'full',
-    showTimeLabels: true
 };
 
 export default memo(ProgressBar);
