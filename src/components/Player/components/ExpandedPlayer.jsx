@@ -14,14 +14,14 @@ function ExpandedPlayer({
     isOpen,
     onClose,
     currentSurah,
-    isPlaying,
-    repeatMode,
+    isPlaying = false,
+    repeatMode = 'none',
     onTogglePlay,
     onNextSurah,
     onPreviousSurah,
     onCycleRepeatMode,
     onToggleFavorite,
-    isFavorite
+    isFavorite = false
 }) {
     const expandedRef = useModal(isOpen, onClose);
 
@@ -167,10 +167,5 @@ ExpandedPlayer.propTypes = {
     isFavorite: PropTypes.bool
 };
 
-ExpandedPlayer.defaultProps = {
-    isPlaying: false,
-    repeatMode: 'none',
-    isFavorite: false
-};
 
 export default memo(ExpandedPlayer);

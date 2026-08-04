@@ -9,8 +9,8 @@ import WaveAnimation from '../../UI/WaveAnimation';
  */
 function SurahInfo({
     currentSurah,
-    isPlaying,
-    isFavorite,
+    isPlaying = false,
+    isFavorite = false,
     onToggleFavorite,
     onExpand
 }) {
@@ -94,9 +94,5 @@ SurahInfo.propTypes = {
     onExpand: PropTypes.func.isRequired
 };
 
-SurahInfo.defaultProps = {
-    isPlaying: false,
-    isFavorite: false
-};
 
 export default memo(SurahInfo);

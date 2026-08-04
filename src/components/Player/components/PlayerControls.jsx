@@ -7,8 +7,8 @@ import PropTypes from 'prop-types';
  * يشمل: Play/Pause, Next, Previous, Repeat
  */
 function PlayerControls({
-    isPlaying,
-    repeatMode,
+    isPlaying = false,
+    repeatMode = 'none',
     onTogglePlay,
     onNextSurah,
     onPreviousSurah,
@@ -109,9 +109,5 @@ PlayerControls.propTypes = {
     children: PropTypes.node
 };
 
-PlayerControls.defaultProps = {
-    repeatMode: 'none',
-    size: 'normal'
-};
 
 export default memo(PlayerControls);
