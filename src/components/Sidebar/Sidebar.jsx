@@ -1,4 +1,4 @@
-import { Home as HomeIcon, Library, Heart, Settings, Sparkles, ListMusic } from 'lucide-react';
+import { Home as HomeIcon, Library, Heart, Settings, Search, ListMusic } from 'lucide-react';
 import { useTranslation } from '../../i18n';
 
 export default function Sidebar({ currentPage, setCurrentPage }) {
@@ -9,7 +9,7 @@ export default function Sidebar({ currentPage, setCurrentPage }) {
     { id: 'library', name: 'المكتبة', icon: Library },
     { id: 'favorites', name: 'المفضلة', icon: Heart },
     { id: 'playlists', name: 'قوائم التشغيل', icon: ListMusic },
-    { id: 'smartsearch', name: 'بحث ذكي', icon: Sparkles },
+    { id: 'smartsearch', name: 'البحث', icon: Search },
     { id: 'settings', name: 'الإعدادات', icon: Settings },
   ];
 

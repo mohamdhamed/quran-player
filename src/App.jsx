@@ -13,7 +13,6 @@ const Library = lazy(() => import('./pages/Library'));
 const Favorites = lazy(() => import('./pages/Favorites'));
 const Playlists = lazy(() => import('./pages/Playlists'));
 const Settings = lazy(() => import('./pages/Settings'));
-const SemanticSearch = lazy(() => import('./pages/SemanticSearch'));
 const SmartSearch = lazy(() => import('./pages/SmartSearch'));
 import { Menu, X } from 'lucide-react';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
@@ -27,7 +26,6 @@ const routeToPage = {
   '/favorites': 'favorites',
   '/playlists': 'playlists',
   '/search': 'smartsearch',
-  '/semantic-search': 'semanticsearch',
   '/settings': 'settings'
 };
 
@@ -37,7 +35,6 @@ const pageToRoute = {
   'favorites': '/favorites',
   'playlists': '/playlists',
   'smartsearch': '/search',
-  'semanticsearch': '/semantic-search',
   'settings': '/settings'
 };
 
@@ -123,7 +120,6 @@ function App() {
               <Route path="/favorites" element={<Favorites />} />
               <Route path="/playlists" element={<Playlists />} />
               <Route path="/search" element={<SmartSearch />} />
-              <Route path="/semantic-search" element={<SemanticSearch />} />
               <Route path="/settings" element={<Settings />} />
               {/* Fallback to Home */}
               <Route path="*" element={<Home />} />

@@ -106,7 +106,7 @@ const Settings = memo(function Settings() {
                 </div>
                 <div className="flex-1 text-right">
                   <p className="font-semibold">{t('الوضع الفاتح')}</p>
-                  <p className="text-sm opacity-70">{t('قريباً')}</p>
+                  <p className="text-sm opacity-70">{t('خلفية فاتحة للقراءة نهاراً')}</p>
                 </div>
                 {theme === 'light' && (
                   <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center animate-scaleIn">
@@ -160,7 +160,7 @@ const Settings = memo(function Settings() {
                 <span className="text-2xl">🇬🇧</span>
                 <div className="flex-1 text-right">
                   <p className="font-semibold">English</p>
-                  <p className="text-sm opacity-70">{t('قريباً')}</p>
+                  <p className="text-sm opacity-70">{t('واجهة إنجليزية')}</p>
                 </div>
                 {language === 'en' && (
                   <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center animate-scaleIn">

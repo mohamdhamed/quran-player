@@ -5,7 +5,7 @@
  * - mp3quranAPI.js → AudioProvider
  * - quranAPI.js → TextProvider
  * - preciseTimingService.js → TimingProvider
- * - quranaiAPI.js → SearchProvider
+ * - البحث النصي → SearchProvider
  * 
  * الاستخدام:
  * import quranService from './services/QuranService';

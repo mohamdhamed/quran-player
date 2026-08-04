@@ -6,7 +6,7 @@ import AddToPlaylistMenu from '../components/Playlist/AddToPlaylistMenu';
 import { useTranslation } from '../i18n';
 
 const Library = memo(function Library() {
-  const { t, tVerses } = useTranslation();
+  const { t } = useTranslation();
   // استخدام selectors لتجنب re-render غير ضروري
   const playSurah = usePlayerStore((state) => state.playSurah);
   const currentSurah = usePlayerStore((state) => state.currentSurah);

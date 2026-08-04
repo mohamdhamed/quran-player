@@ -18,7 +18,7 @@ export const en = {
   'التنقل الرئيسي': 'Main navigation',
   'مشغل القرآن': 'Quran Player',
   'مشغل القرآن الكريم': 'Holy Quran Player',
-  'بحث ذكي': 'Smart search',
+  'البحث': 'Search',
   'البحث الذكي': 'Smart Search',
   'الإصدار 1.0': 'Version 1.0',
   'جاري التحميل': 'Loading',
@@ -127,6 +127,12 @@ export const en = {
   'هل أنت متأكد من حذف هذه القائمة؟': 'Delete this playlist?',
   'هل تريد إزالة هذه السورة من القائمة؟': 'Remove this surah from the playlist?',
 
+  // ── البحث ─────────────────────────────────────────────────────
+  'البحث في القرآن': 'Search the Quran',
+  'ابحث عن أي كلمة أو آية - التشكيل غير مهم': 'Search for any word or verse - diacritics do not matter',
+  'اكتب كلمة أو جزءاً من آية...': 'Type a word or part of a verse...',
+  'النتائج': 'Results',
+
   // ── البحث الذكي ───────────────────────────────────────────────
   'ابحث في القرآن الكريم بالمعنى وليس بالكلمات': 'Search the Quran by meaning, not just words',
   'مثال: ابحث عن الآيات التي تتحدث عن الصبر والشكر...':
@@ -158,6 +164,8 @@ export const en = {
   'افتراضي': 'Default',
   'اللغة': 'Language',
   'العربية': 'Arabic',
+  'خلفية فاتحة للقراءة نهاراً': 'A light background for daytime reading',
+  'واجهة إنجليزية': 'English interface',
   'إعدادات التشغيل': 'Playback settings',
   'سرعة التشغيل': 'Playback speed',
   '0.5x - بطيء جداً': '0.5x - very slow',
@@ -215,7 +223,6 @@ export const en = {
   'خفض الصوت': 'Volume down',
   'كتم / إلغاء الكتم': 'Mute / Unmute',
   'تغيير وضع التكرار': 'Cycle repeat mode',
-  'البحث': 'Search',
   'آية موقّتة': 'timed verses',
   'متاحة': 'available',
 

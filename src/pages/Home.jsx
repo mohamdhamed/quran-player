@@ -96,7 +96,7 @@ const SurahCard = memo(function SurahCard({ surah, isCurrentSurah, onPlay }) {
 });
 
 export default function Home() {
-  const { t, tVerses } = useTranslation();
+  const { t } = useTranslation();
   // استخدام selectors لتجنب re-render عند تغيير أي state آخر
   const playSurah = usePlayerStore((state) => state.playSurah);
   // نراقب فقط رقم السورة الحالية وليس الـ object كله
