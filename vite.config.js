@@ -42,22 +42,20 @@ export default defineConfig({
             type: 'image/png'
           }
         ]
-      },
-      workbox: {
-        runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/server.*\.mp3quran\.net\/.*/i,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'quran-audio-cache',
-              expiration: {
-                maxEntries: 50,
-                maxAgeSeconds: 30 * 24 * 60 * 60
-              }
-            }
-          }
-        ]
       }
+      // ملحوظة: كان فيه هنا runtimeCaching بـ CacheFirst على ملفات
+      // mp3quran، واتشال عن قصد.
+      //
+      // السورة الواحدة بين 5 و 50 ميجا، والإعداد كان بيخزّن لحد 50
+      // منهم - يعني جيجات في مساحة المتصفح. وأهم من كده إن عنصر
+      // الصوت بيطلب الملف بـ Range requests، و CacheFirst من غير
+      // معالجة للـ Range بيرجّع رد كامل على طلب جزئي، والمتصفح
+      // بيرفضه فالتلاوة ماتشتغلش أصلاً. و CacheFirst معناها إن أي
+      // رد باظ بيتخزّن ويتقدّم تاني وتالت من غير ما يتراجع - وده
+      // بيخلي الجهاز اللي وقع فيه يفضل واقع.
+      //
+      // التحميل للاستماع بدون نت هيتعمل صح في مرحلة 1: تحميل
+      // بطلب من المستخدم، مش تخزين تلقائي لكل حاجة بيسمعها.
     })
   ],
   test: {
