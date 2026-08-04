@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { User, ChevronDown } from 'lucide-react';
 import { usePlayerStore } from '../../store/playerStore';
-import { getReciters, getReciterById } from '../../services/quranAPI';
+import quranService from '../../services/QuranService';
 
 export default function ReciterSelector() {
   const currentReciter = usePlayerStore((state) => state.currentReciter);
   const setCurrentReciter = usePlayerStore((state) => state.setCurrentReciter);
   const [isOpen, setIsOpen] = useState(false);
-  const reciters = getReciters();
-  const selectedReciter = getReciterById(currentReciter);
+  const reciters = quranService.getReciters();
+  const selectedReciter = quranService.getReciterById(currentReciter);
 
   const handleSelect = (reciterId) => {
     setCurrentReciter(reciterId);

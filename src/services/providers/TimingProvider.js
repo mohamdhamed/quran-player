@@ -1,24 +1,14 @@
 /**
  * Timing Provider
- * 
- * مسؤول عن جلب التوقيتات الدقيقة للآيات من mp3quran.net
+ *
+ * بيجيب توقيتات الآيات من mp3quran.net
+ * التوقيتات على مستوى الآية (مش الكلمة) - ده أقصى اللي المصدر ده بيوفّره.
  */
 
-const API_BASE = 'https://mp3quran.net/api/v3';
+import { getTimingReadId } from '../reciterRegistry';
 
-// تعيين القراء للتوقيتات
-const TIMING_RECITER_MAP = {
-    'mishary': { readId: null, fallback: 118 },
-    'abdulbasit': { readId: 53 },
-    'husary': { readId: 118 },
-    'minshawi': { readId: 112 },
-    'sudais': { readId: null, fallback: 31 },
-    'shuraim': { readId: 31 },
-    'ghamadi': { readId: 24 },
-    'ajmi': { readId: 4 },
-    'shatri': { readId: 6 },
-    'dosari': { readId: 210 }
-};
+// لازم www: الدومين من غيرها بيرجّع 301
+const API_BASE = 'https://www.mp3quran.net/api/v3';
 
 export class TimingProvider {
     constructor() {
@@ -29,11 +19,11 @@ export class TimingProvider {
      * الحصول على توقيتات الآيات
      * @param {number} surahNumber - رقم السورة (1-114)
      * @param {string} reciterId - معرف القارئ
-     * @returns {Promise<Array>} مصفوفة التوقيتات
+     * @returns {Promise<Array>} مصفوفة التوقيتات (فاضية لو فشل)
      */
     async getTimings(surahNumber, reciterId) {
         try {
-            const readId = this._getReadId(reciterId);
+            const readId = getTimingReadId(reciterId);
             const cacheKey = `${readId}-${surahNumber}`;
 
             // تحقق من الـ cache
@@ -45,28 +35,36 @@ export class TimingProvider {
                 `${API_BASE}/ayat_timing?surah=${surahNumber}&read=${readId}`
             );
 
-            const data = await response.json();
-
-            if (data && data.value) {
-                // تحويل من milliseconds إلى seconds
-                const timings = data.value.map(timing => ({
-                    ayah: timing.ayah,
-                    startTime: timing.start_time / 1000,
-                    endTime: timing.end_time / 1000,
-                    duration: (timing.end_time - timing.start_time) / 1000,
-                    polygon: timing.polygon,
-                    x: timing.x,
-                    y: timing.y,
-                    page: timing.page
-                }));
-
-                // حفظ في الـ cache
-                this._timingsCache.set(cacheKey, timings);
-
-                return timings;
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
             }
 
-            return [];
+            const data = await response.json();
+
+            // الـ API بيرجّع مصفوفة مباشرة. القراءة القديمة كانت بتدوّر على
+            // data.value اللي مش موجود، فالتوقيتات كانت بترجع فاضية دايماً
+            // والتظليل ما كانش بيتحرك خالص. بنقبل الشكلين تحسباً لأي تغيير.
+            const raw = Array.isArray(data) ? data : data?.value;
+
+            if (!Array.isArray(raw) || raw.length === 0) {
+                return [];
+            }
+
+            // تحويل من milliseconds إلى seconds
+            const timings = raw.map((timing) => ({
+                ayah: timing.ayah,
+                startTime: timing.start_time / 1000,
+                endTime: timing.end_time / 1000,
+                duration: (timing.end_time - timing.start_time) / 1000,
+                polygon: timing.polygon,
+                x: timing.x,
+                y: timing.y,
+                page: timing.page
+            }));
+
+            this._timingsCache.set(cacheKey, timings);
+
+            return timings;
         } catch (error) {
             console.error('Error fetching timings:', error);
             return [];
@@ -77,7 +75,7 @@ export class TimingProvider {
      * إيجاد الآية الحالية بناءً على الوقت
      * @param {number} currentTime - الوقت الحالي بالثواني
      * @param {Array} timings - مصفوفة التوقيتات
-     * @returns {number} رقم الآية الحالية
+     * @returns {number} رقم الآية بترقيم mp3quran (البسملة = 0)
      */
     findCurrentAyah(currentTime, timings) {
         if (!timings || timings.length === 0) {
@@ -110,20 +108,6 @@ export class TimingProvider {
             timings: this._timingsCache.size,
             keys: Array.from(this._timingsCache.keys())
         };
-    }
-
-    // ═══════════════════════════════════════════════════════════════
-    // Private Methods
-    // ═══════════════════════════════════════════════════════════════
-
-    /**
-     * تحويل معرف القارئ إلى readId
-     * @private
-     */
-    _getReadId(reciterId) {
-        const mapping = TIMING_RECITER_MAP[reciterId];
-        if (!mapping) return 118; // الحصري كـ default
-        return mapping.readId || mapping.fallback;
     }
 }
 

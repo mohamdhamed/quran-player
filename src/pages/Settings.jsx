@@ -1,7 +1,7 @@
 import { useMemo, memo, useState } from 'react';
 import { Volume2, Gauge, User, Download, Moon, Sun, Globe, Palette, Shield, Info, Trash2, HardDrive, Wifi, Keyboard } from 'lucide-react';
 import { usePlayerStore } from '../store/playerStore';
-import { getReciters } from '../services/quranAPI';
+import quranService from '../services/QuranService';
 import { KEYBOARD_SHORTCUTS } from '../hooks/useKeyboardShortcuts';
 
 const Settings = memo(function Settings() {
@@ -22,7 +22,7 @@ const Settings = memo(function Settings() {
   const [showLyrics, setShowLyrics] = useState(true);
 
   // استخدام useMemo لحفظ reciters
-  const reciters = useMemo(() => getReciters(), []);
+  const reciters = useMemo(() => quranService.getReciters(), []);
 
   const speeds = [
     { value: 0.5, label: '0.5x - بطيء جداً', icon: '🐢' },

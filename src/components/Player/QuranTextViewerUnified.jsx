@@ -2,8 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { X, Loader, CheckCircle, Zap } from 'lucide-react';
 import { usePlayerStore } from '../../store/playerStore';
-import { getPreciseTimings, findCurrentAyah, getReciterInfo } from '../../services/mp3quranAPI';
-import { getSurahText } from '../../services/quranAPI';
+import quranService from '../../services/QuranService';
 
 /**
  * غلاف بسيط: بيمنع المحتوى من الاشتراك في الـ store وهو مقفول.
@@ -46,7 +45,7 @@ function QuranTextViewerContent({ onClose }) {
       // mp3quran بيعدّ من 0 (البسملة = 0)، وalquran.cloud بيعدّ من 1.
       // بنحوّل هنا مرة واحدة عند الحدود، وباقي المكوّن يشتغل بترقيم
       // numberInSurah لوحده (1، 2، 3...) عشان ما يحصلش لبس تاني.
-      const ayahNumber = findCurrentAyah(currentTime, timings) + 1;
+      const ayahNumber = quranService.findCurrentAyah(currentTime, timings) + 1;
 
       if (ayahNumber !== currentAyah) {
         setCurrentAyah(ayahNumber);
@@ -77,22 +76,18 @@ function QuranTextViewerContent({ onClose }) {
     setIsLoading(true);
     
     try {
-      // 1️⃣ جلب معلومات القارئ
-      const reciter = await getReciterInfo(currentReciter);
-      setReciterInfo(reciter);
-      
-      // 2️⃣ جلب النص القرآني
-      const textData = await getSurahText(currentSurah.number);
+      // 1️⃣ معلومات القارئ
+      setReciterInfo(quranService.getReciterById(currentReciter));
+
+      // 2️⃣ النص القرآني
+      const textData = await quranService.getSurahText(currentSurah.number);
       if (textData && textData.ayahs) {
         setAyahs(textData.ayahs);
       }
-      
-      // 3️⃣ جلب التوقيتات الدقيقة من mp3quran.net
-      const preciseTimings = await getPreciseTimings(currentSurah.number, currentReciter);
-      
-      if (preciseTimings && preciseTimings.length > 0) {
-        setTimings(preciseTimings);
-      }
+
+      // 3️⃣ توقيتات الآيات
+      const preciseTimings = await quranService.getTimings(currentSurah.number, currentReciter);
+      setTimings(preciseTimings || []);
     } catch (error) {
       console.error('Error loading surah data:', error);
     } finally {
@@ -238,12 +233,12 @@ function QuranTextViewerContent({ onClose }) {
               <Zap className="text-spotify-green" size={16} />
               <CheckCircle className="text-spotify-green" size={14} />
               <span className="text-spotify-green font-semibold">
-                تزامن دقيق 100% • mp3quran.net
+                تزامن آية بآية • mp3quran.net
               </span>
             </div>
             {timings.length > 0 && (
               <div className="text-gray-400">
-                {timings.length} توقيت دقيق محمّل ⚡
+                {timings.length} آية موقّتة ⚡
               </div>
             )}
           </div>
