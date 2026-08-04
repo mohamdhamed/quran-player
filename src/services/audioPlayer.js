@@ -5,62 +5,15 @@ import { ApiError } from '../utils/ApiError';
 class AudioPlayerService {
   constructor() {
     this.howl = null;
-    this.currentSurah = null;
-    this.audioData = null; // Store audio data from API
     this.onTimeUpdate = null;
     this.updateInterval = null;
   }
 
   /**
-   * Play audio from API data (multiple ayah files)
-   * @param {Object} audioData - Data from getAudioUrl() containing basePath and ayahs
-   */
-  async playFromAPI(audioData, onEnd, onTimeUpdate) {
-    // Cleanup previous audio
-    if (this.howl) {
-      this.howl.unload();
-      this.stopTimeUpdates();
-    }
-
-    this.audioData = audioData;
-    this.onTimeUpdate = onTimeUpdate;
-    
-    // Build playlist of all ayah URLs
-    const audioUrls = audioData.ayahs.map(ayah => ayah.audio);
-    
-    // For now, play first ayah (we'll implement full surah playback later)
-    // TODO: Concatenate all ayahs or use playlist functionality
-    this.howl = new Howl({
-      src: audioUrls, // Howler will play them sequentially
-      html5: true,
-      format: ['mp3'],
-      onload: () => {},
-      onplay: () => {
-        this.startTimeUpdates();
-      },
-      onpause: () => {
-        this.stopTimeUpdates();
-      },
-      onend: () => {
-        this.stopTimeUpdates();
-        if (onEnd) onEnd();
-      },
-      onloaderror: (id, error) => {
-        console.error('Audio load error:', error);
-      },
-      onplayerror: (id, error) => {
-        console.error('Audio play error:', error);
-        this.howl.once('unlock', () => {
-          this.howl.play();
-        });
-      }
-    });
-    
-    this.howl.play();
-  }
-
-  /**
-   * Legacy method for backward compatibility
+   * تشغيل ملف صوتي (سورة كاملة)
+   * @param {string} audioUrl - رابط الملف
+   * @param {Function} onEnd - يتنادى لما السورة تخلص
+   * @param {Function} onTimeUpdate - يتنادى كل 100ms بالوقت والمدة
    */
   play(audioUrl, onEnd, onTimeUpdate) {
     // Cleanup previous audio

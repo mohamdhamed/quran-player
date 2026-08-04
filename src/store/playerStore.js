@@ -269,29 +269,3 @@ export const usePlayerStore = create(
     }
   )
 );
-
-// ============================================
-// SELECTORS - للاستخدام المحسن مع shallow
-// استخدم: usePlayerStore(selectCurrentSurah)
-// ============================================
-
-export const selectCurrentSurah = (state) => state.currentSurah;
-export const selectIsPlaying = (state) => state.isPlaying;
-export const selectCurrentReciter = (state) => state.currentReciter;
-export const selectVolume = (state) => state.volume;
-export const selectCurrentTime = (state) => state.currentTime;
-export const selectDuration = (state) => state.duration;
-export const selectRepeatMode = (state) => state.repeatMode;
-export const selectPlaybackSpeed = (state) => state.playbackSpeed;
-export const selectFavorites = (state) => state.favorites;
-export const selectPlaylists = (state) => state.playlists;
-export const selectRecentlyPlayed = (state) => state.recentlyPlayed;
-export const selectQueue = (state) => state.queue;
-export const selectTheme = (state) => state.theme;
-export const selectLanguage = (state) => state.language;
-
-// Computed selectors
-export const selectCurrentSurahNumber = (state) => state.currentSurah?.number;
-export const selectFavoritesCount = (state) => state.favorites.length;
-export const selectPlaylistsCount = (state) => state.playlists.length;
-export const selectHasCurrentSurah = (state) => state.currentSurah !== null;
