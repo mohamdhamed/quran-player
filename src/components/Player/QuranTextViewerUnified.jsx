@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useShallow } from 'zustand/react/shallow';
-import { X, Loader, CheckCircle, Zap, BookOpen, AlignRight } from 'lucide-react';
+import { X, Loader, CheckCircle, Zap, BookOpen, AlignRight, Maximize2, Minimize2 } from 'lucide-react';
 import { usePlayerStore } from '../../store/playerStore';
+import audioPlayer from '../../services/audioPlayer';
 import { useModal } from '../../hooks/useModal';
 import MushafPage from './MushafPage';
 import quranService from '../../services/QuranService';
@@ -31,10 +32,31 @@ function QuranTextViewerContent({ onClose }) {
   const [isLoading, setIsLoading] = useState(false);
   const [reciterInfo, setReciterInfo] = useState(null);
   const [mode, setMode] = useState('text'); // 'text' | 'mushaf'
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const scrollContainerRef = useRef(null);
   const ayahRefs = useRef({});
+  // Escape بيخرج من ملء الشاشة الأول لو كان مفتوح، وبعدين يقفل العارض
+  const handleEscape = useCallback(() => {
+    if (isFullscreen) {
+      setIsFullscreen(false);
+    } else {
+      onClose();
+    }
+  }, [isFullscreen, onClose]);
+
   // بيدّي الفوكس للمودال، بيلفّه جواه، وبيقفل بـ Escape
-  const textViewerRef = useModal(true, onClose);
+  const textViewerRef = useModal(true, handleEscape);
+
+  // الضغط على آية في المصحف بينقل التلاوة لبدايتها
+  const setCurrentTime = usePlayerStore((state) => state.setCurrentTime);
+
+  const handleSeekToAyah = useCallback(
+    (startTime) => {
+      audioPlayer.seek(startTime);
+      setCurrentTime(startTime);
+    },
+    [setCurrentTime]
+  );
 
   // تحميل السورة والتوقيتات
   useEffect(() => {
@@ -60,6 +82,8 @@ function QuranTextViewerContent({ onClose }) {
   // قفل المربع لما تضغط برة
   useEffect(() => {
     const handleClickOutside = (event) => {
+      if (isFullscreen) return; // في ملء الشاشة مفيش "برّه" أصلاً
+
       if (textViewerRef.current && !textViewerRef.current.contains(event.target)) {
         // تأكد إنه مش ضاغط على زرار الكتاب
         const bookButton = event.target.closest('[data-text-viewer-button]');
@@ -71,7 +95,7 @@ function QuranTextViewerContent({ onClose }) {
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [onClose]);
+  }, [onClose, isFullscreen]);
 
   const loadSurahData = async () => {
     if (!currentSurah) return;
@@ -135,11 +159,19 @@ function QuranTextViewerContent({ onClose }) {
         aria-modal="true"
         aria-label={`نص سورة ${currentSurah?.name || ''}`}
         tabIndex={-1}
-        className={`fixed bottom-24 left-6 ${mode === 'mushaf' ? 'w-[560px]' : 'w-[500px]'} max-h-[80vh] bg-spotify-gray/98 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-700/50 z-50 flex flex-col animate-slideUp pointer-events-auto`}
-        style={{ 
-          animation: 'slideUpScale 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
-          boxShadow: '0 -10px 40px rgba(0,0,0,0.5), 0 0 100px rgba(29, 185, 84, 0.1)'
-        }}
+        className={
+          isFullscreen
+            ? 'fixed inset-0 bg-spotify-gray z-50 flex flex-col pointer-events-auto'
+            : `fixed bottom-24 left-6 ${mode === 'mushaf' ? 'w-[560px]' : 'w-[500px]'} max-h-[80vh] bg-spotify-gray/98 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-700/50 z-50 flex flex-col animate-slideUp pointer-events-auto`
+        }
+        style={
+          isFullscreen
+            ? undefined
+            : {
+                animation: 'slideUpScale 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                boxShadow: '0 -10px 40px rgba(0,0,0,0.5), 0 0 100px rgba(29, 185, 84, 0.1)'
+              }
+        }
       >
         {/* Header مدمج */}
         <div className="flex items-center justify-between p-4 border-b border-gray-700/50">
@@ -180,6 +212,18 @@ function QuranTextViewerContent({ onClose }) {
             </button>
           </div>
 
+          {mode === 'mushaf' && (
+            <button
+              onClick={() => setIsFullscreen((v) => !v)}
+              className="p-1.5 hover:bg-gray-700/60 rounded-lg transition-all hover:scale-110 active:scale-95 flex-shrink-0 me-1 text-content-secondary hover:text-white"
+              aria-pressed={isFullscreen}
+              aria-label={isFullscreen ? 'الخروج من وضع القراءة' : 'وضع القراءة بملء الشاشة'}
+              title={isFullscreen ? 'خروج' : 'ملء الشاشة'}
+            >
+              {isFullscreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+            </button>
+          )}
+
           <button
             onClick={onClose}
             className="p-1.5 hover:bg-gray-700/60 rounded-lg transition-all hover:scale-110 active:scale-95 flex-shrink-0"
@@ -203,11 +247,14 @@ function QuranTextViewerContent({ onClose }) {
             </div>
           ) : mode === 'mushaf' ? (
             mushafTiming ? (
-              <MushafPage
-                pageUrl={mushafTiming.page}
-                polygon={activeTiming?.polygon}
-                ayahNumber={currentAyah || undefined}
-              />
+              <div className={isFullscreen ? 'mx-auto max-w-[min(90vw,700px)]' : ''}>
+                <MushafPage
+                  pageUrl={mushafTiming.page}
+                  timings={timings}
+                  currentAyah={currentAyah}
+                  onSeek={handleSeekToAyah}
+                />
+              </div>
             ) : (
               <div className="text-center py-20">
                 <p className="text-content-secondary">صفحة المصحف غير متاحة لهذا القارئ</p>

@@ -8,7 +8,8 @@ import PropTypes from 'prop-types';
  *   page    → صفحة المصحف كـ SVG
  *   polygon → حدود الآية على الصفحة، بنفس صيغة points بتاعة SVG
  *
- * فبنرسم الصفحة ونحط فوقها مضلّع الآية اللي بتتقري دلوقتي.
+ * فبنرسم الصفحة، ونحط فوقها مضلّع لكل آية: اللي بتتقري متظللة،
+ * والباقي شفافة بس قابلة للضغط عشان تنقل التلاوة لمكانها.
  */
 
 // الصفحات مش كلها بنفس المقاس: 001/002 بـ 235×235 والباقي 345×550،
@@ -35,7 +36,7 @@ async function loadViewBox(pageUrl) {
   }
 }
 
-export default function MushafPage({ pageUrl, polygon, ayahNumber }) {
+export default function MushafPage({ pageUrl, timings = [], currentAyah, onSeek }) {
   const [viewBox, setViewBox] = useState(() => viewBoxCache.get(pageUrl) || null);
 
   useEffect(() => {
@@ -65,19 +66,42 @@ export default function MushafPage({ pageUrl, polygon, ayahNumber }) {
 
   const [, , width, height] = viewBox.split(/\s+/).map(Number);
 
+  // آيات الصفحة المعروضة بس
+  const pageTimings = timings.filter((t) => t.page === pageUrl && t.polygon);
+
+  const handleActivate = (timing) => {
+    if (onSeek) onSeek(timing.startTime, timing.ayah);
+  };
+
   return (
     <div className="mushaf-page">
-      <svg
-        viewBox={viewBox}
-        className="w-full h-auto"
-        role="img"
-        aria-label={ayahNumber ? `صفحة المصحف، الآية ${ayahNumber} مظللة` : 'صفحة المصحف'}
-      >
+      <svg viewBox={viewBox} className="w-full h-auto" role="group" aria-label="صفحة المصحف">
         {/* الصفحة كصورة: بترسم من غير ما الـ SVG الخارجي يتحقن في الصفحة،
             فمفيش أي سكربت جواه يقدر يشتغل */}
         <image href={pageUrl} x="0" y="0" width={width} height={height} />
 
-        {polygon && <polygon points={polygon} className="mushaf-highlight" />}
+        {pageTimings.map((timing) => {
+          const isActive = timing.ayah === currentAyah;
+
+          return (
+            <polygon
+              key={timing.ayah}
+              points={timing.polygon}
+              className={isActive ? 'mushaf-highlight' : 'mushaf-ayah'}
+              role="button"
+              tabIndex={0}
+              aria-label={`الآية ${timing.ayah}${isActive ? ' - تُتلى الآن' : ''}`}
+              aria-current={isActive ? 'true' : undefined}
+              onClick={() => handleActivate(timing)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleActivate(timing);
+                }
+              }}
+            />
+          );
+        })}
       </svg>
     </div>
   );
@@ -85,6 +109,14 @@ export default function MushafPage({ pageUrl, polygon, ayahNumber }) {
 
 MushafPage.propTypes = {
   pageUrl: PropTypes.string,
-  polygon: PropTypes.string,
-  ayahNumber: PropTypes.number
+  timings: PropTypes.arrayOf(
+    PropTypes.shape({
+      ayah: PropTypes.number,
+      polygon: PropTypes.string,
+      page: PropTypes.string,
+      startTime: PropTypes.number
+    })
+  ),
+  currentAyah: PropTypes.number,
+  onSeek: PropTypes.func
 };
