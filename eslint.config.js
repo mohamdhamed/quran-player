@@ -1,4 +1,5 @@
 import js from '@eslint/js';
+import globals from 'globals';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 
@@ -19,18 +20,7 @@ export default [
         }
       },
       globals: {
-        window: 'readonly',
-        document: 'readonly',
-        console: 'readonly',
-        fetch: 'readonly',
-        Audio: 'readonly',
-        setInterval: 'readonly',
-        clearInterval: 'readonly',
-        setTimeout: 'readonly',
-        clearTimeout: 'readonly',
-        localStorage: 'readonly',
-        Map: 'readonly',
-        Promise: 'readonly'
+        ...globals.browser
       }
     },
     settings: {
@@ -59,6 +49,23 @@ export default [
       }],
       'prefer-const': 'error',
       'no-var': 'error'
+    }
+  },
+  {
+    // ملفات الاختبارات: globals بتاعة Vitest
+    files: ['src/test/**/*.{js,jsx}', '**/*.{test,spec}.{js,jsx}'],
+    languageOptions: {
+      globals: {
+        vi: 'readonly',
+        describe: 'readonly',
+        it: 'readonly',
+        test: 'readonly',
+        expect: 'readonly',
+        beforeAll: 'readonly',
+        beforeEach: 'readonly',
+        afterAll: 'readonly',
+        afterEach: 'readonly'
+      }
     }
   },
   {

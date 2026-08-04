@@ -37,11 +37,7 @@ export const usePlayerStore = create(
       setIsPlaying: (playing) => set({ isPlaying: playing }),
       
       setPlaybackSpeed: (speed) => set({ playbackSpeed: speed }),
-      
-      setTheme: (theme) => set({ theme }),
-      
-      setLanguage: (lang) => set({ language: lang }),
-      
+
       togglePlay: () => set({ isPlaying: !get().isPlaying }),
       
       setVolume: (volume) => {

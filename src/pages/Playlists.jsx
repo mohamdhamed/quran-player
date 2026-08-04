@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Play, Plus, Trash2, Edit2, Music, Clock, X } from 'lucide-react';
+import { Play, Plus, Trash2, Music, X } from 'lucide-react';
 import { usePlayerStore } from '../store/playerStore';
 import PlaylistDetail from './PlaylistDetail';
 
@@ -8,9 +8,7 @@ export default function Playlists() {
   const createPlaylist = usePlayerStore((state) => state.createPlaylist);
   const deletePlaylist = usePlayerStore((state) => state.deletePlaylist);
   const playPlaylist = usePlayerStore((state) => state.playPlaylist);
-  const currentSurah = usePlayerStore((state) => state.currentSurah);
-  const isPlaying = usePlayerStore((state) => state.isPlaying);
-  
+
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newPlaylistName, setNewPlaylistName] = useState('');
   const [newPlaylistDesc, setNewPlaylistDesc] = useState('');

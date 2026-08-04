@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, Check } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { usePlayerStore } from '../../store/playerStore';
 
 export default function AddToPlaylistMenu({ surah, onClose }) {

@@ -36,7 +36,7 @@ const loadAudioDuration = (audioUrl) => {
  * @param {number} verseCount - عدد الآيات في السورة
  * @returns {Promise<Array>} مصفوفة التوقيتات
  */
-export const loadPreciseTimings = async (surahNumber, reciter, verseCount) => {
+export const loadPreciseTimings = async (surahNumber, reciter, _verseCount) => {
   // Check cache first
   const cacheKey = `${reciter}-${surahNumber}`;
   if (timingCache.has(cacheKey)) {
@@ -76,7 +76,7 @@ export const loadPreciseTimings = async (surahNumber, reciter, verseCount) => {
         });
         
         currentTime += duration;
-      } catch (error) {
+      } catch {
         // استخدام متوسط مدة الآيات السابقة كـ fallback
         const avgDuration = currentTime / Math.max(i, 1);
         const fallbackDuration = avgDuration || 5; // 5 seconds default

@@ -178,7 +178,7 @@ const Settings = memo(function Settings() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {reciters.map((reciter, index) => (
+            {reciters.map((reciter) => (
               <button
                 key={reciter.id}
                 onClick={() => setCurrentReciter(reciter.id)}

@@ -136,7 +136,7 @@ let quranCache = null;
  * Smart AI-powered search in Quran verses
  * Uses local search through entire Quran for better results
  */
-export const searchVerses = async (query, language = 'ar') => {
+export const searchVerses = async (query, _language = 'ar') => {
   try {
     // Load entire Quran if not cached
     if (!quranCache) {
@@ -171,16 +171,12 @@ export const searchVerses = async (query, language = 'ar') => {
     
     const normalizedSearch = normalizeText(searchTerm);
     
-    let totalAyahs = 0;
-    let foundInSurah = false;
-    
     quranCache.forEach(surah => {
       if (!surah.ayahs || surah.ayahs.length === 0) {
         return;
       }
       
       surah.ayahs.forEach(ayah => {
-        totalAyahs++;
         const normalizedAyah = normalizeText(ayah.text);
         
         // البحث في نص الآية (بدون تشكيل)

@@ -1,4 +1,4 @@
-import { Home as HomeIcon, Library, Heart, Search, Settings, PlayCircle, Sparkles, ListMusic } from 'lucide-react';
+import { Home as HomeIcon, Library, Heart, Settings, Sparkles, ListMusic } from 'lucide-react';
 
 export default function Sidebar({ currentPage, setCurrentPage }) {
   const menuItems = [

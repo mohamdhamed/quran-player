@@ -24,7 +24,6 @@ export function useKeyboardShortcuts() {
   const previousVolume = useRef(0.8);
   
   const {
-    isPlaying,
     togglePlay,
     nextSurah,
     previousSurah,
@@ -112,7 +111,7 @@ export function useKeyboardShortcuts() {
         }
         break;
 
-      case '/':
+      case '/': {
         // /: Focus search input
         event.preventDefault();
         const searchInput = document.querySelector('input[type="text"][placeholder*="بحث"], input[type="search"]');
@@ -120,6 +119,7 @@ export function useKeyboardShortcuts() {
           searchInput.focus();
         }
         break;
+      }
 
       case 'Escape':
         // Escape: Blur active element / close modals
