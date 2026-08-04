@@ -14,6 +14,8 @@ const Favorites = lazy(() => import('./pages/Favorites'));
 const Playlists = lazy(() => import('./pages/Playlists'));
 const Settings = lazy(() => import('./pages/Settings'));
 const SmartSearch = lazy(() => import('./pages/SmartSearch'));
+// شاشة تشخيص الصوت - مش في القوايم، بتتفتح بالرابط لما فيه مشكلة
+const Diagnostics = lazy(() => import('./pages/Diagnostics'));
 import { Menu, X } from 'lucide-react';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import { useMediaSession } from './hooks/useMediaSession';
@@ -132,6 +134,7 @@ function App() {
               <Route path="/playlists" element={<Playlists />} />
               <Route path="/search" element={<SmartSearch />} />
               <Route path="/settings" element={<Settings />} />
+              <Route path="/diag" element={<Diagnostics />} />
               {/* Fallback to Home */}
               <Route path="*" element={<Home />} />
             </Routes>
