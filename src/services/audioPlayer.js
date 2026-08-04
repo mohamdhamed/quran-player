@@ -17,11 +17,29 @@ function loadHowl() {
   return howlerPromise;
 }
 
+/**
+ * لو الوقت مامشيش خلال المدة دي والتلاوة المفروض شغالة، يبقى الصوت
+ * وقف ومش هيرجع لوحده.
+ *
+ * الحالة دي بتحصل فعلاً: الملف يبدأ، يطلّع أقل من ثانية، وبعدين يفصل
+ * من غير ما howler يقول حاجة. من غير الحارس ده الـ store يفضل فاكر
+ * إن التلاوة شغالة، وشاشة القفل تفضل مكتوب عليها "شغال" من غير شريط
+ * تقدم - وهو بالظبط الشكل اللي المستخدم شافه.
+ *
+ * 8 ثواني مش رقم عشوائي: التحميل البطيء على شبكة ضعيفة ممكن يقف
+ * ثانيتين تلاتة عادي، فمش عايزين نعلن فشل على أول تهتهة.
+ */
+const STALL_TIMEOUT_MS = 8000;
+
 class AudioPlayerService {
   constructor() {
     this.howl = null;
     this.onTimeUpdate = null;
+    this.onFailure = null;
     this.updateInterval = null;
+    this.currentUrl = null;
+    this.lastProgressTime = 0;
+    this.lastProgressAt = 0;
   }
 
   /**
@@ -29,8 +47,10 @@ class AudioPlayerService {
    * @param {string} audioUrl - رابط الملف
    * @param {Function} onEnd - يتنادى لما السورة تخلص
    * @param {Function} onTimeUpdate - يتنادى كل 100ms بالوقت والمدة
+   * @param {Function} [onFailure] - يتنادى لما التلاوة تفشل أو تفصل،
+   *        عشان الواجهة وشاشة القفل ماتفضلش مدّعية إنها شغالة
    */
-  async play(audioUrl, onEnd, onTimeUpdate) {
+  async play(audioUrl, onEnd, onTimeUpdate, onFailure) {
     // Cleanup previous audio
     if (this.howl) {
       this.howl.unload();
@@ -38,6 +58,8 @@ class AudioPlayerService {
     }
 
     this.onTimeUpdate = onTimeUpdate;
+    this.onFailure = onFailure;
+    this.currentUrl = audioUrl;
 
     const Howl = await loadHowl();
 
@@ -57,7 +79,9 @@ class AudioPlayerService {
         if (onEnd) onEnd();
       },
       onloaderror: (id, error) => {
+        this.stopTimeUpdates();
         errorHandler.handle(ApiError.audioLoadError(audioUrl, error));
+        if (this.onFailure) this.onFailure();
       },
       onplayerror: (id, error) => {
         // المتصفح بيمنع التشغيل التلقائي لحد ما المستخدم يتفاعل مع الصفحة.
@@ -124,12 +148,39 @@ class AudioPlayerService {
 
   startTimeUpdates() {
     this.stopTimeUpdates();
+
+    this.lastProgressTime = this.getCurrentTime();
+    this.lastProgressAt = Date.now();
+
     // تحديث كل 100ms لتزامن أدق (بدلاً من 1000ms)
     this.updateInterval = setInterval(() => {
-      if (this.onTimeUpdate && this.howl) {
-        this.onTimeUpdate(this.getCurrentTime(), this.getDuration());
+      if (!this.howl) return;
+
+      const time = this.getCurrentTime();
+
+      if (this.onTimeUpdate) {
+        this.onTimeUpdate(time, this.getDuration());
+      }
+
+      if (time !== this.lastProgressTime) {
+        this.lastProgressTime = time;
+        this.lastProgressAt = Date.now();
+        return;
+      }
+
+      if (Date.now() - this.lastProgressAt >= STALL_TIMEOUT_MS) {
+        this.handleStall();
       }
     }, 100); // ⚡ 100ms = تحديث 10 مرات في الثانية
+  }
+
+  /**
+   * الصوت وقف من غير ما حد يقول - نعلنها بدل ما نفضل مدّعيين إنه شغال
+   */
+  handleStall() {
+    this.stopTimeUpdates();
+    errorHandler.handle(ApiError.audioLoadError(this.currentUrl));
+    if (this.onFailure) this.onFailure();
   }
 
   stopTimeUpdates() {
