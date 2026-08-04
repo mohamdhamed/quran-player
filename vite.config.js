@@ -52,6 +52,9 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: './src/test/setup.js',
-    css: true
+    css: true,
+    // تطبيق الـ React Native في QuranPlayerNative/ له تستاته الخاصة
+    // اللي بتشتغل بـ Jest. من غير الحصر ده، vitest بياخدها وبتفشل.
+    include: ['src/**/*.{test,spec}.{js,jsx}']
   }
 });
