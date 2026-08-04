@@ -16,6 +16,7 @@ const Settings = lazy(() => import('./pages/Settings'));
 const SmartSearch = lazy(() => import('./pages/SmartSearch'));
 import { Menu, X } from 'lucide-react';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
+import { useMediaSession } from './hooks/useMediaSession';
 import { useTheme } from './hooks/useTheme';
 import { useLanguage } from './i18n';
 
@@ -58,6 +59,9 @@ function App() {
 
   // Enable keyboard shortcuts
   useKeyboardShortcuts();
+
+  // شاشة القفل وزراير السماعة والبلوتوث
+  useMediaSession();
 
   // بيطبّقوا الثيم واللغة/الاتجاه على <html>
   useTheme();
