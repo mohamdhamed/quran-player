@@ -3,6 +3,11 @@
 # بين الشغل من ويندوز والشغل من لينكس
 * text=auto eol=lf
 
+# سكريبتات ويندوز لازم تفضل CRLF عشان تشتغل صح
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
 # ملفات ثنائية - ممنوع أي تحويل عليها
 *.png binary
 *.jpg binary
