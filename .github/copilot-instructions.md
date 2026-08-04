@@ -1,272 +1,135 @@
 # Qur'an Player - AI Coding Instructions
 
-## Project Overview
-A modern web-based Qur'an player inspired by Spotify's UI/UX, built with React, Tailwind CSS, and Howler.js for audio playback. Progressive Web App (PWA) capable for future desktop and mobile deployment.
+## Architecture Overview
 
-## Technology Stack
-
-- **Framework**: React 18+ with Vite
-- **Styling**: Tailwind CSS (Spotify-like dark theme, RTL support)
-- **State Management**: Zustand (lightweight, persistent)
-- **Audio**: Howler.js (cross-browser audio streaming)
-- **PWA**: Vite PWA Plugin with Workbox
-- **Icons**: Lucide React
-
-## Project Structure
+A Spotify-inspired Qur'an player (React 18 + Vite) with **three-layer audio architecture**:
 
 ```
-src/
-├── components/
-│   ├── Player/PlayerBar.jsx    # Bottom audio player controls
-│   └── Sidebar/Sidebar.jsx     # Left navigation sidebar
-├── pages/
-│   ├── Home.jsx                # Main dashboard with popular surahs
-│   ├── Library.jsx             # Full surah list with search
-│   └── Favorites.jsx           # User's favorite surahs
-├── services/
-│   ├── audioPlayer.js          # Howler.js audio service wrapper
-│   └── quranAPI.js             # Audio URLs and API integration
-├── store/
-│   └── playerStore.js          # Zustand state management
-├── data/
-│   ├── surahs.json             # 114 surahs metadata
-│   └── reciters.json           # Available reciters with base URLs
-├── styles/
-│   └── globals.css             # Tailwind + custom Spotify-like styles
-└── App.jsx                     # Main app component with routing
+┌─────────────────────────────────────────────────────────────────────┐
+│ UI Layer: PlayerBar.jsx ─► usePlayerStore() ─► audioPlayer.js      │
+├─────────────────────────────────────────────────────────────────────┤
+│ Service Layer (pick one per feature):                               │
+│   • mp3quranAPI.js - Full surah audio + timing from mp3quran.net   │
+│   • quranaiAPI.js  - Semantic search + text from Qurani.ai         │
+│   • preciseTimingService.js - Verse-by-verse sync from alquran.cloud│
+├─────────────────────────────────────────────────────────────────────┤
+│ Audio: Howler.js (html5 mode) → mp3quran.net servers               │
+└─────────────────────────────────────────────────────────────────────┘
 ```
 
-## Development Commands
+**Key insight**: Audio always comes from mp3quran.net (one file per surah). Timing/text comes from different APIs based on precision needs.
+
+## Commands
 
 ```bash
-# Install dependencies
-npm install
-
-# Run development server
-npm run dev
-
-# Build for production
-npm run build
-
-# Preview production build
-npm run preview
+npm run dev          # Dev server (localhost:5173)
+npm run build        # Production build
+npm run test         # Vitest unit tests
+npm run lint:fix     # ESLint + auto-fix
 ```
 
-## Core Patterns
+## Critical Patterns
 
-### Audio Playback
-- Audio streaming via Howler.js (`src/services/audioPlayer.js`)
-- MP3 files from mp3quran.net servers
-- URL format: `{baseUrl}/{surah:003}.mp3`
-- Auto-advance to next surah on completion
-- Real-time progress tracking with 1-second intervals
-
-### Precise Verse Synchronization (NEW! ✨)
-- **Service**: `src/services/verseTimingService.js`
-- **Method**: Fetch metadata from verse-by-verse audio files (everyayah.com)
-- **Process**:
-  1. Load individual MP3 file metadata for each verse
-  2. Calculate duration of each verse from audio metadata
-  3. Build timing table: `[{verse: 1, startTime: 0, endTime: 4.2, duration: 4.2}, ...]`
-  4. Cache timings in Map for instant reuse
-  5. Use `getCurrentVerseFromTimings(currentTime, timings)` for 100% accurate sync
-- **Fallback**: Progress-based estimation if precise timings unavailable
-- **Reciters**: All 5 reciters support precise sync via everyayah.com
-- **Performance**: 2-30s initial load (depends on verses count), instant after caching
-- **UI Indicator**: Shows "✓ تزامن دقيق" (precise) or "⚠️ تزامن تقديري" (estimated)
-
-### State Management (Zustand)
-- **Player state**: currentSurah, isPlaying, volume, currentTime, duration
-- **Repeat modes**: 'none', 'all', 'one'
-- **Persistence**: reciter, volume, repeatMode, favorites, recentlyPlayed
-- **Queue management**: All 114 surahs by default
-
-### UI Components
-- **RTL Layout**: All Arabic text right-aligned with `dir="rtl"`
-- **Spotify Theme**: Dark background (#121212), green accent (#1DB954)
-- **Player Bar**: Fixed bottom bar with progress, controls, volume
-- **Surah Cards**: Hover effects, play buttons, current playing indicator
-
-### Data Structure
+### 1. State Management (Zustand + Persistence)
+All player state flows through `src/store/playerStore.js`:
 ```javascript
-// Surah object
-{
-  number: 1,
-  name: "الفاتحة",
-  nameEn: "Al-Fatiha",
-  nameTranslation: "The Opening",
-  verses: 7,
-  revelationType: "Meccan"
-}
+// Reading state - use shallow comparison for performance
+import { useShallow } from 'zustand/react/shallow';
+const { isPlaying, currentSurah } = usePlayerStore(
+  useShallow((state) => ({ isPlaying: state.isPlaying, currentSurah: state.currentSurah }))
+);
 
-// Reciter object
-{
-  id: "mishary",
-  name: "مشاري راشد العفاسي",
-  nameEn: "Mishary Rashid Alafasy",
-  country: "الكويت",
-  baseUrl: "https://server8.mp3quran.net/afs"
-}
+// Actions auto-persist: reciter, volume, repeatMode, favorites, recentlyPlayed
 ```
 
-## Key Features
-
-### Implemented
-✅ Audio playback with play/pause/seek controls
-✅ Next/Previous surah navigation
-✅ Volume control with visual indicator
-✅ Repeat modes (none/all/one)
-✅ Favorites system with heart icon
-✅ Recently played tracking (last 20)
-✅ Full surah library with search
-✅ Arabic text with RTL support
-✅ Spotify-like dark theme
-✅ Progress bar with time display
-✅ Reciter selection (5 reciters available)
-✅ Playback speed control (0.5x - 2x)
-✅ Settings page with customization options
-✅ Smooth animations (60fps cubic-bezier)
-✅ **Semantic Search** (AI-powered from Qurani.ai) 🆕
-✅ **Quran Text Viewer** (precise ayah-by-ayah sync) 🆕
-✅ **Qurani.ai API Service** (8 functions) 🆕
-
-### To Implement
-- [ ] Offline mode (download surahs)
-- [ ] Playlist creation
-- [ ] Translation display (English, etc.)
-- [ ] Keyboard shortcuts
-- [ ] Theme switcher (dark/light)
-- [ ] Language switcher (AR/EN)
-- [ ] Persistent timing cache (localStorage)
-- [ ] Preload timings for next surah
-- [ ] Word-by-word synchronization (advanced)
-
-## RTL (Right-to-Left) Support
-
-All pages use `dir="rtl"` for proper Arabic text flow:
+### 2. RTL Layout (Required for all new components)
 ```jsx
-<div dir="rtl">...</div>
+// ALWAYS wrap Arabic content with dir="rtl"
+<div dir="rtl" className="text-right">
+  <span className="font-arabic">{surah.name}</span>
+</div>
 ```
 
-CSS classes for Arabic:
-```css
-.arabic-text {
-  @apply font-arabic;
-  font-size: 1.125rem;
-  line-height: 1.8;
-}
-```
-
-## Styling Conventions
-
-### Tailwind Custom Classes
-- `.sidebar-item`: Navigation menu items
-- `.surah-card`: Surah display cards with hover
-- `.play-button`: Large circular play button
-- `.play-button-sm`: Small play button for cards
-- `.search-input`: Rounded search input field
-
-### Color Palette
-- `spotify-black`: #000000 (main background)
-- `spotify-gray`: #121212 (cards background)
-- `spotify-lightGray`: #282828 (sidebar, player bar)
-- `spotify-green`: #1DB954 (primary accent)
-- `spotify-darkGreen`: #1aa34a (hover state)
-
-## Audio API Integration
-
-### Reciters Base URLs
+### 3. API Rate Limiting
 ```javascript
-const RECITERS = {
-  mishary: "https://server8.mp3quran.net/afs",
-  abdulbasit: "https://server7.mp3quran.net/basit",
-  husary: "https://server11.mp3quran.net/husary",
-  sudais: "https://server11.mp3quran.net/sds"
-};
+// Use rateLimitedFetch for external APIs (60 req/min limit)
+import { rateLimitedFetch } from '../utils/rateLimiter';
+const response = await rateLimitedFetch(url);
 ```
 
-### Audio URL Generator
+### 4. Audio URL Format
 ```javascript
-getAudioUrl(reciterId, surahNumber)
-// Returns: "https://server8.mp3quran.net/afs/001.mp3"
+// Surah number is zero-padded to 3 digits
+`${reciter.baseUrl}/${String(surahNumber).padStart(3, '0')}.mp3`
+// Example: https://server8.mp3quran.net/afs/001.mp3
 ```
 
-## State Management Details
+### 5. Reciter ID Mapping
+When using Qurani.ai API, map local IDs:
+```javascript
+// mp3quranAPI.js uses: 'mishary', 'abdulbasit', 'husary'
+// quranaiAPI.js needs: 'ar.alafasy', 'ar.abdulbasit', 'ar.husary'
+import { mapReciterToQuranai } from '../services/quranaiAPI';
+```
 
-### Player Actions
-- `playSurah(surah)`: Play specific surah, add to recently played
-- `nextSurah()`: Play next in queue or loop if repeat=all
-- `previousSurah()`: Play previous or restart if >3 seconds
-- `togglePlay()`: Toggle play/pause state
-- `cycleRepeatMode()`: Cycle through none → all → one
-- `toggleFavorite(surah)`: Add/remove from favorites
+## File Conventions
 
-### Persistence
-Automatically saved to localStorage:
-- Selected reciter
-- Volume level
-- Repeat mode
-- Favorites list
-- Recently played list
+| Location | Purpose |
+|----------|---------|
+| `src/pages/*.jsx` | Route components (add to `App.jsx` routes + `Sidebar.jsx`) |
+| `src/components/Player/` | Player UI - uses sub-components pattern |
+| `src/services/` | API wrappers - each service caches in `Map` |
+| `src/data/*.json` | Static data (114 surahs, 10 reciters) |
+| `src/hooks/usePlayer.js` | Optimized store selectors |
 
-## PWA Configuration
+## Adding Features
 
-- **Manifest**: RTL, Arabic, portrait orientation
-- **Service Worker**: Caches audio files for offline playback
-- **Cache Strategy**: CacheFirst for mp3quran.net audio
-- **Max Entries**: 50 surahs cached
-- **Expiration**: 30 days
+### New Page
+1. Create `src/pages/NewPage.jsx`
+2. Add route in `App.jsx`: `<Route path="/new" element={<NewPage />} />`
+3. Add nav item in `src/components/Sidebar/Sidebar.jsx`
+4. Update `routeToPage` and `pageToRoute` maps in `App.jsx`
 
-## Testing Considerations
+### New Reciter
+1. Add to `src/data/reciters.json` with `baseUrl`
+2. Add mapping in `src/services/mp3quranAPI.js` → `RECITER_MAPPING`
+3. If using Qurani.ai, add to `mapReciterToQuranai()` in `quranaiAPI.js`
 
-### Critical Tests
-- Audio playback on Chrome, Firefox, Safari
-- RTL layout rendering correctness
-- Arabic font loading (Amiri, Cairo)
-- State persistence after page refresh
-- Progress bar seek accuracy
-- Volume control responsiveness
-- Repeat mode logic (especially 'one')
-- Favorites sync across page loads
+### Modifying Player
+- Controls UI: `src/components/Player/components/` (sub-components)
+- State/logic: `src/store/playerStore.js`
+- Audio engine: `src/services/audioPlayer.js` (Howler wrapper)
 
-### Known Limitations
-- Requires internet for first-time audio streaming
-- Browser autoplay policies may require user interaction
-- PWA installation varies by browser
+## Styling
 
-## Quick Start for AI Agents
+**Theme**: Spotify-dark with RTL support
+```javascript
+// tailwind.config.js colors:
+'spotify-green': '#1DB954'    // Primary accent
+'spotify-gray': '#121212'     // Card backgrounds  
+'spotify-lightGray': '#282828' // Sidebar/player bar
+```
 
-1. **Install dependencies**: `npm install`
-2. **Run dev server**: `npm run dev`
-3. **Test audio playback**: Click any surah in Library or Home
-4. **Check state persistence**: Refresh page, verify reciter/volume/favorites persist
-5. **Test RTL**: Verify all Arabic text aligns right
+**Fonts**: `font-arabic` (Amiri) for Quranic text, `font-sans` (Cairo) for UI
 
-## Common Tasks
+## Testing
 
-### Adding a New Reciter
-1. Add entry to `src/data/reciters.json`
-2. Verify baseUrl works: `{baseUrl}/001.mp3`
-3. Test audio playback
+```bash
+npm run test                    # Watch mode
+npm run test:coverage           # Coverage report
+```
 
-### Adding a New Page
-1. Create component in `src/pages/`
-2. Add route to `App.jsx`
-3. Add menu item to `Sidebar.jsx`
+Tests use Vitest + Testing Library. Mock setup in `src/test/setup.js` handles:
+- `window.matchMedia`, `localStorage`, `HTMLMediaElement`
 
-### Modifying Player Controls
-- PlayerBar component: `src/components/Player/PlayerBar.jsx`
-- Player state: `src/store/playerStore.js`
-- Audio service: `src/services/audioPlayer.js`
+## External APIs
 
-## References
+| API | Used For | Rate Limit |
+|-----|----------|------------|
+| mp3quran.net | Audio files + precise timings | Generous |
+| api.alquran.cloud | Verse text + individual ayah audio | ~60/min |
+| api.qurani.ai | Semantic search | ~60/min |
 
-- **Quran Audio**: mp3quran.net
-- **Quran API**: api.alquran.cloud
-- **Howler.js Docs**: howlerjs.com
-- **Zustand Docs**: github.com/pmndrs/zustand
-- **Tailwind CSS**: tailwindcss.com
+## Native App (QuranPlayerNative/)
 
----
-
-**Current Status**: ✅ Feature 1 (Semantic Search) & Feature 2 (Precise Timing) COMPLETE! Using ONLY Qurani.ai API. See `FEATURES_COMPLETE.md` for details.
+React Native version in `QuranPlayerNative/`. Separate project with own `package.json`. See `QuranPlayerNative/README.md` for setup.
