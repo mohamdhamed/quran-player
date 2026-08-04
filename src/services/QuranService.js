@@ -22,10 +22,13 @@ import { SearchProvider } from './providers/SearchProvider';
 
 class QuranService {
     constructor() {
-        this.audio = new AudioProvider();
-        this.text = new TextProvider();
-        this.timing = new TimingProvider();
-        this.search = new SearchProvider();
+        // ملاحظة: الـ providers بادئتها _ عمداً.
+        // لو اتسمّت this.search مثلاً، هتغطّي الميثود search() اللي تحت
+        // وأي استدعاء لـ quranService.search() هيرمي TypeError.
+        this._audio = new AudioProvider();
+        this._text = new TextProvider();
+        this._timing = new TimingProvider();
+        this._search = new SearchProvider();
 
         // Cache مشترك للبيانات الثابتة
         this._surahCache = new Map();
@@ -43,7 +46,7 @@ class QuranService {
      * @returns {Promise<string>} رابط الملف الصوتي
      */
     async getAudioUrl(reciterId, surahNumber) {
-        return this.audio.getAudioUrl(reciterId, surahNumber);
+        return this._audio.getAudioUrl(reciterId, surahNumber);
     }
 
     /**
@@ -51,7 +54,7 @@ class QuranService {
      * @returns {Array} قائمة القراء
      */
     getReciters() {
-        return this.audio.getReciters();
+        return this._audio.getReciters();
     }
 
     /**
@@ -60,7 +63,7 @@ class QuranService {
      * @returns {Object} معلومات القارئ
      */
     getReciterById(reciterId) {
-        return this.audio.getReciterById(reciterId);
+        return this._audio.getReciterById(reciterId);
     }
 
     // ═══════════════════════════════════════════════════════════════
@@ -78,7 +81,7 @@ class QuranService {
             return this._surahCache.get(surahNumber);
         }
 
-        const data = await this.text.getSurahText(surahNumber);
+        const data = await this._text.getSurahText(surahNumber);
         if (data) {
             this._surahCache.set(surahNumber, data);
         }
@@ -91,7 +94,7 @@ class QuranService {
      * @returns {Promise<Object>} معلومات السورة
      */
     async getSurahInfo(surahNumber) {
-        return this.text.getSurahInfo(surahNumber);
+        return this._text.getSurahInfo(surahNumber);
     }
 
     // ═══════════════════════════════════════════════════════════════
@@ -105,7 +108,7 @@ class QuranService {
      * @returns {Promise<Array>} مصفوفة التوقيتات
      */
     async getTimings(surahNumber, reciterId) {
-        return this.timing.getTimings(surahNumber, reciterId);
+        return this._timing.getTimings(surahNumber, reciterId);
     }
 
     /**
@@ -115,7 +118,7 @@ class QuranService {
      * @returns {number} رقم الآية الحالية
      */
     findCurrentAyah(currentTime, timings) {
-        return this.timing.findCurrentAyah(currentTime, timings);
+        return this._timing.findCurrentAyah(currentTime, timings);
     }
 
     // ═══════════════════════════════════════════════════════════════
@@ -129,7 +132,7 @@ class QuranService {
      * @returns {Promise<Array>} نتائج البحث
      */
     async search(query, language = 'ar') {
-        return this.search.search(query, language);
+        return this._search.search(query, language);
     }
 
     /**
@@ -139,7 +142,7 @@ class QuranService {
      * @returns {Promise<Array>} نتائج البحث
      */
     async semanticSearch(query, limit = 10) {
-        return this.search.semanticSearch(query, limit);
+        return this._search.semanticSearch(query, limit);
     }
 
     // ═══════════════════════════════════════════════════════════════
@@ -151,9 +154,9 @@ class QuranService {
      */
     clearAllCaches() {
         this._surahCache.clear();
-        this.audio.clearCache();
-        this.timing.clearCache();
-        this.search.clearCache();
+        this._audio.clearCache();
+        this._timing.clearCache();
+        this._search.clearCache();
     }
 
     /**
@@ -163,9 +166,9 @@ class QuranService {
     getCacheInfo() {
         return {
             surahs: this._surahCache.size,
-            audio: this.audio.getCacheInfo(),
-            timing: this.timing.getCacheInfo(),
-            search: this.search.getCacheInfo()
+            audio: this._audio.getCacheInfo(),
+            timing: this._timing.getCacheInfo(),
+            search: this._search.getCacheInfo()
         };
     }
 }
