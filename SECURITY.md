@@ -19,7 +19,7 @@ base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self';
 script-src 'self';
 style-src  'self' 'unsafe-inline' https://fonts.googleapis.com;
 font-src   'self' https://fonts.gstatic.com;
-img-src    'self' data:;
+img-src    'self' data: https://www.mp3quran.net;
 media-src  'self' https://*.mp3quran.net;
 connect-src 'self' https://www.mp3quran.net https://*.mp3quran.net
                    https://api.alquran.cloud https://api.qurani.ai;

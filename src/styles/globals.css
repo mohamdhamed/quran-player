@@ -228,6 +228,26 @@
   }
 
   /**
+   * صفحة المصحف
+   * نص المصحف في الـ SVG لونه #231f20 (أسود)، فبنعرضه على خلفية ورقية
+   * زي المصحف الحقيقي بدل ما نعكس الألوان - أوضح للقراءة وأقرب للمألوف
+   */
+  .mushaf-page {
+    background: #fdfaf3;
+    border-radius: 0.75rem;
+    padding: 0.75rem;
+    box-shadow: inset 0 0 40px rgba(120, 90, 40, 0.08);
+  }
+
+  .mushaf-highlight {
+    fill: rgb(var(--accent) / 0.22);
+    stroke: rgb(var(--accent) / 0.75);
+    stroke-width: 0.6;
+    stroke-linejoin: round;
+    transition: all 0.35s ease;
+  }
+
+  /**
    * كارت الوصول السريع - كان الـ hover بتاعه متعمول بـ JS
    * (onMouseEnter بيعدّل style مباشرة)، وده بيتخطى الـ transitions
    * وبيمنع :focus-visible من إظهار نفس التأثير لمستخدم الكيبورد

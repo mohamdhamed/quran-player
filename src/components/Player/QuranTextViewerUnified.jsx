@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { useShallow } from 'zustand/react/shallow';
-import { X, Loader, CheckCircle, Zap } from 'lucide-react';
+import { X, Loader, CheckCircle, Zap, BookOpen, AlignRight } from 'lucide-react';
 import { usePlayerStore } from '../../store/playerStore';
 import { useModal } from '../../hooks/useModal';
+import MushafPage from './MushafPage';
 import quranService from '../../services/QuranService';
 
 /**
@@ -29,6 +30,7 @@ function QuranTextViewerContent({ onClose }) {
   const [timings, setTimings] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [reciterInfo, setReciterInfo] = useState(null);
+  const [mode, setMode] = useState('text'); // 'text' | 'mushaf'
   const scrollContainerRef = useRef(null);
   const ayahRefs = useRef({});
   // بيدّي الفوكس للمودال، بيلفّه جواه، وبيقفل بـ Escape
@@ -111,6 +113,13 @@ function QuranTextViewerContent({ onClose }) {
     }
   };
 
+  // توقيت الآية اللي بتتقري دلوقتي - منه بنجيب الـ polygon
+  const activeTiming = timings.find((t) => t.ayah === currentAyah);
+
+  // الصفحة المعروضة: صفحة الآية الحالية، وقبل ما التلاوة تبدأ (الاستعاذة)
+  // بنعرض صفحة أول آية عشان المصحف ما يفضلش فاضي
+  const mushafTiming = activeTiming?.page ? activeTiming : timings.find((t) => t.page);
+
   return (
     <>
       {/* Overlay خفيف */}
@@ -126,7 +135,7 @@ function QuranTextViewerContent({ onClose }) {
         aria-modal="true"
         aria-label={`نص سورة ${currentSurah?.name || ''}`}
         tabIndex={-1}
-        className="fixed bottom-24 left-6 w-[500px] max-h-[70vh] bg-spotify-gray/98 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-700/50 z-50 flex flex-col animate-slideUp pointer-events-auto"
+        className={`fixed bottom-24 left-6 ${mode === 'mushaf' ? 'w-[560px]' : 'w-[500px]'} max-h-[80vh] bg-spotify-gray/98 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-700/50 z-50 flex flex-col animate-slideUp pointer-events-auto`}
         style={{ 
           animation: 'slideUpScale 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
           boxShadow: '0 -10px 40px rgba(0,0,0,0.5), 0 0 100px rgba(29, 185, 84, 0.1)'
@@ -149,6 +158,28 @@ function QuranTextViewerContent({ onClose }) {
               </p>
             </div>
           </div>
+          {/* التبديل بين قائمة الآيات وصفحة المصحف */}
+          <div className="flex items-center gap-1 bg-black/30 rounded-lg p-1 flex-shrink-0 me-2" role="group" aria-label="طريقة العرض">
+            <button
+              onClick={() => setMode('text')}
+              className={`p-1.5 rounded-md transition-colors ${mode === 'text' ? 'bg-spotify-green text-black' : 'text-content-secondary hover:text-white'}`}
+              aria-pressed={mode === 'text'}
+              aria-label="عرض النص كقائمة آيات"
+              title="قائمة الآيات"
+            >
+              <AlignRight size={16} />
+            </button>
+            <button
+              onClick={() => setMode('mushaf')}
+              className={`p-1.5 rounded-md transition-colors ${mode === 'mushaf' ? 'bg-spotify-green text-black' : 'text-content-secondary hover:text-white'}`}
+              aria-pressed={mode === 'mushaf'}
+              aria-label="عرض صفحة المصحف"
+              title="صفحة المصحف"
+            >
+              <BookOpen size={16} />
+            </button>
+          </div>
+
           <button
             onClick={onClose}
             className="p-1.5 hover:bg-gray-700/60 rounded-lg transition-all hover:scale-110 active:scale-95 flex-shrink-0"
@@ -170,6 +201,18 @@ function QuranTextViewerContent({ onClose }) {
               <p className="text-white text-lg mb-2">جاري تحميل التوقيتات الدقيقة...</p>
               <p className="text-gray-400 text-sm">من mp3quran.net ⚡</p>
             </div>
+          ) : mode === 'mushaf' ? (
+            mushafTiming ? (
+              <MushafPage
+                pageUrl={mushafTiming.page}
+                polygon={activeTiming?.polygon}
+                ayahNumber={currentAyah || undefined}
+              />
+            ) : (
+              <div className="text-center py-20">
+                <p className="text-content-secondary">صفحة المصحف غير متاحة لهذا القارئ</p>
+              </div>
+            )
           ) : ayahs.length === 0 ? (
             <div className="text-center py-20">
               <p className="text-gray-400">لا توجد بيانات متاحة</p>
