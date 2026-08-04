@@ -17,18 +17,20 @@
 default-src 'self';
 base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self';
 script-src 'self';
-style-src  'self' 'unsafe-inline' https://fonts.googleapis.com;
+style-src  'self' https://fonts.googleapis.com;
 font-src   'self' https://fonts.gstatic.com;
 img-src    'self' data: https://www.mp3quran.net;
 media-src  'self' https://*.mp3quran.net;
 connect-src 'self' https://www.mp3quran.net https://*.mp3quran.net
-                   https://api.alquran.cloud https://api.qurani.ai;
+                   https://api.alquran.cloud;
 worker-src 'self'; manifest-src 'self'
 ```
 
-> **نقطة ضعف معروفة:** `style-src` فيها `'unsafe-inline'`. التطبيق بيستخدم
-> `style={{...}}` في 13 ملف، ومن غيرها الواجهة بتتكسر. لإزالتها لازم كل
-> الأنماط دي تتحوّل لكلاسات Tailwind أو CSS.
+> **ملحوظة:** التطبيق بيستخدم `style={{...}}` في 35 موضع، وده **مش**
+> محتاج `'unsafe-inline'`. React بيطبّق الأنماط دي عن طريق CSSOM
+> (`element.style`) مش كسمة HTML، والـ CSP بيمنع تحليل السمات والوسوم
+> السطرية بس. متحقّق منه على نسخة الإنتاج: 53 عنصر بأنماط سطرية
+> متطبّقة، وصفر مخالفات.
 
 **مهم:** الـ CSP لازم تفضل header. لو اتحطّت كـ `<meta>` تبقى أضعف —
 `frame-ancestors` مثلاً ما بتشتغلش من الـ meta أصلاً.
@@ -62,7 +64,7 @@ React Native وباسورده معروف للجميع (`android`) — مش سر.
 ### 5. HTTPS فقط
 
 `https://www.mp3quran.net` • `https://*.mp3quran.net` •
-`https://api.alquran.cloud` • `https://api.qurani.ai` • Google Fonts
+`https://api.alquran.cloud` • Google Fonts
 
 ### 6. localStorage
 
@@ -80,13 +82,10 @@ React Native وباسورده معروف للجميع (`android`) — مش سر.
 
 ## ⚠️ مش مطبَّق (بصراحة)
 
-- **تقييد المعدّل جزئي.** [`src/utils/rateLimiter.js`](src/utils/rateLimiter.js)
-  (60 طلب/دقيقة) مستخدم في 4 دوال من `quranaiAPI.js` بس؛ 3 دوال تانية في نفس
-  الملف وباقي الخدمات بتنادي `fetch` مباشرة. وهو أصلاً بيشتغل على مستوى
-  المتصفح — يعني حماية للـ APIs الخارجية من الإفراط، مش حماية للتطبيق، وأي
-  حد يقدر يتخطاه.
+- **مفيش تقييد معدّل.** كان فيه `rateLimiter.js` بيخدم `quranaiAPI.js` بس،
+  والاتنين اتمسحوا لما اتأكد إن الـ endpoint بتاعهم بيرجّع 404. وهو أصلاً
+  كان بيشتغل على مستوى المتصفح — يعني أي حد يقدر يتخطاه.
 - **مفيش Subresource Integrity** على خط Google Fonts.
-- **`'unsafe-inline'` في style-src** — مشروحة فوق.
 
 ## ℹ️ مش قابل للتطبيق
 
